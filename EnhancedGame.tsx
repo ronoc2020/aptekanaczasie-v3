@@ -109,8 +109,18 @@ const herbsMedicines: HerbMedicine[] = [
     sideEffects: "Może powodować problemy żołądkowe, zwiększa ryzyko krwawień",
     interactions: "Nie należy łączyć z innymi NLPZ, może wchodzić w interakcje z lekami na nadciśnienie"
   },
-  // ... (add at least 95 more items to reach a total of 100 or more)
-]
+  ...[
+    ['Melisa', 'herb'], ['Lawenda', 'herb'], ['Pokrzywa', 'herb'], ['Dziurawiec', 'herb'], ['Nagietek', 'herb'], ['Tymianek', 'herb'], ['Koper włoski', 'herb'], ['Kozłek lekarski', 'herb'], ['Jeżówka', 'herb'], ['Ostropest plamisty', 'herb'], ['Mniszek lekarski', 'herb'], ['Skrzyp polny', 'herb'], ['Brzoza', 'herb'], ['Lipa', 'herb'], ['Bez czarny', 'herb'], ['Głóg', 'herb'], ['Czarnuszka', 'herb'], ['Kurkuma', 'herb'], ['Imbir', 'herb'], ['Cynamon', 'herb'], ['Goździki', 'herb'], ['Rozmaryn', 'herb'], ['Bazylia', 'herb'], ['Oregano', 'herb'], ['Majeranek', 'herb'], ['Kminek', 'herb'], ['Anyż', 'herb'], ['Melisa indyjska', 'herb'], ['Wiązówka błotna', 'herb'], ['Werbena', 'herb'], ['Arnika', 'herb'], ['Rdest ptasi', 'herb'], ['Łopian', 'herb'], ['Fiołek trójbarwny', 'herb'], ['Przywrotnik', 'herb'], ['Krwawnik', 'herb'], ['Kwiat malwy', 'herb'], ['Prawoślaz', 'herb'], ['Dzika róża', 'herb'], ['Żurawina', 'herb'], ['Borówka czarna', 'herb'], ['Rokitnik', 'herb'], ['Aloes', 'herb'], ['Wiesiołek', 'herb'], ['Nawłoć', 'herb'], ['Mącznica lekarska', 'herb'], ['Miłorząb japoński', 'herb'], ['Żeń-szeń', 'herb'], ['Ashwagandha', 'herb'], ['Czosnek', 'herb'], ['Aspiryna', 'medicine'], ['Naproksen', 'medicine'], ['Diklofenak', 'medicine'], ['Ketoprofen', 'medicine'], ['Metamizol', 'medicine'], ['Loratadyna', 'medicine'], ['Cetyryzyna', 'medicine'], ['Feksofenadyna', 'medicine'], ['Omeprazol', 'medicine'], ['Pantoprazol', 'medicine'], ['Famotydyna', 'medicine'], ['Loperamid', 'medicine'], ['Racekadotryl', 'medicine'], ['Budezonid', 'medicine'], ['Ambroksol', 'medicine'], ['Acetylocysteina', 'medicine'], ['Dekstrometorfan', 'medicine'], ['Salmeterol', 'medicine'], ['Salbutamol', 'medicine'], ['Amoksycylina', 'medicine'], ['Azitromycyna', 'medicine'], ['Cefaleksyna', 'medicine'], ['Furazydyna', 'medicine'], ['Metronidazol', 'medicine'], ['Amlodypina', 'medicine'], ['Bisoprolol', 'medicine'], ['Ramipryl', 'medicine'], ['Losartan', 'medicine'], ['Hydrochlorotiazyd', 'medicine'], ['Atorwastatyna', 'medicine'], ['Simwastatyna', 'medicine'], ['Metformina', 'medicine'], ['Insulina', 'medicine'], ['Lewotyroksyna', 'medicine'], ['Prednizon', 'medicine'], ['Hydrokortyzon', 'medicine'], ['Heparyna', 'medicine'], ['Warfaryna', 'medicine'], ['Klopidogrel', 'medicine'], ['Diazepam', 'medicine'], ['Sertralina', 'medicine'], ['Mirtazapina', 'medicine'], ['Melatonina', 'medicine'], ['Cholekalcyferol', 'medicine'], ['Kwas foliowy', 'medicine'], ['Siarczan żelaza', 'medicine'], ['Węglan wapnia', 'medicine'], ['Magnez', 'medicine'], ['Sól fizjologiczna', 'medicine'], ['Krople nawilżające', 'medicine'], ['Maść cynkowa', 'medicine'], ['Pantenol', 'medicine'], ['Chlorheksydyna', 'medicine'], ['Płyn Lugola', 'medicine'], ['Węgiel aktywny', 'medicine'], ['Probiotyk', 'medicine']
+  ].map(([name, type]) => ({
+    name,
+    type: type as 'herb' | 'medicine',
+    composition: type === 'herb' ? 'Naturalne związki roślinne; skład zależy od surowca i preparatu' : 'Substancja czynna zależna od postaci i dawki preparatu',
+    usage: type === 'herb' ? 'Tradycyjne zastosowanie wspomagające; skuteczność i bezpieczeństwo zależą od preparatu' : 'Stosować wyłącznie zgodnie z ulotką, zaleceniem lekarza lub farmaceuty',
+    occurrence: type === 'herb' ? 'Uprawy, ogrody lub stanowiska naturalne' : undefined,
+    sideEffects: 'Możliwe działania niepożądane i alergie; sprawdź ulotkę przed użyciem',
+    interactions: 'Przed połączeniem z innymi preparatami skonsultuj się z farmaceutą'
+  }))
+  ]
 
 const experiments: Experiment[] = [
   {
@@ -140,8 +150,31 @@ const experiments: Experiment[] = [
     chemicals: ["Liście herbaty", "Węglan sodu", "Chloroform"],
     safetyPrecautions: ["Pracuj pod wyciągiem", "Używaj rękawic odpornych na rozpuszczalniki"]
   },
-  // ... (add more experiments)
-]
+  {
+    name: 'Badanie pH naparów',
+    description: 'Porównanie odczynu kilku bezpiecznych naparów wodnych za pomocą papierków wskaźnikowych.',
+    steps: ['Przygotuj ostudzone napary z różnych surowców', 'Zanurz papierki wskaźnikowe w próbkach', 'Porównaj barwy ze skalą producenta', 'Zapisz obserwacje w tabeli'],
+    equipment: ['Kubeczki laboratoryjne', 'Pipeta', 'Papierki pH', 'Okulary ochronne'],
+    chemicals: ['Woda destylowana', 'Napar ziołowy', 'Roztwór buforowy kontrolny'],
+    safetyPrecautions: ['Nie spożywaj próbek', 'Pracuj pod nadzorem nauczyciela', 'Umyj ręce po doświadczeniu']
+  },
+  {
+    name: 'Rozdzielanie barwników roślinnych',
+    description: 'Prosta chromatografia bibułowa pokazująca, że ekstrakt roślinny może zawierać wiele barwników.',
+    steps: ['Nanieś kroplę ekstraktu na pasek bibuły', 'Umieść pasek w niewielkiej ilości wody', 'Obserwuj wędrówkę i rozdzielanie barw', 'Porównaj wyniki próbek'],
+    equipment: ['Bibuła filtracyjna', 'Słoiczki', 'Patyczki', 'Rękawiczki'],
+    chemicals: ['Woda', 'Ekstrakt z liści szpinaku', 'Ekstrakt z czerwonej kapusty'],
+    safetyPrecautions: ['Nie używaj rozpuszczalników organicznych w domu', 'Chroń oczy i skórę', 'Utylizuj próbki zgodnie z instrukcją']
+  },
+  {
+    name: 'Stabilność naparu',
+    description: 'Obserwacja zmian barwy naparu po ogrzewaniu i kontakcie z powietrzem.',
+    steps: ['Podziel napar na trzy opisane próbki', 'Jedną pozostaw w temperaturze pokojowej', 'Drugą ogrzej w łaźni wodnej pod nadzorem', 'Porównaj barwę i zapach bez degustowania'],
+    equipment: ['Probówki', 'Łaźnia wodna', 'Termometr', 'Pipety'],
+    chemicals: ['Napar z herbaty', 'Woda destylowana'],
+    safetyPrecautions: ['Nie ogrzewaj zamkniętych naczyń', 'Używaj rękawic termicznych', 'Nie spożywaj próbek']
+  }
+  ]
 
 const recipes: Recipe[] = [
   {
@@ -165,8 +198,22 @@ const recipes: Recipe[] = [
     ],
     instructions: "Rozpuść sacharozę w podgrzanej wodzie. Dodaj ekstrakt z tymianku i glicerol. Na końcu dodaj kwas cytrynowy. Mieszaj do uzyskania jednolitej konsystencji."
   },
-  // ... (add more recipes)
-]
+  {
+    name: 'Krem emulsyjny do ćwiczeń',
+    ingredients: [{ name: 'Woda oczyszczona', weight: 70 }, { name: 'Emulgator', weight: 8 }, { name: 'Olej roślinny', weight: 20 }, { name: 'Glicerol', weight: 2 }],
+    instructions: 'W warunkach laboratoryjnych ogrzej fazy osobno, połącz je podczas mieszania i pozostaw do ostygnięcia. Receptura ma charakter wyłącznie dydaktyczny; nie stosuj na skórę bez kontroli jakości.'
+  },
+  {
+    name: 'Roztwór soli do demonstracji',
+    ingredients: [{ name: 'Woda destylowana', weight: 98 }, { name: 'Chlorek sodu', weight: 2 }],
+    instructions: 'Odważ składniki, rozpuść sól w wodzie i opisz stężenie na etykiecie. Nie jest to preparat do iniekcji ani do oczu.'
+  },
+  {
+    name: 'Żel pokazowy z gliceryną',
+    ingredients: [{ name: 'Woda oczyszczona', weight: 85 }, { name: 'Glicerol', weight: 10 }, { name: 'Karbomer', weight: 5 }],
+    instructions: 'Wsypuj zagęstnik stopniowo do fazy wodnej i mieszaj do uzyskania żelu. Do celów edukacyjnych, bez użycia na skórze.'
+  }
+  ]
 
 const ComicSimulation: React.FC<{ situation: string }> = ({ situation }) => {
   return (
@@ -229,7 +276,13 @@ const scenarios: Scenario[] = [
         explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegóły mogą być kluczowe.",
         simulation: () => <ComicSimulation situation="Farmaceuta pokazuje klientowi różne opakowania leków" />
       },
-      // ... (add more questions)
+      {
+        text: 'Klient przyjmuje kilka leków i pyta o nowy preparat. Jak postępujesz?',
+        options: ['Sprzedajesz bez pytań', 'Sprawdzasz listę leków, alergie i kierujesz do farmaceuty', 'Polecasz podwójną dawkę', 'Ignorujesz pytanie'],
+        correctAnswer: 1,
+        explanation: 'Przegląd leków, alergii i przeciwwskazań pomaga ograniczyć ryzyko interakcji.',
+        simulation: () => <ComicSimulation situation="Farmaceuta przeprowadza krótki wywiad z klientem" />
+      },
     ]
   },
   {
