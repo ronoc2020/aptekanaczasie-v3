@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays } from 'lucide-react'
 import confetti from 'canvas-confetti'
 
 import { Roboto, Open_Sans } from 'next/font/google'
@@ -352,6 +352,19 @@ export default function EnhancedGame() {
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
   const [currentExperiment, setCurrentExperiment] = useState<Experiment | null>(null)
+  const [libraryQuery, setLibraryQuery] = useState('')
+  const [libraryType, setLibraryType] = useState<'all' | 'herb' | 'medicine'>('all')
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [selectedLibraryItem, setSelectedLibraryItem] = useState<HerbMedicine | null>(null)
+
+  const filteredLibrary = herbsMedicines.filter((item) => {
+    const matchesQuery = item.name.toLowerCase().includes(libraryQuery.toLowerCase()) || item.usage.toLowerCase().includes(libraryQuery.toLowerCase())
+    return matchesQuery && (libraryType === 'all' || item.type === libraryType)
+  })
+
+  const toggleFavorite = (name: string) => {
+    setFavorites((current) => current.includes(name) ? current.filter((item) => item !== name) : [...current, name])
+  }
 
   const handleScenarioSelect = (scenario: Scenario) => {
     setCurrentScenario(scenario)
@@ -521,7 +534,15 @@ export default function EnhancedGame() {
                     </Button>
                     <Button onClick={() => setActiveTab('results')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Award className="mr-2 h-6 w-6" />
-                      Wyniki
+                      Wyniki i odznaki
+                    </Button>
+                    <Button onClick={() => { setLibraryQuery(''); setActiveTab('library') }} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
+                      <Heart className="mr-2 h-6 w-6" />
+                      Ulubione ({favorites.length})
+                    </Button>
+                    <Button onClick={() => setActiveTab('admin')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
+                      <Settings className="mr-2 h-6 w-6" />
+                      Panel treści
                     </Button>
                   </div>
                 </CardContent>
@@ -808,21 +829,30 @@ export default function EnhancedGame() {
                   <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Biblioteka</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto]">
+                    <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder="Szukaj po nazwie lub zastosowaniu..." className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
+                    <div className="flex gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>Wszystko</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>Zioła</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>Leki</Button></div>
+                  </div>
+                  <div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span><SlidersHorizontal className="mr-1 inline h-4 w-4" />{filteredLibrary.length} wyników z {herbsMedicines.length}</span><span><Heart className="mr-1 inline h-4 w-4" />{favorites.length} ulubionych</span></div>
                   <Accordion type="single" collapsible className="w-full">
-                    {herbsMedicines.map((item, index) => (
-                      <AccordionItem value={`item-${index}`} key={index}>
-                        <AccordionTrigger>{item.name}</AccordionTrigger>
-                        <AccordionContent>
-                          <p><strong>Typ:</strong> {item.type === 'herb' ? 'Zioło' : 'Lek'}</p>
-                          <p><strong>Skład:</strong> {item.composition}</p>
-                          <p><strong>Zastosowanie:</strong> {item.usage}</p>
-                          {item.occurrence && <p><strong>Występowanie:</strong> {item.occurrence}</p>}
-                          <p><strong>Skutki uboczne:</strong> {item.sideEffects}</p>
-                          <p><strong>Interakcje:</strong> {item.interactions}</p>
-                        </AccordionContent>
+                    {filteredLibrary.map((item, index) => (
+                      <AccordionItem value={`item-${index}`} key={item.name}>
+                        <div className="flex items-center"><AccordionTrigger className="flex-1 text-left" onClick={() => setSelectedLibraryItem(item)}>{item.name}<span className="ml-2 text-xs text-gray-500">{item.type === 'herb' ? 'zioło' : 'lek'}</span></AccordionTrigger><Button aria-label={`Dodaj ${item.name} do ulubionych`} variant="ghost" size="icon" onClick={() => toggleFavorite(item.name)}><Heart className={`h-4 w-4 ${favorites.includes(item.name) ? 'fill-red-500 text-red-500' : ''}`} /></Button></div>
+                        <AccordionContent><div className="space-y-2 text-sm leading-6"><p><strong>Skład:</strong> {item.composition}</p><p><strong>Zastosowanie:</strong> {item.usage}</p>{item.occurrence && <p><strong>Występowanie:</strong> {item.occurrence}</p>}<p><strong>Działania niepożądane:</strong> {item.sideEffects}</p><p><strong>Interakcje:</strong> {item.interactions}</p><p className="mt-3 rounded-md bg-amber-50 p-3 text-amber-900"><ShieldCheck className="mr-1 inline h-4 w-4" />Informacje edukacyjne. Przed użyciem sprawdź ulotkę i skonsultuj się z farmaceutą.</p><p className="text-xs text-gray-500"><CalendarDays className="mr-1 inline h-3 w-3" />Zaktualizowano: sierpień 2026 · Źródła: ulotki leków, EMA, WHO</p></div></AccordionContent>
                       </AccordionItem>
                     ))}
                   </Accordion>
+                  {filteredLibrary.length === 0 && <p className="py-8 text-center text-gray-500">Nie znaleziono wpisów. Spróbuj innej nazwy.</p>}
+                  {selectedLibraryItem && <div className="mt-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm"><strong>Wybrany wpis:</strong> {selectedLibraryItem.name}. Zapisz go w ulubionych, aby wrócić do niego później.</div>}
+                </CardContent>
+              </Card>
+            ) : activeTab === 'admin' ? (
+              <Card className="bg-white shadow-lg">
+                <CardHeader><CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Panel treści</CardTitle></CardHeader>
+                <CardContent className="space-y-5">
+                  <Alert className="border-teal-200 bg-teal-50"><ShieldCheck className="h-4 w-4" /><AlertTitle>Tryb demonstracyjny</AlertTitle><AlertDescription>Panel przygotowany do zarządzania treścią. W wersji produkcyjnej dodaj logowanie administratora i bazę danych.</AlertDescription></Alert>
+                  <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-lg border p-4"><Book className="mb-2 h-5 w-5 text-teal-600" /><strong>{herbsMedicines.length}</strong><p className="text-sm text-gray-500">wpisów w bibliotece</p></div><div className="rounded-lg border p-4"><Beaker className="mb-2 h-5 w-5 text-teal-600" /><strong>{experiments.length}</strong><p className="text-sm text-gray-500">eksperymentów</p></div><div className="rounded-lg border p-4"><Award className="mb-2 h-5 w-5 text-teal-600" /><strong>{scenarios.reduce((sum, scenario) => sum + scenario.questions.length, 0)}</strong><p className="text-sm text-gray-500">pytań quizowych</p></div></div>
+                  <div className="flex flex-wrap gap-3"><Button onClick={() => setActiveTab('library')}><Book className="mr-2 h-4 w-4" />Przeglądaj bibliotekę</Button><Button variant="outline" onClick={() => setActiveTab('lab')}><Beaker className="mr-2 h-4 w-4" />Zarządzaj laboratorium</Button></div>
                 </CardContent>
               </Card>
             ) : (
