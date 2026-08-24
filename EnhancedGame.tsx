@@ -302,7 +302,20 @@ const scenarios: Scenario[] = [
         explanation: "Najlepszym rozwiązaniem jest sprawdzenie dostępności leku w innych aptekach i poinformowanie o tym pacjenta. To zapewnia pacjentowi najszybszy dostęp do przepisanego leku.",
         simulation: () => <ComicSimulation situation="Farmaceuta sprawdza dostępność leku w systemie" />
       },
-      // ... (add more questions)
+      {
+        text: 'Pacjent pyta o zamiennik leku na receptę. Co sprawdzasz?',
+        options: ['Tylko kolor opakowania', 'Substancję czynną, dawkę i postać', 'Najdroższy odpowiednik', 'Opinie w internecie'],
+        correctAnswer: 1,
+        explanation: 'Zamienność ocenia się na podstawie substancji czynnej, dawki i postaci farmaceutycznej, a wątpliwości wyjaśnia farmaceuta.',
+        simulation: () => <ComicSimulation situation="Farmaceuta porównuje substancję czynną i dawkę preparatów" />
+      },
+      {
+        text: 'Pacjent zgłasza alergię po przyjęciu nowego leku. Jaka jest właściwa reakcja?',
+        options: ['Zignorować objawy', 'Zalecić kolejną dawkę', 'Ocenić nasilenie i przy ciężkich objawach wezwać pomoc', 'Polecić dowolny suplement'],
+        correctAnswer: 2,
+        explanation: 'Duszność, obrzęk twarzy lub omdlenie wymagają natychmiastowej pomocy medycznej. Lżejsze objawy należy zgłosić lekarzowi lub farmaceucie.',
+        simulation: () => <ComicSimulation situation="Farmaceuta rozpoznaje objawy wymagające pilnej pomocy" />
+      }
     ]
   },
   {
@@ -322,10 +335,36 @@ const scenarios: Scenario[] = [
         explanation: "Bezpieczeństwo ludzi jest najważniejsze. Najpierw należy ewakuować wszystkie osoby z budynku, a następnie zaalarmować służby ratunkowe.",
         simulation: () => <ComicSimulation situation="Farmaceuta kieruje ewakuacją klientów i pracowników" />
       },
-      // ... (add more questions)
+      {
+        text: 'Co robisz po rozlaniu nieznanej substancji w aptece?',
+        options: ['Sprzątasz gołymi rękami', 'Zabezpieczasz miejsce i informujesz przełożonego', 'Wylewasz ją do zlewu', 'Ignorujesz zdarzenie'],
+        correctAnswer: 1,
+        explanation: 'Miejsce należy zabezpieczyć, ograniczyć kontakt z substancją i postępować według procedury bezpieczeństwa.',
+        simulation: () => <ComicSimulation situation="Pracownik zabezpiecza miejsce zdarzenia i powiadamia przełożonego" />
+      },
+      {
+        text: 'Gdzie przechowujesz lek wymagający ochrony przed światłem?',
+        options: ['Na parapecie', 'W oryginalnym opakowaniu zgodnie z ulotką', 'W otwartym pojemniku', 'Obok źródła ciepła'],
+        correctAnswer: 1,
+        explanation: 'Oryginalne opakowanie i warunki z ulotki chronią lek przed utratą jakości.',
+        simulation: () => <ComicSimulation situation="Farmaceuta sprawdza warunki przechowywania preparatu" />
+      }
     ]
   },
-  // ... (add more scenarios)
+  {
+    id: 'communication',
+    name: 'Komunikacja z pacjentem',
+    icon: <Stethoscope className="w-6 h-6" />,
+    questions: [
+      {
+        text: 'Jak najlepiej sprawdzić, czy pacjent zrozumiał instrukcję?',
+        options: ['Poprosić o powtórzenie własnymi słowami', 'Mówić szybciej', 'Wręczyć ulotkę bez wyjaśnienia', 'Założyć, że wszystko jest jasne'],
+        correctAnswer: 0,
+        explanation: 'Metoda teach-back pozwala upewnić się, że pacjent rozumie dawkowanie i najważniejsze ostrzeżenia.',
+        simulation: () => <ComicSimulation situation="Farmaceuta prosi pacjenta o powtórzenie zaleceń" />
+      }
+    ]
+  }
 ]
 
 const Logo: React.FC = () => (
@@ -355,11 +394,14 @@ export default function EnhancedGame() {
   const [libraryQuery, setLibraryQuery] = useState('')
   const [libraryType, setLibraryType] = useState<'all' | 'herb' | 'medicine'>('all')
   const [favorites, setFavorites] = useState<string[]>([])
+  const [favoritesOnly, setFavoritesOnly] = useState(false)
   const [selectedLibraryItem, setSelectedLibraryItem] = useState<HerbMedicine | null>(null)
 
   const filteredLibrary = herbsMedicines.filter((item) => {
     const matchesQuery = item.name.toLowerCase().includes(libraryQuery.toLowerCase()) || item.usage.toLowerCase().includes(libraryQuery.toLowerCase())
-    return matchesQuery && (libraryType === 'all' || item.type === libraryType)
+    const matchesType = libraryType === 'all' || item.type === libraryType
+    const matchesFavorites = !favoritesOnly || favorites.includes(item.name)
+    return matchesQuery && matchesType && matchesFavorites
   })
 
   const toggleFavorite = (name: string) => {
@@ -536,7 +578,7 @@ export default function EnhancedGame() {
                       <Award className="mr-2 h-6 w-6" />
                       Wyniki i odznaki
                     </Button>
-                    <Button onClick={() => { setLibraryQuery(''); setActiveTab('library') }} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
+                    <Button onClick={() => { setLibraryQuery(''); setFavoritesOnly(true); setActiveTab('library') }} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Heart className="mr-2 h-6 w-6" />
                       Ulubione ({favorites.length})
                     </Button>
@@ -831,7 +873,7 @@ export default function EnhancedGame() {
                 <CardContent>
                   <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto]">
                     <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder="Szukaj po nazwie lub zastosowaniu..." className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
-                    <div className="flex gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>Wszystko</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>Zioła</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>Leki</Button></div>
+                    <div className="flex flex-wrap gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>Wszystko</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>Zioła</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>Leki</Button><Button variant={favoritesOnly ? 'default' : 'outline'} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart className="mr-1 h-4 w-4" />Ulubione</Button></div>
                   </div>
                   <div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span><SlidersHorizontal className="mr-1 inline h-4 w-4" />{filteredLibrary.length} wyników z {herbsMedicines.length}</span><span><Heart className="mr-1 inline h-4 w-4" />{favorites.length} ulubionych</span></div>
                   <Accordion type="single" collapsible className="w-full">
@@ -868,7 +910,7 @@ export default function EnhancedGame() {
                   >
                     <p className={`text-xl font-semibold text-teal-700 ${roboto.className}`}>Wynik: {score}</p>
                     <p className="mt-4 mb-2 text-gray-700">Ogólny Postęp:</p>
-                    <Progress value={progress} className="h-2 bg-teal-200" indicatorClassName="bg-teal-500" />
+                    <Progress value={progress} className="h-2 bg-teal-200" />
                     <p className="mt-2 text-sm text-gray-600">{progress}% ukończone</p>
                     <div className="mt-4">
                       <h3 className="text-lg font-semibold mb-2">Ukończone scenariusze:</h3>
