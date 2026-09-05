@@ -6,6 +6,36 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .game-grid-glow {
+    background-image: linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+  }
+
+  .game-card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .game-card-shine::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 20%, hsl(var(--primary-foreground) / 0.12) 45%, transparent 70%);
+    transform: translateX(-120%);
+    animation: card-shine 5s ease-in-out infinite;
+  }
+
+  @keyframes card-shine {
+    0%, 45% { transform: translateX(-120%); }
+    65%, 100% { transform: translateX(120%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .game-card-shine::after { animation: none; }
+  }
 }
 
 @layer base {

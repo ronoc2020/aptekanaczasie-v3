@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
@@ -390,6 +390,9 @@ export default function EnhancedGame() {
   const [completedScenarios, setCompletedScenarios] = useState<string[]>([])
   const [showCelebration, setShowCelebration] = useState(false)
   const [showSimulation, setShowSimulation] = useState(false)
+  const [gameMode, setGameMode] = useState<'classic' | 'speed' | 'streak'>('classic')
+  const [streak, setStreak] = useState(0)
+  const [answeredQuestions, setAnsweredQuestions] = useState(0)
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -419,6 +422,8 @@ export default function EnhancedGame() {
     setShowExplanation(false)
     setIsCorrect(null)
     setShowSimulation(false)
+    setStreak(0)
+    setAnsweredQuestions(0)
     setActiveTab('game')
   }
 
@@ -427,11 +432,16 @@ export default function EnhancedGame() {
 
     const currentQuestion = currentScenario.questions[currentQuestionIndex]
     const correct = selectedAnswer === currentQuestion.correctAnswer
+    const nextStreak = correct ? streak + 1 : 0
+    const modeBonus = gameMode === 'streak' ? nextStreak * 2 : gameMode === 'speed' ? 5 : 0
+    const earnedPoints = correct ? 10 + modeBonus : 0
 
     setIsCorrect(correct)
+    setAnsweredQuestions((value) => value + 1)
+    setStreak(nextStreak)
     if (correct) {
-      setScore(score + 10)
-      setFeedback('Poprawna odpowiedź! +10 punktów')
+      setScore((value) => value + earnedPoints)
+      setFeedback(`Poprawna odpowiedź! +${earnedPoints} punktów${nextStreak > 1 ? ` • seria x${nextStreak}` : ''}`)
       confetti({
         particleCount: 100,
         spread: 70,
@@ -531,7 +541,7 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-      <div className={`container mx-auto p-4 ${openSans.className}`} style={{ backgroundColor: '#F0F4F8' }}>
+      <div className={`game-card-shine relative min-h-screen container mx-auto p-4 ${openSans.className}`} style={{ backgroundColor: '#F0F4F8' }}>
         <motion.header 
           className="mb-8 flex justify-between items-center"
           initial={{ opacity: 0, y: -50 }}
@@ -613,9 +623,15 @@ export default function EnhancedGame() {
                         exit={{ opacity: 0, x: 100 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <p className="text-gray-700 mb-4">
-                          Wybierz scenariusz, aby rozpocząć grę. Każdy scenariusz pomoże Ci rozwinąć umiejętności w różnych aspektach pracy w aptece.
-                        </p>
+                        <div className="mb-6 rounded-2xl bg-gradient-to-r from-teal-900 via-teal-700 to-cyan-700 p-5 text-white shadow-xl">
+                          <div className="flex flex-wrap items-center justify-between gap-4">
+                            <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-100">Tryb gry</p><h3 className="mt-1 text-xl font-bold">Wybierz swój rytm nauki</h3><p className="mt-1 text-sm text-teal-100">Każdy tryb zmienia sposób naliczania punktów.</p></div>
+                            <div className="grid grid-cols-3 gap-2">
+                              {[{id:'classic', label:'Klasyczny', icon:<BookOpen className="h-4 w-4" />}, {id:'speed', label:'Turbo', icon:<Zap className="h-4 w-4" />}, {id:'streak', label:'Seria', icon:<Flame className="h-4 w-4" />}].map((mode) => <button key={mode.id} type="button" onClick={() => setGameMode(mode.id as typeof gameMode)} className={`flex min-w-20 flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${gameMode === mode.id ? 'bg-white text-teal-800 shadow-lg' : 'bg-teal-950/30 text-teal-50 hover:bg-white/20'}`}>{mode.icon}<span>{mode.label}</span></button>)}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-gray-700 mb-4">Wybierz scenariusz, aby rozpocząć grę. Każdy scenariusz pomoże Ci rozwinąć umiejętności w różnych aspektach pracy w aptece.</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                           {scenarios.map((scenario) => (
                             <motion.div
@@ -656,6 +672,12 @@ export default function EnhancedGame() {
                         exit={{ opacity: 0, y: -50 }}
                         transition={{ duration: 0.3 }}
                       >
+                        <div className="mb-5 grid grid-cols-3 gap-2 rounded-2xl bg-slate-900 p-3 text-white shadow-lg">
+                          <div className="flex items-center gap-2"><Trophy className="h-4 w-4 text-yellow-300" /><span className="text-xs text-slate-300">Punkty</span><strong>{score}</strong></div>
+                          <div className="flex items-center gap-2"><Flame className="h-4 w-4 text-orange-300" /><span className="text-xs text-slate-300">Seria</span><strong>x{streak}</strong></div>
+                          <div className="flex items-center gap-2"><Timer className="h-4 w-4 text-cyan-300" /><span className="text-xs text-slate-300">Postęp</span><strong>{currentQuestionIndex + 1}/{currentScenario.questions.length}</strong></div>
+                        </div>
+                        <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><motion.div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / currentScenario.questions.length) * 100}%` }} transition={{ duration: 0.5 }} /></div>
                         <p className="text-lg font-semibold mb-4">{currentScenario.questions[currentQuestionIndex].text}</p>
                         <RadioGroup onValueChange={(value) => setSelectedAnswer(parseInt(value))}>
                           {currentScenario.questions[currentQuestionIndex].options.map((option, index) => (
