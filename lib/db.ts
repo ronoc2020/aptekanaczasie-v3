@@ -19,6 +19,25 @@ export const howToArticles = pgTable('how_to_articles', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 })
 
+export const herbsMedicines = pgTable('herbs_medicines', {
+  id: uuid('id').primaryKey(),
+  slug: text('slug').notNull(),
+  name: text('name').notNull(),
+  kind: text('kind').$type<'herb' | 'medicine'>().notNull(),
+  latinName: text('latin_name'),
+  activeCompounds: text('active_compounds').array().notNull(),
+  uses: text('uses').array().notNull(),
+  contraindications: text('contraindications').array().notNull(),
+  sideEffects: text('side_effects').array().notNull(),
+  interactions: text('interactions').array().notNull(),
+  dosageNotes: text('dosage_notes'),
+  evidenceLevel: text('evidence_level').notNull(),
+  sourceUrl: text('source_url'),
+  author: text('author').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+})
+
 const globalForDb = globalThis as unknown as { howToPool?: Pool }
 const pool = globalForDb.howToPool ?? new Pool({ connectionString: process.env.DATABASE_URL })
 if (process.env.NODE_ENV !== 'production') globalForDb.howToPool = pool

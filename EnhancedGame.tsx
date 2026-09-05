@@ -18,6 +18,7 @@ import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCi
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
+import { HerbsMedicinesDatabase } from '@/components/herbs-medicines-database'
 
 import { Roboto, Open_Sans } from 'next/font/google'
 
@@ -878,8 +879,9 @@ export default function EnhancedGame() {
                 <CardHeader>
                   <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Biblioteka</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="mb-5 grid gap-3 md:grid-cols-[1fr_auto]">
+  <CardContent>
+  <HerbsMedicinesDatabase />
+  <div className="mb-5 mt-6 grid gap-3 md:grid-cols-[1fr_auto]">
                     <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder="Szukaj po nazwie lub zastosowaniu..." className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
                     <div className="flex flex-wrap gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>Wszystko</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>Zioła</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>Leki</Button><Button variant={favoritesOnly ? 'default' : 'outline'} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart className="mr-1 h-4 w-4" />Ulubione</Button></div>
                   </div>
