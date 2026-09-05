@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
@@ -393,6 +393,7 @@ export default function EnhancedGame() {
   const [gameMode, setGameMode] = useState<'classic' | 'speed' | 'streak'>('classic')
   const [streak, setStreak] = useState(0)
   const [answeredQuestions, setAnsweredQuestions] = useState(0)
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -515,6 +516,10 @@ export default function EnhancedGame() {
   }
 
   useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+  }, [theme])
+
+  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && selectedAnswer !== null) {
         handleAnswerSubmit()
@@ -541,22 +546,30 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-      <div className={`game-card-shine relative min-h-screen container mx-auto p-4 ${openSans.className}`} style={{ backgroundColor: '#F0F4F8' }}>
+      <div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
         <motion.header 
-          className="mb-8 flex justify-between items-center"
+          className="glass-panel mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl px-4 py-3 sm:px-6"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <Logo />
           <h1 className={`text-4xl font-bold text-teal-700 ${roboto.className}`}>Apteka na Czasie</h1>
-          <Button
-            onClick={() => setActiveTab('menu')}
-            className="bg-teal-500 hover:bg-teal-600 text-white"
-          >
-            <Home className="mr-2 h-4 w-4" />
-            Menu Główne
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={theme === 'dark' ? 'Włącz jasny motyw' : 'Włącz ciemny motyw'}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="theme-toggle rounded-full"
+            >
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+            <Button onClick={() => setActiveTab('menu')} className="primary-button">
+              <Home className="mr-2 h-4 w-4" />
+              Menu Główne
+            </Button>
+          </div>
         </motion.header>
 
         <AnimatePresence mode="wait">
