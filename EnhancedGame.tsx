@@ -14,8 +14,10 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen } from 'lucide-react'
 import confetti from 'canvas-confetti'
+import Script from 'next/script'
+import { HowToLibrary } from '@/components/how-to-library'
 
 import { Roboto, Open_Sans } from 'next/font/google'
 
@@ -574,6 +576,10 @@ export default function EnhancedGame() {
                       <Book className="mr-2 h-6 w-6" />
                       Biblioteka
                     </Button>
+                    <Button onClick={() => setActiveTab('howto')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
+                      <BookOpen className="mr-2 h-6 w-6" />
+                      WikiHow
+                    </Button>
                     <Button onClick={() => setActiveTab('results')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Award className="mr-2 h-6 w-6" />
                       Wyniki i odznaki
@@ -865,6 +871,8 @@ export default function EnhancedGame() {
                   </Tabs>
                 </CardContent>
               </Card>
+            ) : activeTab === 'howto' ? (
+              <HowToLibrary />
             ) : activeTab === 'library' ? (
               <Card className="bg-white shadow-lg">
                 <CardHeader>
@@ -928,6 +936,11 @@ export default function EnhancedGame() {
             )}
           </motion.div>
         </AnimatePresence>
+
+        <footer className="mt-8 flex flex-col items-center gap-3 border-t border-teal-100 pt-6 text-center text-sm text-slate-600">
+          <p>Aplikację stworzył <strong>Roman Orłowski</strong> · <a className="text-teal-700 underline" href="mailto:contact@rocybersolutions.com">contact@rocybersolutions.com</a></p>
+          <Script src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" strategy="lazyOnload" data-name="bmc-button" data-slug="r0cs" data-color="#40DCA5" data-emoji="📖" data-font="Lato" data-text="Buy me a book" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" />
+        </footer>
 
         {showCelebration && (
           <motion.div
