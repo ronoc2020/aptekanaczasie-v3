@@ -815,6 +815,72 @@ body {
 
 @media (max-width: 767px) {
   .game-shell {
+    overflow-x: hidden;
+  }
+
+  .game-shell .mobile-navigation {
+    order: 10;
+  }
+
+  .game-shell > main,
+  .game-shell > main > *,
+  .game-shell > main [data-slot="card"],
+  .game-shell > main .pharmacy-workbench,
+  .game-shell > main .scenario-panel,
+  .game-shell > main .library-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .game-shell > main [class*="grid-cols-"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .game-shell > main [class*="flex-row"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .game-shell > main pre,
+  .game-shell > main code,
+  .game-shell > main p,
+  .game-shell > main h1,
+  .game-shell > main h2,
+  .game-shell > main h3,
+  .game-shell > main li,
+  .game-shell > main label {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .game-shell > main button,
+  .game-shell > main [role="button"] {
+    min-height: 2.75rem;
+    white-space: normal;
+  }
+
+  .game-shell .focus-footer {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .game-shell.theme-light .focus-footer,
+  .game-shell.theme-light .focus-footer p,
+  .game-shell.theme-light .focus-footer span,
+  .game-shell.theme-light .focus-footer a {
+    color: #17383b !important;
+  }
+
+  .game-shell.theme-dark .focus-footer,
+  .game-shell.theme-dark .focus-footer p,
+  .game-shell.theme-dark .focus-footer span,
+  .game-shell.theme-dark .focus-footer a {
+    color: #eaffff !important;
+  }
+
+  .game-shell {
     width: 100%;
     min-width: 0;
     padding: 0.75rem !important;
@@ -1173,6 +1239,22 @@ body {
 .game-shell.theme-light .focus-dashboard [class*="bg-white"] {
   color: #16383b !important;
   background-color: rgba(255, 255, 255, 0.96) !important;
+}
+
+.game-shell.theme-light .focus-footer,
+.game-shell.theme-light .focus-footer p,
+.game-shell.theme-light .focus-footer span,
+.game-shell.theme-light .focus-footer a {
+  color: #17383b !important;
+  opacity: 1 !important;
+}
+
+.game-shell.theme-dark .focus-footer,
+.game-shell.theme-dark .focus-footer p,
+.game-shell.theme-dark .focus-footer span,
+.game-shell.theme-dark .focus-footer a {
+  color: #eaffff !important;
+  opacity: 1 !important;
 }
 
 @layer base {
