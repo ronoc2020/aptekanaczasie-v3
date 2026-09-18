@@ -218,6 +218,21 @@ const recipes: Recipe[] = [
     name: 'Żel pokazowy z gliceryną',
     ingredients: [{ name: 'Woda oczyszczona', weight: 85 }, { name: 'Glicerol', weight: 10 }, { name: 'Karbomer', weight: 5 }],
     instructions: 'Wsypuj zagęstnik stopniowo do fazy wodnej i mieszaj do uzyskania żelu. Do celów edukacyjnych, bez użycia na skórze.'
+  },
+  {
+    name: 'Zawiesina demonstracyjna',
+    ingredients: [{ name: 'Woda oczyszczona', weight: 90 }, { name: 'Substancja modelowa', weight: 5 }, { name: 'Glicerol', weight: 5 }],
+    instructions: 'Rozprosz substancję modelową w glicerolu, następnie stopniowo dodawaj wodę przy mieszaniu. Obserwuj sedymentację i opisz konieczność oznakowania: wstrząsnąć przed użyciem. Wyłącznie do ćwiczeń laboratoryjnych.'
+  },
+  {
+    name: 'Proszek do oceny jednorodności',
+    ingredients: [{ name: 'Laktoza jako nośnik modelowy', weight: 95 }, { name: 'Barwnik spożywczy do demonstracji', weight: 5 }],
+    instructions: 'Wymieszaj składniki metodą rozcieńczeń geometrycznych i oceń wizualną jednorodność próbki. Nie jest to produkt leczniczy ani preparat do stosowania u ludzi.'
+  },
+  {
+    name: 'Emulsja demonstracyjna',
+    ingredients: [{ name: 'Woda oczyszczona', weight: 65 }, { name: 'Olej roślinny modelowy', weight: 30 }, { name: 'Emulgator dydaktyczny', weight: 5 }],
+    instructions: 'Przygotuj fazy zgodnie z instrukcją stanowiskową, połącz je pod kontrolą prowadzącego i obserwuj zmianę konsystencji. Dokumentuj temperaturę, czas mieszania i wygląd próbki.'
   }
   ]
 
@@ -242,8 +257,8 @@ const ComicSimulation: React.FC<{ situation: string }> = ({ situation }) => {
                 repeat: Infinity,
                 repeatDelay: 1
               }}
-            >
-              🏥
+              >
+              <FlaskConical className="h-16 w-16 text-teal-700" aria-hidden="true" />
             </motion.div>
           </div>
         </div>
@@ -276,7 +291,7 @@ const scenarios: Scenario[] = [
           "Dajesz mu najpopularniejszy lek przeciwbólowy",
           "Pokazujesz różne opakowania leków przeciwbólowych i prosisz o identyfikację",
           "Pytasz o dodatkowe informacje, takie jak kształt tabletki lub dawkę",
-          "Odsyłasz klienta do lekarza po recept��"
+          "Odsyłasz klienta do lekarza po recept����"
         ],
         correctAnswer: 2,
         explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegóły mogą być kluczowe.",
