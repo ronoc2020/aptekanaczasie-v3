@@ -393,9 +393,12 @@ const scenarios: Scenario[] = [
 ]
 
 const Logo: React.FC<{ language?: 'pl' | 'en' }> = ({ language = 'pl' }) => (
-  <div className="flex items-center gap-3">
-    <div className="rounded-2xl bg-teal-100 p-2.5 text-teal-700 shadow-sm"><Clock className="h-6 w-6" /></div>
-    <span className="text-lg font-bold tracking-tight text-teal-800 sm:text-xl">{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</span>
+  <div className="group flex items-center gap-3" aria-label={language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}>
+    <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-lg shadow-teal-700/20 transition duration-300 group-hover:-rotate-3 group-hover:scale-105">
+      <FlaskConical className="h-6 w-6" strokeWidth={1.8} />
+      <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-amber-300" aria-hidden="true" />
+    </div>
+    <div><span className="block text-lg font-bold tracking-tight text-teal-800 sm:text-xl">{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</span><span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-600/80">{language === 'pl' ? 'nauka · praktyka · jakość' : 'learning · practice · quality'}</span></div>
   </div>
 )
 
@@ -574,8 +577,9 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-      <div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
-        <motion.header 
+<div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+  <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /></div>
+  <motion.header
           className="glass-panel mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl px-4 py-3 sm:px-6"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}

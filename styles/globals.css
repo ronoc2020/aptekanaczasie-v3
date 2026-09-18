@@ -82,6 +82,28 @@
   }
 }
 
+@keyframes pharmacy-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.35; }
+  50% { transform: translate3d(18px, -24px, 0) rotate(12deg); opacity: 0.72; }
+}
+
+@keyframes pharmacy-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(174 72% 48% / 0.16); }
+  50% { box-shadow: 0 0 0 14px hsl(174 72% 48% / 0); }
+}
+
+.pharmacy-atmosphere { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.pharmacy-atmosphere::before, .pharmacy-atmosphere::after { content: ''; position: absolute; border-radius: 999px; filter: blur(45px); opacity: 0.24; }
+.pharmacy-atmosphere::before { width: 18rem; height: 18rem; left: -5rem; top: 8rem; background: hsl(174 72% 48% / 0.42); animation: pharmacy-drift 14s ease-in-out infinite; }
+.pharmacy-atmosphere::after { width: 22rem; height: 22rem; right: -8rem; bottom: 4rem; background: hsl(190 85% 52% / 0.3); animation: pharmacy-drift 18s ease-in-out infinite reverse; }
+.molecule { position: absolute; display: block; width: 0.65rem; height: 0.65rem; border: 2px solid hsl(174 72% 48% / 0.32); border-radius: 50%; animation: pharmacy-drift 9s ease-in-out infinite; }
+.molecule::after { content: ''; position: absolute; width: 2.2rem; height: 2px; left: 0.45rem; top: 0.2rem; transform: rotate(32deg); transform-origin: left center; background: hsl(174 72% 48% / 0.2); }
+.molecule-one { left: 12%; top: 22%; }.molecule-two { left: 78%; top: 18%; animation-delay: -2s; }.molecule-three { left: 88%; top: 62%; animation-delay: -4s; }.molecule-four { left: 28%; top: 76%; animation-delay: -5s; }.molecule-five { left: 54%; top: 42%; animation-delay: -7s; }.molecule-six { left: 8%; top: 60%; animation-delay: -3s; }
+
+@media (prefers-reduced-motion: reduce) { .pharmacy-atmosphere *, .pharmacy-atmosphere::before, .pharmacy-atmosphere::after { animation: none !important; } }
+
+@media (max-width: 640px) { .pharmacy-atmosphere::before, .pharmacy-atmosphere::after { filter: blur(30px); opacity: 0.16; } .molecule { transform: scale(0.8); } }
+
 @layer base {
   * {
     @apply border-border;
