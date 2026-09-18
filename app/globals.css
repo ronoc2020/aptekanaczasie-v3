@@ -8,9 +8,10 @@
     --neon-b: 190 85% 52%;
     --neon-c: 265 80% 62%;
     background:
-      radial-gradient(circle at 12% 8%, hsl(var(--neon-a) / 0.2), transparent 32%),
-      radial-gradient(circle at 88% 18%, hsl(var(--neon-b) / 0.18), transparent 30%),
-      linear-gradient(135deg, hsl(var(--background)), hsl(var(--muted) / 0.72));
+      radial-gradient(circle at 12% 8%, hsl(var(--neon-a) / 0.34), transparent 32%),
+      radial-gradient(circle at 88% 18%, hsl(var(--neon-b) / 0.3), transparent 30%),
+      linear-gradient(135deg, hsl(var(--background)), hsl(var(--neon-c) / 0.1));
+    background-color: hsl(var(--background));
     isolation: isolate;
     transition: background 1200ms ease, --neon-a 1200ms ease, --neon-b 1200ms ease, --neon-c 1200ms ease;
   }
@@ -24,9 +25,9 @@
     content: '';
     position: absolute;
     inset: -18%;
-    z-index: -2;
+    z-index: 0;
     pointer-events: none;
-    opacity: 0.28;
+    opacity: 0.5;
     background:
       radial-gradient(circle at 18% 30%, hsl(var(--neon-a) / 0.34), transparent 22%),
       radial-gradient(circle at 78% 22%, hsl(var(--neon-b) / 0.28), transparent 20%),
@@ -297,6 +298,23 @@
   .focus-mode .focus-header { min-height: 3rem; justify-content: center; }
   .focus-mode .focus-header > div { position: absolute; right: 1rem; }
   .focus-mode .focus-control { display: inline-flex !important; }
+
+  .game-shell nav [aria-current="page"] {
+    box-shadow: inset 0 -2px 0 hsl(var(--primary));
+    font-weight: 700;
+  }
+
+  .game-shell .nav-business-active {
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.12);
+  }
+
+  .pharmacy-workbench > [data-slot="card-header"] {
+    background: linear-gradient(120deg, hsl(var(--primary) / 0.1), hsl(var(--background) / 0.92));
+  }
+
+  .pharmacy-workbench .bg-primary\/\[0\.04\] {
+    background-color: hsl(var(--primary) / 0.08);
+  }
   .focus-mode { max-width: 960px; }
   .focus-mode > header { opacity: 0.92; }
   .focus-mode main { max-width: 880px; margin-inline: auto; }
