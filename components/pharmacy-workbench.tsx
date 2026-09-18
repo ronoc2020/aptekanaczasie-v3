@@ -90,6 +90,16 @@ export function PharmacyWorkbench() {
   const [recipeVersion, setRecipeVersion] = useState(1)
   const [secondCheck, setSecondCheck] = useState(false)
   const [sourceVerified, setSourceVerified] = useState(false)
+  const [egfr, setEgfr] = useState('90')
+  const [crcl, setCrcl] = useState('90')
+  const [bodySurface, setBodySurface] = useState('1.8')
+  const [liverScore, setLiverScore] = useState('brak danych')
+  const [lactation, setLactation] = useState('nie')
+  const [weighingTolerance, setWeighingTolerance] = useState('2')
+  const [batchNumber, setBatchNumber] = useState('')
+  const [operatorId, setOperatorId] = useState('')
+  const [reviewerId, setReviewerId] = useState('')
+  const [sopNumber, setSopNumber] = useState('')
 
   const filteredSymptoms = useMemo(() => symptoms.filter((item) => item.name.toLowerCase().includes(symptomQuery.toLowerCase())), [symptomQuery])
   const numeric = (...values: string[]) => values.every((value) => Number.isFinite(Number(value)) && Number(value) > 0)
@@ -106,8 +116,11 @@ export function PharmacyWorkbench() {
   const molarAmount = Number.isFinite(Number(molarMass)) && Number(molarMass) > 0 && Number.isFinite(Number(moles)) && Number(moles) > 0 ? (Number(molarMass) * Number(moles)).toFixed(3) : '—'
   const dilutionVolume = Number(c1) > 0 && Number(v1) > 0 && Number(c2) > 0 ? (Number(c1) * Number(v1) / Number(c2)).toFixed(2) : '—'
   const seriesTotal = Number.isFinite(Number(seriesSize)) && Number(seriesSize) > 0 && ingredientTotal > 0 ? (ingredientTotal * Number(seriesSize)).toFixed(3) : '—'
-  const invalidPatient = !Number.isFinite(Number(patientAge)) || Number(patientAge) <= 0 || Number(patientAge) > 120 || renalStatus !== 'prawidłowa' || hepaticStatus !== 'prawidłowa' || pregnancy === 'tak'
-  const recipeReady = !invalidIngredients && ingredientTotal > 0 && solubility === 'zgodna' && stability === 'potwierdzona' && packaging === 'dobrane' && bud.trim().length > 0 && sourceVerified && secondCheck
+  const invalidPatient = !Number.isFinite(Number(patientAge)) || Number(patientAge) <= 0 || Number(patientAge) > 120 || !Number.isFinite(Number(egfr)) || Number(egfr) <= 0 || !Number.isFinite(Number(crcl)) || Number(crcl) <= 0 || renalStatus !== 'prawidłowa' || hepaticStatus !== 'prawidłowa' || pregnancy === 'tak' || lactation === 'tak'
+  const invalidCalculation = !numeric(dose, concentration, patientWeight, dosePerKg, maxDose, dosesPerDay) || Number(dose) > Number(maxDose) || Number(percent) > 100 || Number(c1) <= Number(c2) || Number(ph) < 0 || Number(ph) > 14
+  const invalidTolerance = !Number.isFinite(Number(weighingTolerance)) || Number(weighingTolerance) <= 0 || Number(weighingTolerance) > 20
+  const auditReady = Boolean(batchNumber.trim() && operatorId.trim() && reviewerId.trim() && sopNumber.trim())
+  const recipeReady = !invalidIngredients && !invalidCalculation && !invalidTolerance && ingredientTotal > 0 && solubility === 'zgodna' && stability === 'potwierdzona' && packaging === 'dobrane' && bud.trim().length > 0 && sourceVerified && secondCheck && auditReady
   const completedChecks = qualityChecks.filter(([key]) => checks[key]).length
   const allChecks = completedChecks === qualityChecks.length
 
@@ -163,6 +176,11 @@ export function PharmacyWorkbench() {
                 <div><Label htmlFor="pregnancy">Ciąża</Label><select id="pregnancy" className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={pregnancy} onChange={(event) => setPregnancy(event.target.value)}><option value="nie">Nie / nie dotyczy</option><option value="tak">Tak — wymaga weryfikacji</option></select></div>
                 <div><Label htmlFor="renal">Nerki</Label><select id="renal" className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={renalStatus} onChange={(event) => setRenalStatus(event.target.value)}><option>prawidłowa</option><option>zaburzona</option><option>brak danych</option></select></div>
                 <div><Label htmlFor="hepatic">Wątroba</Label><select id="hepatic" className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={hepaticStatus} onChange={(event) => setHepaticStatus(event.target.value)}><option>prawidłowa</option><option>zaburzona</option><option>brak danych</option></select></div>
+                <div><Label htmlFor="lactation">Karmienie piersią</Label><select id="lactation" className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={lactation} onChange={(event) => setLactation(event.target.value)}><option>nie</option><option>tak — wymaga weryfikacji</option></select></div>
+                <div><Label htmlFor="egfr">eGFR (ml/min/1,73 m²)</Label><Input id="egfr" type="number" min="0" value={egfr} onChange={(event) => setEgfr(event.target.value)} /></div>
+                <div><Label htmlFor="crcl">CrCl (ml/min)</Label><Input id="crcl" type="number" min="0" value={crcl} onChange={(event) => setCrcl(event.target.value)} /></div>
+                <div><Label htmlFor="body-surface">Powierzchnia ciała (m²)</Label><Input id="body-surface" type="number" min="0" step="0.01" value={bodySurface} onChange={(event) => setBodySurface(event.target.value)} /></div>
+                <div><Label htmlFor="liver-score">Ocena wątroby</Label><select id="liver-score" className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm" value={liverScore} onChange={(event) => setLiverScore(event.target.value)}><option>brak danych</option><option>Child-Pugh A</option><option>Child-Pugh B</option><option>Child-Pugh C</option></select></div>
                 <div className="sm:col-span-2"><Label htmlFor="allergies">Alergie i leki równoległe</Label><Input id="allergies" value={allergies} onChange={(event) => setAllergies(event.target.value)} placeholder="np. penicyliny; warfaryna" /></div>
                 {invalidPatient && <Alert variant="destructive" className="sm:col-span-2"><AlertTriangle className="size-4" /><AlertTitle>Wymagana eskalacja</AlertTitle><AlertDescription>Profil zawiera czynnik ryzyka lub nieprawidłowy wiek. Nie stosuj automatycznej modyfikacji dawki — sprawdź aktualne źródło i skonsultuj decyzję.</AlertDescription></Alert>}
               </CardContent></Card>
@@ -184,9 +202,11 @@ export function PharmacyWorkbench() {
               <CardContent className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div><Label htmlFor="source-version">Źródło / wersja ChPL</Label><Input id="source-version" placeholder="np. ChPL, wydanie, data" /></div>
-                  <div><Label htmlFor="sop-number">Numer SOP / procedury</Label><Input id="sop-number" placeholder="np. SOP-AP-014" /></div>
-                  <div><Label htmlFor="operator">Osoba wykonująca</Label><Input id="operator" placeholder="Inicjały lub identyfikator" /></div>
-                  <div><Label htmlFor="reviewer">Niezależny kontroler</Label><Input id="reviewer" placeholder="Inicjały lub identyfikator" /></div>
+                  <div><Label htmlFor="sop-number">Numer SOP / procedury</Label><Input id="sop-number" placeholder="np. SOP-AP-014" value={sopNumber} onChange={(event) => setSopNumber(event.target.value)} /></div>
+                  <div><Label htmlFor="batch-number">Numer serii</Label><Input id="batch-number" placeholder="np. 2026-001" value={batchNumber} onChange={(event) => setBatchNumber(event.target.value)} /></div>
+                  <div><Label htmlFor="operator">Osoba wykonująca</Label><Input id="operator" placeholder="Inicjały lub identyfikator" value={operatorId} onChange={(event) => setOperatorId(event.target.value)} /></div>
+                  <div><Label htmlFor="reviewer">Niezależny kontroler</Label><Input id="reviewer" placeholder="Inicjały lub identyfikator" value={reviewerId} onChange={(event) => setReviewerId(event.target.value)} /></div>
+                  <div><Label htmlFor="tolerance">Tolerancja ważenia (%)</Label><Input id="tolerance" type="number" min="0.01" max="20" step="0.01" value={weighingTolerance} onChange={(event) => setWeighingTolerance(event.target.value)} /></div>
                 </div>
                 <Alert><Info className="size-4" /><AlertTitle>Reguła niezależnej kontroli</AlertTitle><AlertDescription>Nie zatwierdzaj obliczeń własnym podpisem bez drugiej weryfikacji, jeśli wymaga tego procedura apteki lub charakter preparatu.</AlertDescription></Alert>
                 <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Składników</p><p className="text-2xl font-bold">{ingredients.length}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Suma ilości</p><p className="text-2xl font-bold">{ingredientTotal.toFixed(2)}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Kontrola</p><p className="text-2xl font-bold">{completedChecks}/{qualityChecks.length}</p></div></div>
