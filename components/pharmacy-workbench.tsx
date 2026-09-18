@@ -6,6 +6,12 @@ import {
   Beaker,
   Calculator,
   CheckCircle2,
+  Download,
+  History,
+  Info,
+  RefreshCw,
+  Scale,
+  Stethoscope,
   ClipboardCheck,
   FileText,
   FlaskConical,
@@ -55,6 +61,9 @@ export function PharmacyWorkbench() {
   const [concentration, setConcentration] = useState('100')
   const [patientWeight, setPatientWeight] = useState('70')
   const [dosePerKg, setDosePerKg] = useState('10')
+  const [maxDose, setMaxDose] = useState('1000')
+  const [dosesPerDay, setDosesPerDay] = useState('2')
+  const [rounding, setRounding] = useState('0.01')
   const [baseMass, setBaseMass] = useState('100')
   const [targetMass, setTargetMass] = useState('250')
   const [checks, setChecks] = useState<Record<string, boolean>>({})
@@ -65,6 +74,11 @@ export function PharmacyWorkbench() {
   const volume = numeric(dose, concentration) ? (Number(dose) / Number(concentration)).toFixed(2) : '—'
   const weightDose = numeric(patientWeight, dosePerKg) ? (Number(patientWeight) * Number(dosePerKg)).toFixed(2) : '—'
   const scale = numeric(baseMass, targetMass) ? (Number(targetMass) / Number(baseMass)).toFixed(3) : '—'
+  const dailyDose = numeric(weightDose, dosesPerDay) ? (Number(weightDose) * Number(dosesPerDay)).toFixed(2) : '—'
+  const cappedDose = numeric(weightDose, maxDose) ? Math.min(Number(weightDose), Number(maxDose)).toFixed(2) : '—'
+  const roundedDose = numeric(weightDose, rounding) ? (Math.round(Number(weightDose) / Number(rounding) * Number(rounding))).toFixed(2) : '—'
+  const doseWarning = dailyDose !== '—' && Number(dailyDose) > Number(maxDose)
+  const ingredientTotal = ingredients.reduce((total, ingredient) => total + (Number(ingredient.amount) || 0), 0)
   const completedChecks = qualityChecks.filter(([key]) => checks[key]).length
   const allChecks = completedChecks === qualityChecks.length
 
@@ -82,7 +96,7 @@ export function PharmacyWorkbench() {
         <Alert className="mb-6 border-amber-500/40 bg-amber-500/10"><ShieldAlert className="size-4" /><AlertTitle>Bezpieczeństwo i odpowiedzialność zawodowa</AlertTitle><AlertDescription>Wyniki są pomocnicze. Przed wykonaniem lub wydaniem potwierdź tożsamość, wskazanie, postać, drogę podania, maksymalną dawkę, alergie, interakcje, jakość surowców i aktualność źródeł. Nie wpisuj danych osobowych pacjenta.</AlertDescription></Alert>
 
         <Tabs defaultValue="symptoms">
-          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 lg:grid-cols-4"><TabsTrigger value="symptoms">Objawy i triage</TabsTrigger><TabsTrigger value="recipes">Receptariusz</TabsTrigger><TabsTrigger value="dose">Dawkowanie i obliczenia</TabsTrigger><TabsTrigger value="lab">Laboratorium</TabsTrigger></TabsList>
+          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 lg:grid-cols-5"><TabsTrigger value="symptoms">Objawy i triage</TabsTrigger><TabsTrigger value="recipes">Receptariusz</TabsTrigger><TabsTrigger value="dose">Dawkowanie i obliczenia</TabsTrigger><TabsTrigger value="lab">Laboratorium</TabsTrigger><TabsTrigger value="audit">Audyt i dokumentacja</TabsTrigger></TabsList>
 
           <TabsContent value="symptoms" className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
             <Card><CardHeader><CardTitle className="text-base">Biblioteka objawów</CardTitle><CardDescription>Wybierz temat, aby zobaczyć pytania kontrolne.</CardDescription></CardHeader><CardContent className="space-y-3"><div className="relative"><Search className="absolute left-3 top-3 size-4 text-muted-foreground" /><Input aria-label="Wyszukaj objaw" className="pl-9" placeholder="Szukaj np. kaszel" value={symptomQuery} onChange={(event) => setSymptomQuery(event.target.value)} /></div>{filteredSymptoms.map((item) => <Button key={item.name} variant={selectedSymptom.name === item.name ? 'default' : 'outline'} className="w-full justify-start" onClick={() => setSelectedSymptom(item)}>{item.name}</Button>)}{filteredSymptoms.length === 0 && <p className="text-sm text-muted-foreground">Brak wyników. Sprawdź pisownię lub użyj szerszego hasła.</p>}</CardContent></Card>
@@ -96,7 +110,7 @@ export function PharmacyWorkbench() {
 
           <TabsContent value="dose" className="grid gap-5 xl:grid-cols-3">
             <Card><CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Calculator className="size-5" /> Objętość</CardTitle><CardDescription>Wymagana ilość ÷ stężenie.</CardDescription></CardHeader><CardContent className="space-y-3"><Label htmlFor="required-dose">Wymagana ilość</Label><Input id="required-dose" type="number" min="0" value={dose} onChange={(event) => setDose(event.target.value)} /><Label htmlFor="strength">Stężenie na ml</Label><Input id="strength" type="number" min="0" value={concentration} onChange={(event) => setConcentration(event.target.value)} /><div className="rounded-xl bg-muted p-4 text-center"><span className="text-xs text-muted-foreground">Wynik kontrolny</span><p className="text-2xl font-bold">{volume} ml</p></div></CardContent></Card>
-            <Card><CardHeader><CardTitle className="text-lg">Dawka zależna od masy</CardTitle><CardDescription>Matematyka pomocnicza — zakres i limit muszą pochodzić ze źródła.</CardDescription></CardHeader><CardContent className="space-y-3"><Label htmlFor="patient-weight">Masa ciała (kg)</Label><Input id="patient-weight" type="number" min="0" value={patientWeight} onChange={(event) => setPatientWeight(event.target.value)} /><Label htmlFor="dose-per-kg">Dawka ze źródła (mg/kg)</Label><Input id="dose-per-kg" type="number" min="0" value={dosePerKg} onChange={(event) => setDosePerKg(event.target.value)} /><div className="rounded-xl bg-muted p-4 text-center"><span className="text-xs text-muted-foreground">Wynik matematyczny</span><p className="text-2xl font-bold">{weightDose} mg</p></div></CardContent></Card>
+            <Card><CardHeader><CardTitle className="text-lg">Dawka zależna od masy</CardTitle><CardDescription>Matematyka pomocnicza — zakres i limit muszą pochodzić ze źródła.</CardDescription></CardHeader><CardContent className="space-y-3"><Label htmlFor="patient-weight">Masa ciała (kg)</Label><Input id="patient-weight" type="number" min="0" value={patientWeight} onChange={(event) => setPatientWeight(event.target.value)} /><Label htmlFor="dose-per-kg">Dawka ze źródła (mg/kg)</Label><Input id="dose-per-kg" type="number" min="0" value={dosePerKg} onChange={(event) => setDosePerKg(event.target.value)} /><Label htmlFor="doses-per-day">Liczba podań na dobę</Label><Input id="doses-per-day" type="number" min="1" step="1" value={dosesPerDay} onChange={(event) => setDosesPerDay(event.target.value)} /><Label htmlFor="max-dose">Maksimum dobowe ze źródła (mg)</Label><Input id="max-dose" type="number" min="0" value={maxDose} onChange={(event) => setMaxDose(event.target.value)} /><div className="rounded-xl bg-muted p-4 text-center"><span className="text-xs text-muted-foreground">Wynik matematyczny</span><p className="text-2xl font-bold">{weightDose} mg</p><p className="mt-1 text-xs text-muted-foreground">Doba: {dailyDose} mg · limit: {cappedDose} mg</p></div>{doseWarning && <Alert variant="destructive"><AlertTriangle className="size-4" /><AlertTitle>Przekroczony limit</AlertTitle><AlertDescription>Obliczona dawka dobowa przekracza wpisany limit źródłowy. Zatrzymaj proces i zweryfikuj dane.</AlertDescription></Alert>}</CardContent></Card>
             <Card><CardHeader><CardTitle className="text-lg">Skalowanie receptury</CardTitle><CardDescription>Kontrola proporcji masy, bez oceny stabilności.</CardDescription></CardHeader><CardContent className="space-y-3"><div className="grid grid-cols-2 gap-2"><div><Label htmlFor="base-mass">Baza (g)</Label><Input id="base-mass" type="number" min="0" value={baseMass} onChange={(event) => setBaseMass(event.target.value)} /></div><div><Label htmlFor="target-mass">Cel (g)</Label><Input id="target-mass" type="number" min="0" value={targetMass} onChange={(event) => setTargetMass(event.target.value)} /></div></div><div className="rounded-xl bg-muted p-4 text-center"><span className="text-xs text-muted-foreground">Współczynnik</span><p className="text-2xl font-bold">× {scale}</p></div><p className="text-xs text-muted-foreground">Po przeliczeniu sprawdź tolerancje ważenia, sumę składników i dokumentację serii.</p></CardContent></Card>
           </TabsContent>
 
@@ -104,6 +118,27 @@ export function PharmacyWorkbench() {
             <div className="grid gap-4 md:grid-cols-3"><Card className="border-primary/30 bg-primary/[0.04]"><CardContent className="p-4"><Beaker className="mb-2 text-primary" /><p className="text-2xl font-bold">{completedChecks}/{qualityChecks.length}</p><p className="text-sm text-muted-foreground">punkty kontroli</p></CardContent></Card><Card><CardContent className="p-4"><Calculator className="mb-2 text-primary" /><p className="text-2xl font-bold">{scale}</p><p className="text-sm text-muted-foreground">współczynnik receptury</p></CardContent></Card><Card><CardContent className="p-4"><ShieldAlert className="mb-2 text-primary" /><p className="text-2xl font-bold">{allChecks ? 'Gotowe' : 'W toku'}</p><p className="text-sm text-muted-foreground">status zwolnienia</p></CardContent></Card></div>
             <Card><CardHeader><CardTitle>Kontrola przed wykonaniem i wydaniem</CardTitle><CardDescription>Zaznacz punkt dopiero po weryfikacji w dokumentacji jakościowej.</CardDescription></CardHeader><CardContent className="grid gap-3 sm:grid-cols-2">{qualityChecks.map(([key, label]) => <label key={key} className="flex cursor-pointer items-start gap-3 rounded-xl border p-4 text-sm transition-colors hover:bg-muted/50"><input className="mt-1 size-4 accent-primary" type="checkbox" checked={Boolean(checks[key])} onChange={(event) => setChecks({ ...checks, [key]: event.target.checked })} /><span>{label}</span></label>)}<Alert className="sm:col-span-2" variant={allChecks ? 'default' : 'destructive'}>{allChecks ? <CheckCircle2 className="size-4" /> : <AlertTriangle className="size-4" />}<AlertTitle>{allChecks ? 'Kontrola kompletna — oczekuje na niezależne zwolnienie' : 'Kontrola niepełna'}</AlertTitle><AlertDescription>{allChecks ? 'Wynik nie jest automatyczną zgodą na użycie. Farmaceuta odpowiedzialny potwierdza zgodność z aktualnym źródłem i SOP.' : `Pozostało punktów: ${qualityChecks.length - completedChecks}. Nie zatwierdzaj preparatu przed ich sprawdzeniem.`}</AlertDescription></Alert></CardContent></Card>
             <p className="text-xs text-muted-foreground">Źródła do każdorazowej weryfikacji: aktualna ChPL i ulotka, Farmakopea Polska, URPL, EMA, monografie surowców oraz procedury jakościowe apteki. Moduł nie przechowuje danych pacjentów.</p>
+          </TabsContent>
+
+          <TabsContent value="audit" className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><History className="size-5 text-primary" /> Karta kontroli i ślad decyzji</CardTitle><CardDescription>Przed wydaniem zapisz źródło, wersję procedury i osobę wykonującą niezależną kontrolę.</CardDescription></CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div><Label htmlFor="source-version">Źródło / wersja ChPL</Label><Input id="source-version" placeholder="np. ChPL, wydanie, data" /></div>
+                  <div><Label htmlFor="sop-number">Numer SOP / procedury</Label><Input id="sop-number" placeholder="np. SOP-AP-014" /></div>
+                  <div><Label htmlFor="operator">Osoba wykonująca</Label><Input id="operator" placeholder="Inicjały lub identyfikator" /></div>
+                  <div><Label htmlFor="reviewer">Niezależny kontroler</Label><Input id="reviewer" placeholder="Inicjały lub identyfikator" /></div>
+                </div>
+                <Alert><Info className="size-4" /><AlertTitle>Reguła niezależnej kontroli</AlertTitle><AlertDescription>Nie zatwierdzaj obliczeń własnym podpisem bez drugiej weryfikacji, jeśli wymaga tego procedura apteki lub charakter preparatu.</AlertDescription></Alert>
+                <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Składników</p><p className="text-2xl font-bold">{ingredients.length}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Suma ilości</p><p className="text-2xl font-bold">{ingredientTotal.toFixed(2)}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Kontrola</p><p className="text-2xl font-bold">{completedChecks}/{qualityChecks.length}</p></div></div>
+                <div className="flex flex-wrap gap-2"><Button type="button" variant="outline" onClick={() => window.print()}><Download data-icon="inline-start" /> Drukuj kartę kontroli</Button><Button type="button" variant="ghost" onClick={() => { setChecks({}); setIngredients([{ name: 'Substancja czynna', amount: '0', unit: 'mg' }]) }}><RefreshCw data-icon="inline-start" /> Wyczyść sesję</Button></div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Scale className="size-5 text-primary" /> Zasady kontroli obliczeń</CardTitle><CardDescription>Lista kontrolna zgodna z bezpiecznym przepływem pracy.</CardDescription></CardHeader>
+              <CardContent className="space-y-3 text-sm"><p>1. Ujednolić jednostki przed obliczeniem.</p><p>2. Sprawdzić masę końcową i tolerancję wagi.</p><p>3. Porównać dawkę pojedynczą i dobową z aktualnym źródłem.</p><p>4. Zweryfikować drogę podania, stabilność i opakowanie.</p><p>5. Wykonać niezależną kontrolę oraz udokumentować wynik.</p><Alert variant="destructive"><Stethoscope className="size-4" /><AlertTitle>Nie zastępuje decyzji klinicznej</AlertTitle><AlertDescription>Kalkulator nie dobiera leku ani dawki dla konkretnej osoby. Wymaga zatwierdzonych danych wejściowych i oceny farmaceuty.</AlertDescription></Alert></CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </CardContent>
