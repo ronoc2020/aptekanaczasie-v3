@@ -214,7 +214,20 @@
   }
 
   .game-shell header details > div {
-    z-index: 80;
+    z-index: 100;
+  }
+
+  .game-shell .accessibility-menu {
+    isolation: isolate;
+  }
+
+  .game-shell .accessibility-dropdown {
+    position: fixed;
+    top: 4.5rem;
+    right: max(1rem, calc((100vw - 1440px) / 2 + 1rem));
+    z-index: 9999 !important;
+    max-height: min(24rem, calc(100vh - 6rem));
+    overflow: auto;
   }
 
   .game-shell button,
