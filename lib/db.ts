@@ -32,6 +32,37 @@ export const pharmacyAuditEvents = pgTable('pharmacy_audit_events', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
 })
 
+export const user = pgTable('user', {
+  id: text('id').primaryKey(), name: text('name').notNull(), email: text('email').notNull().unique(), emailVerified: boolean('emailVerified').notNull().default(false), image: text('image'), createdAt: timestamp('createdAt').notNull().defaultNow(), updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
+export const session = pgTable('session', {
+  id: text('id').primaryKey(), expiresAt: timestamp('expiresAt').notNull(), token: text('token').notNull().unique(), createdAt: timestamp('createdAt').notNull().defaultNow(), updatedAt: timestamp('updatedAt').notNull().defaultNow(), ipAddress: text('ipAddress'), userAgent: text('userAgent'), userId: text('userId').notNull(),
+})
+export const account = pgTable('account', {
+  id: text('id').primaryKey(), accountId: text('accountId').notNull(), providerId: text('providerId').notNull(), userId: text('userId').notNull(), accessToken: text('accessToken'), refreshToken: text('refreshToken'), idToken: text('idToken'), accessTokenExpiresAt: timestamp('accessTokenExpiresAt'), refreshTokenExpiresAt: timestamp('refreshTokenExpiresAt'), scope: text('scope'), password: text('password'), createdAt: timestamp('createdAt').notNull().defaultNow(), updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
+export const verification = pgTable('verification', {
+  id: text('id').primaryKey(), identifier: text('identifier').notNull(), value: text('value').notNull(), expiresAt: timestamp('expiresAt').notNull(), createdAt: timestamp('createdAt').notNull().defaultNow(), updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
+
+export const userPreferences = pgTable('user_preferences', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id').notNull(),
+  favoriteModules: jsonb('favorite_modules').$type<string[]>().notNull().default([]),
+  recentModules: jsonb('recent_modules').$type<string[]>().notNull().default([]),
+  language: text('language').notNull().default('pl'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
+export const userActivityEvents = pgTable('user_activity_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id').notNull(),
+  module: text('module').notNull(),
+  action: text('action').notNull(),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>().notNull().default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
 export const herbsMedicines = pgTable('herbs_medicines', {
   id: uuid('id').primaryKey(),
   slug: text('slug').notNull(),
@@ -56,4 +87,4 @@ const pool = globalForDb.howToPool ?? new Pool({ connectionString: process.env.D
 if (process.env.NODE_ENV !== 'production') globalForDb.howToPool = pool
 
 export { pool }
-export const db = drizzle(pool)
+export const db = drizzle(pool, { schema: { user, session, account, verification, userPreferences, userActivityEvents, howToArticles, pharmacyAuditEvents, herbsMedicines } })

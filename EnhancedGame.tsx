@@ -276,7 +276,7 @@ const scenarios: Scenario[] = [
           "Dajesz mu najpopularniejszy lek przeciwbólowy",
           "Pokazujesz różne opakowania leków przeciwbólowych i prosisz o identyfikację",
           "Pytasz o dodatkowe informacje, takie jak kształt tabletki lub dawkę",
-          "Odsyłasz klienta do lekarza po receptę"
+          "Odsyłasz klienta do lekarza po recept��"
         ],
         correctAnswer: 2,
         explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegóły mogą być kluczowe.",
@@ -415,6 +415,8 @@ export default function EnhancedGame() {
   const [activeTab, setActiveTab] = useState('menu')
   const [language, setLanguage] = useState<'pl' | 'en'>('pl')
   const t = uiText[language]
+  const trackModule = (module: string, action = 'open') => { void fetch('/api/activity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ module, action }) }) }
+  const openModule = (module: string, tab: string) => { trackModule(module); setActiveTab(tab) }
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -433,6 +435,7 @@ export default function EnhancedGame() {
   const [legalSection, setLegalSection] = useState<'privacy' | 'cookies' | null>(null)
   const [authOpen, setAuthOpen] = useState(false)
   const [sessionUser, setSessionUser] = useState<{ name?: string; email?: string } | null>(null)
+  const [recommendations, setRecommendations] = useState<string[]>([])
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -563,7 +566,10 @@ export default function EnhancedGame() {
   }, [language])
 
   useEffect(() => {
-    authClient.getSession().then(({ data }) => setSessionUser(data?.user ?? null))
+    authClient.getSession().then(({ data }) => {
+      setSessionUser(data?.user ?? null)
+      if (data?.user) fetch('/api/activity').then((response) => response.ok ? response.json() : null).then((payload) => setRecommendations(payload?.recommendations ?? []))
+    })
   }, [])
 
   useEffect(() => {
@@ -638,9 +644,10 @@ export default function EnhancedGame() {
               <Card className="overflow-hidden border-0 bg-transparent shadow-none">
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-950 via-teal-800 to-cyan-700 px-6 py-10 text-white shadow-2xl shadow-teal-950/20 sm:px-10 sm:py-14">
                   <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" /><div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
-                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => setActiveTab('game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => setActiveTab('pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
+                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => openModule('Gra', 'game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => openModule('Pracownia farmaceuty', 'pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
                 </motion.div>
                 <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">Twój pulpit nauki</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.</CardDescription></CardHeader>
+                {sessionUser && recommendations.length > 0 && <div className="mb-5 rounded-2xl border border-teal-100 bg-teal-50/80 p-4"><p className="text-sm font-semibold text-teal-900">Polecane na podstawie Twojej aktywności</p><div className="mt-3 flex flex-wrap gap-2">{recommendations.map((module) => <span key={module} className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-teal-800 shadow-sm">{module}</span>)}</div></div>}
                 <CardContent className="px-0">
                   <div className="mb-6 grid gap-3 sm:grid-cols-4">{[{label:'Punkty', value:score, Icon:Trophy, tone:'text-amber-600'}, {label:'Scenariusze', value:completedScenarios.length, Icon:Target, tone:'text-teal-600'}, {label:'Odznaki', value:completedScenarios.length, Icon:Award, tone:'text-violet-600'}, {label:'Rekord quizu', value:score, Icon:Flame, tone:'text-orange-600'}].map(({label,value,Icon,tone}, index) => <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }} whileHover={{ y: -4 }} className="group rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-shadow hover:shadow-lg"><div className="flex items-center justify-between"><Icon className={`h-5 w-5 ${tone} transition-transform group-hover:scale-110`} /><span className="text-xs font-medium text-slate-500">{label}</span></div><motion.p key={value} initial={{ scale: 0.8, color: '#0f766e' }} animate={{ scale: 1, color: '#0f172a' }} className="mt-3 text-2xl font-bold">{value}</motion.p></motion.div>)}</div>
                   <div className="mb-5 grid gap-3 sm:grid-cols-3">
