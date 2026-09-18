@@ -14,11 +14,12 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
 import { HerbsMedicinesDatabase } from '@/components/herbs-medicines-database'
+import { PharmacyWorkbench } from '@/components/pharmacy-workbench'
 
 import { Roboto, Open_Sans } from 'next/font/google'
 
@@ -596,6 +597,10 @@ export default function EnhancedGame() {
                       <Beaker className="mr-2 h-6 w-6" />
                       Laboratorium
                     </Button>
+                    <Button onClick={() => setActiveTab('pharmacy')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
+                      <ClipboardCheck className="mr-2 h-6 w-6" />
+                      Pracownia farmaceuty
+                    </Button>
                     <Button onClick={() => setActiveTab('library')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Book className="mr-2 h-6 w-6" />
                       Biblioteka
@@ -907,6 +912,8 @@ export default function EnhancedGame() {
                   </Tabs>
                 </CardContent>
               </Card>
+            ) : activeTab === 'pharmacy' ? (
+              <PharmacyWorkbench />
             ) : activeTab === 'howto' ? (
               <HowToLibrary />
             ) : activeTab === 'library' ? (
