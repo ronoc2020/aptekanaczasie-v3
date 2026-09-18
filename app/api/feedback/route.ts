@@ -27,8 +27,7 @@ export async function POST(request: Request) {
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const fromDomain = process.env.RESEND_EMAIL_DOMAIN || 'resend.dev'
-    const from = fromDomain.includes('@') ? fromDomain : `Apteka na Czasie <noreply@${fromDomain}>`
+    const from = process.env.RESEND_FROM_EMAIL?.trim() || 'Apteka na Czasie <contact@rocybersolutions.com>'
     const subject = `${type}: ${name}`
     const replyTo = email || undefined
     const html = `<h2>${escapeHtml(type)}</h2><p><strong>Imię:</strong> ${escapeHtml(name)}</p>${email ? `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` : ''}${type === 'Opinia użytkownika' ? `<p><strong>Ocena:</strong> ${rating}/5</p>` : ''}<p><strong>Treść:</strong></p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`

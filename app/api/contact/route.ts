@@ -28,8 +28,7 @@ export async function POST(request: Request) {
     if (kind === 'Opinia użytkownika' && (!Number.isInteger(rating) || rating < 1 || rating > 5)) return NextResponse.json({ error: 'Wybierz ocenę od 1 do 5.' }, { status: 400 })
 
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const configuredDomain = process.env.RESEND_EMAIL_DOMAIN?.trim()
-    const from = configuredDomain && configuredDomain !== 'rocybersolutions.com' ? `Apteka na Czasie <noreply@${configuredDomain}>` : 'Apteka na Czasie <onboarding@resend.dev>'
+    const from = process.env.RESEND_FROM_EMAIL?.trim() || 'Apteka na Czasie <contact@rocybersolutions.com>'
     const html = isTest ? `<h2>Test email — Apteka na Czasie</h2><p>Cześć ${escapeHtml(name)},</p><p>To jest wiadomość testowa potwierdzająca działanie formularza kontaktowego.</p><p>Jeśli ją otrzymujesz, wysyłka email działa poprawnie.</p>` : `<h2>${escapeHtml(kind)}</h2><p><strong>Imię:</strong> ${escapeHtml(name)}</p>${email ? `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` : ''}${subject ? `<p><strong>Temat:</strong> ${escapeHtml(subject)}</p>` : ''}${kind !== 'Kontakt' ? `<p><strong>Ocena:</strong> ${rating}/5</p>` : ''}<p><strong>Treść:</strong></p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`
     const { data, error } = await resend.emails.send({ from, to: [isTest ? email : recipient], replyTo: email || undefined, subject: isTest ? 'Test email — Apteka na Czasie' : `${kind}: ${subject || name}`, html }, { idempotencyKey: `app-${isTest ? 'test' : kind.toLowerCase().replace(/\s+/g, '-')}-${email || name}-${Date.now()}` })
     if (error) return NextResponse.json({ error: error.message }, { status: 502 })
