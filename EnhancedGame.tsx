@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -395,6 +395,7 @@ export default function EnhancedGame() {
   const [streak, setStreak] = useState(0)
   const [answeredQuestions, setAnsweredQuestions] = useState(0)
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [legalSection, setLegalSection] = useState<'privacy' | 'cookies' | null>(null)
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -586,8 +587,13 @@ export default function EnhancedGame() {
               <Card className="bg-white shadow-lg">
                 <CardHeader>
                   <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Menu Główne</CardTitle>
+                  <CardDescription className="max-w-3xl text-base leading-relaxed text-slate-600">Apteka na Czasie to interaktywna aplikacja edukacyjna i pracownia wspierająca naukę bezpiecznej pracy w aptece. Łączy scenariusze triage, bibliotekę substancji i ziół, receptariusz, kalkulatory, laboratorium oraz dokumentację kontroli. Wyniki mają charakter pomocniczy i nie zastępują ChPL, Farmakopei Polskiej, procedur apteki ani decyzji uprawnionego farmaceuty.</CardDescription>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-5 grid gap-3 sm:grid-cols-3">
+                    {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description]) => <div key={title} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></div>)}
+                  </div>
+                  <Alert className="mb-5 border-amber-300 bg-amber-50 text-amber-950"><ShieldCheck className="size-4" /><AlertTitle>Transparentne ograniczenia</AlertTitle><AlertDescription>Aplikacja nie diagnozuje, nie dobiera samodzielnie terapii i nie zatwierdza preparatów do wydania. Każdy wynik wymaga oceny profesjonalisty i aktualnego źródła.</AlertDescription></Alert>
                   <div className="grid grid-cols-2 gap-4">
                     <Button onClick={() => setActiveTab('game')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Building2 className="mr-2 h-6 w-6" />
@@ -982,9 +988,18 @@ export default function EnhancedGame() {
         </AnimatePresence>
 
         <footer className="mt-8 flex flex-col items-center gap-3 border-t border-teal-100 pt-6 text-center text-sm text-slate-600">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('privacy')}>Polityka prywatności</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('cookies')}>Polityka cookies</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setActiveTab('pharmacy')}>Pracownia farmaceuty</button></div>
           <p>Aplikację stworzył <strong>Roman Orłowski</strong> · <a className="text-teal-700 underline" href="mailto:contact@rocybersolutions.com">contact@rocybersolutions.com</a></p>
+          <p className="max-w-2xl text-xs leading-relaxed text-slate-500">Aplikacja korzysta z niezbędnych mechanizmów technicznych do działania interfejsu. Nie sprzedajemy danych użytkowników ani nie wykorzystujemy formularzy do identyfikacji pacjentów.</p>
           <Script src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" strategy="lazyOnload" data-name="bmc-button" data-slug="r0cs" data-color="#40DCA5" data-emoji="📖" data-font="Lato" data-text="Buy me a book" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" />
         </footer>
+
+        <Dialog open={legalSection !== null} onOpenChange={(open) => !open && setLegalSection(null)}>
+          <DialogContent className="max-h-[82vh] overflow-y-auto sm:max-w-2xl">
+            <DialogHeader><DialogTitle>{legalSection === 'privacy' ? 'Polityka prywatności' : 'Polityka cookies'}</DialogTitle><DialogDescription>Informacje dla użytkowników aplikacji Apteka na Czasie. Ostatnia aktualizacja: 18 września 2026 r.</DialogDescription></DialogHeader>
+            {legalSection === 'privacy' ? <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Administrator i kontakt</h3><p>Administratorem aplikacji jest Roman Orłowski. Kontakt: contact@rocybersolutions.com. W sprawach prywatności użytkownik może skontaktować się pod tym adresem.</p></section><section><h3 className="font-semibold text-foreground">2. Jakie dane przetwarzamy</h3><p>Aplikacja jest zaprojektowana tak, aby nie wymagać danych identyfikujących pacjentów. Nie wpisuj imienia, nazwiska, PESEL, adresu ani innych danych pozwalających zidentyfikować osobę. Dane wpisywane do lokalnych formularzy mogą pozostać w pamięci bieżącej sesji przeglądarki.</p></section><section><h3 className="font-semibold text-foreground">3. Cel i bezpieczeństwo</h3><p>Dane służą do działania kalkulatorów, ćwiczeń, receptur i dokumentacji kontroli. Dane przesyłane do funkcji audytu powinny zawierać wyłącznie informacje zawodowe, takie jak numer serii, SOP, wersja receptury i identyfikatory operatorów zgodne z procedurą apteki.</p></section><section><h3 className="font-semibold text-foreground">4. Prawa i ograniczenia</h3><p>Użytkownik może skontaktować się w sprawie dostępu, poprawienia lub usunięcia danych technicznych. Aplikacja nie jest systemem EDM ani dokumentacją medyczną. Przed użyciem zawodowym należy przeprowadzić własną ocenę prawną, organizacyjną i bezpieczeństwa.</p></section><section><h3 className="font-semibold text-foreground">5. Zmiany</h3><p>Polityka może być aktualizowana wraz ze zmianami aplikacji, integracji i przepisów. Data aktualizacji jest widoczna w tym dokumencie.</p></section></div> : <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Czym są cookies</h3><p>Cookies to małe pliki lub podobne mechanizmy zapisywane przez przeglądarkę. Mogą być niezbędne do zapamiętania ustawień interfejsu i prawidłowego działania sesji.</p></section><section><h3 className="font-semibold text-foreground">2. Jakich mechanizmów używamy</h3><p>Używamy niezbędnych mechanizmów aplikacji, ustawień motywu oraz narzędzi analitycznych dostawcy hostingu, jeżeli są aktywne w danym środowisku. Zewnętrzny przycisk wsparcia może korzystać z własnych mechanizmów cookies zgodnie z polityką swojego dostawcy.</p></section><section><h3 className="font-semibold text-foreground">3. Zarządzanie</h3><p>Możesz usunąć lub zablokować cookies w ustawieniach przeglądarki. Zablokowanie niektórych mechanizmów może ograniczyć działanie aplikacji. Nie używamy cookies do przechowywania danych pacjenta.</p></section><section><h3 className="font-semibold text-foreground">4. Kontakt</h3><p>Jeśli masz pytania dotyczące cookies lub prywatności, napisz na contact@rocybersolutions.com.</p></section></div>}
+          </DialogContent>
+        </Dialog>
 
         {showCelebration && (
           <motion.div
