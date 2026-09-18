@@ -29,13 +29,27 @@ body {
   .game-shell.time-night { --neon-a: 220 86% 58%; --neon-b: 275 82% 64%; --neon-c: 185 88% 48%; }
 
   .game-shell.theme-light {
-    background: linear-gradient(135deg, #f8fffe 0%, #e7f8f5 48%, #eef4ff 100%) !important;
+    background: linear-gradient(120deg, #fbfffe 0%, #d8f6f0 32%, #eef5ff 66%, #f9fcff 100%) !important;
+    background-size: 220% 220%;
+    animation: theme-gradient-light 18s ease-in-out infinite alternate;
     color: #123235;
   }
 
   .game-shell.theme-dark {
-    background: linear-gradient(135deg, #061f23 0%, #0a3437 48%, #111a38 100%) !important;
+    background: linear-gradient(120deg, #04191d 0%, #073b3d 34%, #111b42 68%, #061b27 100%) !important;
+    background-size: 220% 220%;
+    animation: theme-gradient-dark 18s ease-in-out infinite alternate;
     color: #efffff;
+  }
+
+  @keyframes theme-gradient-light {
+    from { background-position: 0% 35%; }
+    to { background-position: 100% 65%; }
+  }
+
+  @keyframes theme-gradient-dark {
+    from { background-position: 15% 30%; }
+    to { background-position: 85% 70%; }
   }
 
   .game-shell.theme-light::after { opacity: 0.42; }
@@ -60,6 +74,7 @@ body {
       radial-gradient(circle at 62% 78%, hsl(var(--neon-c) / 0.22), transparent 25%);
     filter: blur(24px);
     animation: ambient-drift 18s ease-in-out infinite alternate;
+  background-size: 145% 145%;
   }
 
   .ambient-orbit {
@@ -76,7 +91,9 @@ body {
   }
 
   .back-to-top {
-    animation: back-to-top-in 220ms ease-out both;
+    animation: back-to-top-in 420ms ease-out both;
+    transition: opacity 360ms ease, transform 360ms ease, background-color 200ms ease;
+    will-change: opacity, transform;
   }
 
   @keyframes back-to-top-in {

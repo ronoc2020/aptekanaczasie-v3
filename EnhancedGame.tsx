@@ -520,6 +520,7 @@ export default function EnhancedGame() {
   const [formStatus, setFormStatus] = useState<{ type: 'idle' | 'sending' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' })
   const [toastMessage, setToastMessage] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const [backToTopProgress, setBackToTopProgress] = useState(0)
   const showToast = (message: string) => { setToastMessage(message); window.setTimeout(() => setToastMessage(''), 2600) }
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
@@ -670,7 +671,11 @@ export default function EnhancedGame() {
   }, [])
 
   useEffect(() => {
-    const handleScroll = () => setShowBackToTop(window.scrollY > 520)
+    const handleScroll = () => {
+      const progress = Math.min(1, Math.max(0, (window.scrollY - 120) / 520))
+      setBackToTopProgress(progress)
+      setShowBackToTop(window.scrollY > 120)
+    }
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
@@ -1176,7 +1181,7 @@ export default function EnhancedGame() {
           {formStatus.message && <p role="status" className={`lg:col-span-2 rounded-lg p-3 text-sm ${formStatus.type === 'error' ? 'bg-red-50 text-red-700' : 'bg-teal-50 text-teal-800'}`}>{formStatus.message}</p>}
         </section>}
 
-        {showBackToTop && <Button type="button" variant="outline" size="icon" aria-label={language === 'pl' ? 'Wróć na górę' : 'Back to top'} title={language === 'pl' ? 'Wróć na górę' : 'Back to top'} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="back-to-top fixed bottom-6 right-6 z-40 rounded-full border-teal-300 bg-white/90 text-teal-800 shadow-lg backdrop-blur transition hover:-translate-y-1 hover:bg-teal-50"><ChevronUp className="h-4 w-4" /></Button>}
+        {showBackToTop && <Button type="button" variant="outline" size="icon" aria-label={language === 'pl' ? 'Wróć na górę' : 'Back to top'} title={language === 'pl' ? 'Wróć na górę' : 'Back to top'} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ opacity: 0.2 + backToTopProgress * 0.8, transform: `translateY(${(1 - backToTopProgress) * 8}px) scale(${0.94 + backToTopProgress * 0.06})` }} className="back-to-top fixed bottom-6 right-6 z-40 rounded-full border-teal-300 bg-white/90 text-teal-800 shadow-lg backdrop-blur hover:-translate-y-1 hover:bg-teal-50"><ChevronUp className="h-4 w-4" /></Button>}
 
   <footer className="focus-footer mt-8 flex flex-col items-center gap-3 border-t border-teal-100 pt-6 text-center text-sm text-slate-600">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('privacy')}>Polityka prywatności</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('cookies')}>Polityka cookies</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setActiveTab('pharmacy')}>Pracownia farmaceuty</button><a className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-900 no-underline transition hover:-translate-y-0.5 hover:bg-amber-200" href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer">Wesprzyj projekt — Buy Me a Coffee</a></div>
