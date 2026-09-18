@@ -4,13 +4,18 @@ import { google } from 'better-auth/social-providers'
 import { headers } from 'next/headers'
 import { db } from '@/lib/db'
 
+function asOrigin(value?: string) {
+  if (!value) return undefined
+  return value.startsWith('http://') || value.startsWith('https://') ? value : `https://${value}`
+}
+
 const originCandidates = [
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined,
-  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
-  process.env.V0_RUNTIME_URL,
-  process.env.V0_DEV_APP_URL,
-  process.env.V0_BUILD_URL,
-  process.env.V0_SANDBOX_URL,
+  asOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL),
+  asOrigin(process.env.VERCEL_URL),
+  asOrigin(process.env.V0_RUNTIME_URL),
+  asOrigin(process.env.V0_DEV_APP_URL),
+  asOrigin(process.env.V0_BUILD_URL),
+  asOrigin(process.env.V0_SANDBOX_URL),
 ].filter((origin): origin is string => Boolean(origin))
 
 export const auth = betterAuth({

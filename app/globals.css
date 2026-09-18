@@ -233,6 +233,19 @@
     box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
   }
 
+  .focus-mode .pharmacy-atmosphere,
+  .focus-mode .ambient-orb,
+  .focus-mode .molecule,
+  .focus-mode header nav,
+  .focus-mode header .primary-button,
+  .focus-mode .game-card-shine::before { display: none; }
+
+  .focus-mode { max-width: 960px; }
+  .focus-mode > header { opacity: 0.92; }
+  .focus-mode main { max-width: 880px; margin-inline: auto; }
+  .focus-mode .glass-panel { box-shadow: 0 8px 24px hsl(var(--foreground) / 0.05); }
+  .focus-mode .soft-fade-in { animation-duration: 260ms; }
+
   .soft-fade-in { animation: fade-up 420ms ease-out both; }
   .soft-fade-in > * { animation: fade-up 420ms ease-out both; }
   .slide-fade-panel { animation: slide-fade-in 280ms ease-out both; }
