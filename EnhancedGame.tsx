@@ -401,6 +401,7 @@ const Logo: React.FC = () => (
 
 export default function EnhancedGame() {
   const [activeTab, setActiveTab] = useState('menu')
+  const [language, setLanguage] = useState<'pl' | 'en'>('pl')
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -543,6 +544,10 @@ export default function EnhancedGame() {
   }, [theme])
 
   useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
+
+  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && selectedAnswer !== null) {
         handleAnswerSubmit()
@@ -569,7 +574,7 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-      <div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+      <div className={`game-shell game-card-shine ambient-orbit relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
         <motion.header 
           className="glass-panel mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl px-4 py-3 sm:px-6"
           initial={{ opacity: 0, y: -50 }}
@@ -577,8 +582,9 @@ export default function EnhancedGame() {
           transition={{ duration: 0.5 }}
         >
           <Logo />
-          <h1 className={`text-4xl font-bold text-teal-700 ${roboto.className}`}>Apteka na Czasie</h1>
+          <h1 className={`motion-safe-float text-4xl font-bold text-teal-700 ${roboto.className}`}>{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
           <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button>
             <Button
               variant="outline"
               size="icon"
@@ -590,12 +596,12 @@ export default function EnhancedGame() {
             </Button>
             <Button onClick={() => setActiveTab('menu')} className="primary-button">
               <Home className="mr-2 h-4 w-4" />
-              Menu Główne
+              {language === 'pl' ? 'Menu Główne' : 'Home'}
             </Button>
           </div>
         </motion.header>
 
-        {activeTab !== 'menu' && <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200/70 bg-gradient-to-r from-teal-50 via-white to-cyan-50 px-4 py-3 text-sm shadow-sm"><div className="flex items-center gap-3"><div className="rounded-xl bg-teal-600 p-2 text-white"><ShieldCheck className="h-4 w-4" /></div><div><p className="font-semibold text-teal-900">Przestrzeń nauki i bezpiecznej praktyki</p><p className="text-xs text-slate-600">Każdy wynik wymaga aktualnego źródła, SOP i oceny farmaceuty.</p></div></div><a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900 transition hover:-translate-y-0.5 hover:bg-amber-200"><Heart className="h-4 w-4" /> Wesprzyj rozwój</a></motion.div>}
+        {activeTab !== 'menu' && <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200/70 bg-gradient-to-r from-teal-50 via-white to-cyan-50 px-4 py-3 text-sm shadow-sm"><div className="flex items-center gap-3"><div className="rounded-xl bg-teal-600 p-2 text-white"><ShieldCheck className="h-4 w-4" /></div><div><p className="font-semibold text-teal-900">{language === 'pl' ? 'Przestrzeń nauki i bezpiecznej praktyki' : 'Learning and safe-practice space'}</p><p className="text-xs text-slate-600">{language === 'pl' ? 'Każdy wynik wymaga aktualnego źródła, SOP i oceny farmaceuty.' : 'Every result requires a current source, SOP and pharmacist review.'}</p></div></div><a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900 transition hover:-translate-y-0.5 hover:bg-amber-200"><Heart className="h-4 w-4" /> Wesprzyj rozwój</a></motion.div>}
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -1022,7 +1028,7 @@ export default function EnhancedGame() {
         <Dialog open={legalSection !== null} onOpenChange={(open) => !open && setLegalSection(null)}>
           <DialogContent className="max-h-[82vh] overflow-y-auto sm:max-w-2xl">
             <DialogHeader><DialogTitle>{legalSection === 'privacy' ? 'Polityka prywatności' : 'Polityka cookies'}</DialogTitle><DialogDescription>Informacje dla użytkowników aplikacji Apteka na Czasie. Ostatnia aktualizacja: 18 września 2026 r.</DialogDescription></DialogHeader>
-            {legalSection === 'privacy' ? <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Administrator i kontakt</h3><p>Administratorem aplikacji jest Roman Orłowski. Kontakt: contact@rocybersolutions.com. W sprawach prywatności użytkownik może skontaktować się pod tym adresem.</p></section><section><h3 className="font-semibold text-foreground">2. Jakie dane przetwarzamy</h3><p>Aplikacja jest zaprojektowana tak, aby nie wymagać danych identyfikujących pacjentów. Nie wpisuj imienia, nazwiska, PESEL, adresu ani innych danych pozwalających zidentyfikować osobę. Dane wpisywane do lokalnych formularzy mogą pozostać w pamięci bieżącej sesji przeglądarki.</p></section><section><h3 className="font-semibold text-foreground">3. Cel i bezpieczeństwo</h3><p>Dane służą do działania kalkulatorów, ćwiczeń, receptur i dokumentacji kontroli. Dane przesyłane do funkcji audytu powinny zawierać wyłącznie informacje zawodowe, takie jak numer serii, SOP, wersja receptury i identyfikatory operatorów zgodne z procedurą apteki.</p></section><section><h3 className="font-semibold text-foreground">4. Prawa i ograniczenia</h3><p>Użytkownik może skontaktować się w sprawie dostępu, poprawienia lub usunięcia danych technicznych. Aplikacja nie jest systemem EDM ani dokumentacją medyczną. Przed użyciem zawodowym należy przeprowadzić własną ocenę prawną, organizacyjną i bezpieczeństwa.</p></section><section><h3 className="font-semibold text-foreground">5. Zmiany</h3><p>Polityka może być aktualizowana wraz ze zmianami aplikacji, integracji i przepisów. Data aktualizacji jest widoczna w tym dokumencie.</p></section></div> : <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Czym są cookies</h3><p>Cookies to małe pliki lub podobne mechanizmy zapisywane przez przeglądarkę. Mogą być niezbędne do zapamiętania ustawień interfejsu i prawidłowego działania sesji.</p></section><section><h3 className="font-semibold text-foreground">2. Jakich mechanizmów używamy</h3><p>Używamy niezbędnych mechanizmów aplikacji, ustawień motywu oraz narzędzi analitycznych dostawcy hostingu, jeżeli są aktywne w danym środowisku. Zewnętrzny przycisk wsparcia może korzystać z własnych mechanizmów cookies zgodnie z polityką swojego dostawcy.</p></section><section><h3 className="font-semibold text-foreground">3. Zarządzanie</h3><p>Możesz usunąć lub zablokować cookies w ustawieniach przeglądarki. Zablokowanie niektórych mechanizmów może ograniczyć działanie aplikacji. Nie używamy cookies do przechowywania danych pacjenta.</p></section><section><h3 className="font-semibold text-foreground">4. Kontakt</h3><p>Jeśli masz pytania dotyczące cookies lub prywatności, napisz na contact@rocybersolutions.com.</p></section></div>}
+            {legalSection === 'privacy' ? <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Administrator i kontakt</h3><p>Administratorem aplikacji jest Roman Orłowski. Kontakt: contact@rocybersolutions.com. W sprawach prywatności użytkownik może skontaktować się pod tym adresem.</p></section><section><h3 className="font-semibold text-foreground">2. Jakie dane przetwarzamy</h3><p>Aplikacja jest zaprojektowana tak, aby nie wymagać danych identyfikuj��cych pacjentów. Nie wpisuj imienia, nazwiska, PESEL, adresu ani innych danych pozwalających zidentyfikować osobę. Dane wpisywane do lokalnych formularzy mogą pozostać w pamięci bieżącej sesji przeglądarki.</p></section><section><h3 className="font-semibold text-foreground">3. Cel i bezpieczeństwo</h3><p>Dane służą do działania kalkulatorów, ćwiczeń, receptur i dokumentacji kontroli. Dane przesyłane do funkcji audytu powinny zawierać wyłącznie informacje zawodowe, takie jak numer serii, SOP, wersja receptury i identyfikatory operatorów zgodne z procedurą apteki.</p></section><section><h3 className="font-semibold text-foreground">4. Prawa i ograniczenia</h3><p>Użytkownik może skontaktować się w sprawie dostępu, poprawienia lub usunięcia danych technicznych. Aplikacja nie jest systemem EDM ani dokumentacją medyczną. Przed użyciem zawodowym należy przeprowadzić własną ocenę prawną, organizacyjną i bezpieczeństwa.</p></section><section><h3 className="font-semibold text-foreground">5. Zmiany</h3><p>Polityka może być aktualizowana wraz ze zmianami aplikacji, integracji i przepisów. Data aktualizacji jest widoczna w tym dokumencie.</p></section></div> : <div className="space-y-4 text-sm leading-relaxed text-muted-foreground"><section><h3 className="font-semibold text-foreground">1. Czym są cookies</h3><p>Cookies to małe pliki lub podobne mechanizmy zapisywane przez przeglądarkę. Mogą być niezbędne do zapamiętania ustawień interfejsu i prawidłowego działania sesji.</p></section><section><h3 className="font-semibold text-foreground">2. Jakich mechanizmów używamy</h3><p>Używamy niezbędnych mechanizmów aplikacji, ustawień motywu oraz narzędzi analitycznych dostawcy hostingu, jeżeli są aktywne w danym środowisku. Zewnętrzny przycisk wsparcia może korzystać z własnych mechanizmów cookies zgodnie z polityką swojego dostawcy.</p></section><section><h3 className="font-semibold text-foreground">3. Zarządzanie</h3><p>Możesz usunąć lub zablokować cookies w ustawieniach przeglądarki. Zablokowanie niektórych mechanizmów może ograniczyć działanie aplikacji. Nie używamy cookies do przechowywania danych pacjenta.</p></section><section><h3 className="font-semibold text-foreground">4. Kontakt</h3><p>Jeśli masz pytania dotyczące cookies lub prywatności, napisz na contact@rocybersolutions.com.</p></section></div>}
           </DialogContent>
         </Dialog>
 
