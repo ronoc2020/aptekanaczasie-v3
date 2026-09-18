@@ -28,6 +28,23 @@ import { Roboto, Open_Sans } from 'next/font/google'
 const roboto = Roboto({ weight: '700', subsets: ['latin'] })
 const openSans = Open_Sans({ subsets: ['latin'] })
 
+function useCountUp(target: number, duration = 900) {
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    let frame = 0
+    const started = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min((now - started) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setValue(Math.round(target * eased))
+      if (progress < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [target, duration])
+  return value
+}
+
 type Ingredient = {
   name: string
   weight: number
@@ -294,7 +311,7 @@ const scenarios: Scenario[] = [
           "Odsyłasz klienta do lekarza po recept����"
         ],
         correctAnswer: 2,
-        explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegóły mogą być kluczowe.",
+        explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegó��y mogą być kluczowe.",
         simulation: () => <ComicSimulation situation="Farmaceuta pokazuje klientowi różne opakowania leków" />
       },
       {
@@ -464,6 +481,9 @@ export default function EnhancedGame() {
   const [showExplanation, setShowExplanation] = useState(false)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [completedScenarios, setCompletedScenarios] = useState<string[]>([])
+  const animatedScore = useCountUp(score)
+  const animatedScenarios = useCountUp(completedScenarios.length)
+  const animatedBadges = useCountUp(completedScenarios.length)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showSimulation, setShowSimulation] = useState(false)
   const [gameMode, setGameMode] = useState<'classic' | 'speed' | 'streak'>('classic')
@@ -682,14 +702,14 @@ export default function EnhancedGame() {
               <Card className="overflow-hidden border-0 bg-transparent shadow-none">
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-950 via-teal-800 to-cyan-700 px-6 py-10 text-white shadow-2xl shadow-teal-950/20 sm:px-10 sm:py-14">
                   <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" /><div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
-                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> {language === 'en' ? 'Learning, practice, responsibility' : 'Nauka, praktyka, odpowiedzialność'}</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>{language === 'en' ? 'Pharmacy in Time' : 'Apteka na Czasie'}</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">{language === 'en' ? 'An interactive space for developing pharmacy reasoning — from triage and communication to compounding, laboratory work and quality documentation.' : 'Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.'}</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => openModule('Gra', 'game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => openModule('Pracownia farmaceuty', 'pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
+                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> {language === 'en' ? 'Learning, practice, responsibility' : 'Nauka, praktyka, odpowiedzialność'}</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>{language === 'en' ? 'Pharmacy in Time' : 'Apteka na Czasie'}</h2><p className="typewriter mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">{language === 'en' ? 'An interactive space for developing pharmacy reasoning — from triage and communication to compounding, laboratory work and quality documentation.' : 'Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.'}</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => openModule('Gra', 'game')} className="hero-cta group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:scale-105 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => openModule('Pracownia farmaceuty', 'pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
                 </motion.div>
                 <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">{language === 'en' ? 'Your learning dashboard' : 'Twój pulpit nauki'}</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">{language === 'en' ? 'Choose a path and learn at your own pace. This app supports learning but does not replace current sources or a qualified pharmacist’s judgement.' : 'Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.'}</CardDescription></CardHeader>
                 {sessionUser && recommendations.length > 0 && <div className="mb-5 rounded-2xl border border-teal-100 bg-teal-50/80 p-4"><p className="text-sm font-semibold text-teal-900">Polecane na podstawie Twojej aktywności</p><div className="mt-3 flex flex-wrap gap-2">{recommendations.map((module) => <span key={module} className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-teal-800 shadow-sm">{module}</span>)}</div></div>}
                 <CardContent className="px-0">
-                  <div className="mb-6 grid gap-3 sm:grid-cols-4">{[{label:'Punkty', value:score, Icon:Trophy, tone:'text-amber-600'}, {label:'Scenariusze', value:completedScenarios.length, Icon:Target, tone:'text-teal-600'}, {label:'Odznaki', value:completedScenarios.length, Icon:Award, tone:'text-violet-600'}, {label:'Rekord quizu', value:score, Icon:Flame, tone:'text-orange-600'}].map(({label,value,Icon,tone}, index) => <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }} whileHover={{ y: -4 }} className="group rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-shadow hover:shadow-lg"><div className="flex items-center justify-between"><Icon className={`h-5 w-5 ${tone} transition-transform group-hover:scale-110`} /><span className="text-xs font-medium text-slate-500">{label}</span></div><motion.p key={value} initial={{ scale: 0.8, color: '#0f766e' }} animate={{ scale: 1, color: '#0f172a' }} className="mt-3 text-2xl font-bold">{value}</motion.p></motion.div>)}</div>
+                  <div className="mb-6 grid gap-3 sm:grid-cols-4">{[{label:'Punkty', value:animatedScore, Icon:Trophy, tone:'text-amber-600'}, {label:'Scenariusze', value:animatedScenarios, Icon:Target, tone:'text-teal-600'}, {label:'Odznaki', value:animatedBadges, Icon:Award, tone:'text-violet-600'}, {label:'Rekord quizu', value:animatedScore, Icon:Flame, tone:'text-orange-600'}].map(({label,value,Icon,tone}, index) => <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }} whileHover={{ y: -4 }} className="group rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-shadow hover:shadow-lg"><div className="flex items-center justify-between"><Icon className={`h-5 w-5 ${tone} transition-transform group-hover:scale-110`} /><span className="text-xs font-medium text-slate-500">{label}</span></div><motion.p key={value} initial={{ scale: 0.8, color: '#0f766e' }} animate={{ scale: 1, color: '#0f172a' }} className="mt-3 text-2xl font-bold">{value}</motion.p></motion.div>)}</div>
                   <div className="mb-5 grid gap-3 sm:grid-cols-3">
-                    {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description]) => <div key={title} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></div>)}
+                    {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description], index) => <motion.div key={title} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + index * 0.1 }} whileHover={{ y: -5, scale: 1.02 }} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4 shadow-sm transition-shadow hover:shadow-lg"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></motion.div>)}
                   </div>
                   <Alert className="mb-5 border-amber-300 bg-amber-50 text-amber-950"><ShieldCheck className="size-4" /><AlertTitle>Transparentne ograniczenia</AlertTitle><AlertDescription>Aplikacja nie diagnozuje, nie dobiera samodzielnie terapii i nie zatwierdza preparatów do wydania. Każdy wynik wymaga oceny profesjonalisty i aktualnego źródła.</AlertDescription></Alert>
                   <a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="group mb-5 flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"><span className="flex-1"><strong className="text-amber-950">Wesprzyj rozwój Apteki na Czasie</strong><span className="mt-1 block text-xs leading-relaxed text-amber-800">Twoje wsparcie pomaga dodawać scenariusze, źródła i narzędzia dla farmaceutów.</span><span className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-orange-700">buymeacoffee.com/r0cs <Heart className="h-4 w-4 transition group-hover:scale-110" /></span></span><img src="/qr-code.png" alt="Kod QR do strony wsparcia Apteki na Czasie" className="h-24 w-24 rounded-xl border-4 border-white bg-white p-1 shadow-md transition duration-300 group-hover:rotate-2 group-hover:scale-105" /></a>
