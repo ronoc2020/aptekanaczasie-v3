@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  min-height: 100%;
+  background-color: #061f23;
+  background-image: radial-gradient(ellipse at 10% 10%, rgba(20, 184, 166, 0.32), transparent 34%), radial-gradient(ellipse at 90% 15%, rgba(34, 211, 238, 0.28), transparent 32%), linear-gradient(135deg, #061f23 0%, #0b3437 52%, #112c45 100%);
+}
+
 @layer utilities {
   .game-shell {
     min-height: 100vh;
@@ -19,6 +26,7 @@
     isolation: isolate;
     position: relative;
     transition: background 1200ms ease, --neon-a 1200ms ease, --neon-b 1200ms ease, --neon-c 1200ms ease;
+    box-shadow: inset 0 0 160px rgba(34, 211, 238, 0.16);
   }
 
   .game-shell.time-dawn { --neon-a: 334 82% 68%; --neon-b: 28 96% 62%; --neon-c: 265 82% 70%; }
