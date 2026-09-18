@@ -547,6 +547,72 @@ body {
     background: linear-gradient(120deg, hsl(var(--primary) / 0.1), hsl(var(--background) / 0.92));
   }
 
+  /* Keep text separated from the animated background in both themes. */
+  .game-shell.theme-light > main,
+  .game-shell.theme-light > main p,
+  .game-shell.theme-light > main h1,
+  .game-shell.theme-light > main h2,
+  .game-shell.theme-light > main h3,
+  .game-shell.theme-light > main label,
+  .game-shell.theme-light > main button {
+    color: #16383b;
+  }
+
+  .game-shell.theme-light > main .text-muted-foreground,
+  .game-shell.theme-light > main [data-slot="card-description"] {
+    color: #49686b !important;
+  }
+
+  .game-shell.theme-light > main [data-slot="card"],
+  .game-shell.theme-light > main .bg-white,
+  .game-shell.theme-light > main .bg-background {
+    color: #16383b;
+    background-color: rgba(255, 255, 255, 0.94);
+  }
+
+  .game-shell.theme-light > main [data-slot="card"] p,
+  .game-shell.theme-light > main [data-slot="card"] h1,
+  .game-shell.theme-light > main [data-slot="card"] h2,
+  .game-shell.theme-light > main [data-slot="card"] h3,
+  .game-shell.theme-light > main [data-slot="card"] label,
+  .game-shell.theme-light > main .bg-white p,
+  .game-shell.theme-light > main .bg-white h3 {
+    color: #16383b;
+  }
+
+  .game-shell.theme-dark > main,
+  .game-shell.theme-dark > main p,
+  .game-shell.theme-dark > main h1,
+  .game-shell.theme-dark > main h2,
+  .game-shell.theme-dark > main h3,
+  .game-shell.theme-dark > main label,
+  .game-shell.theme-dark > main button {
+    color: #efffff;
+  }
+
+  .game-shell.theme-dark > main .text-muted-foreground,
+  .game-shell.theme-dark > main [data-slot="card-description"] {
+    color: #b9d8d8 !important;
+  }
+
+  .game-shell.theme-dark > main [data-slot="card"],
+  .game-shell.theme-dark > main .bg-white,
+  .game-shell.theme-dark > main .bg-background {
+    color: #efffff;
+    background-color: rgba(7, 30, 35, 0.94);
+    border-color: rgba(153, 246, 228, 0.32);
+  }
+
+  .game-shell.theme-dark > main [data-slot="card"] p,
+  .game-shell.theme-dark > main [data-slot="card"] h1,
+  .game-shell.theme-dark > main [data-slot="card"] h2,
+  .game-shell.theme-dark > main [data-slot="card"] h3,
+  .game-shell.theme-dark > main [data-slot="card"] label,
+  .game-shell.theme-dark > main .bg-white p,
+  .game-shell.theme-dark > main .bg-white h3 {
+    color: #efffff;
+  }
+
   .pharmacy-workbench .bg-primary\/\[0\.04\] {
     background-color: hsl(var(--primary) / 0.08);
   }
