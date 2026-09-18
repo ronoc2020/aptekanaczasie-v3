@@ -1066,7 +1066,48 @@ body {
   opacity: 1 !important;
 }
 
-/* Light theme never uses white text on light content surfaces. */
+/* Light theme never uses pale text on light content surfaces. */
+.game-shell.theme-light > main > *:not(.focus-hero) * {
+  opacity: 1 !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) p,
+.game-shell.theme-light > main > *:not(.focus-hero) h1,
+.game-shell.theme-light > main > *:not(.focus-hero) h2,
+.game-shell.theme-light > main > *:not(.focus-hero) h3,
+.game-shell.theme-light > main > *:not(.focus-hero) h4,
+.game-shell.theme-light > main > *:not(.focus-hero) label,
+.game-shell.theme-light > main > *:not(.focus-hero) span,
+.game-shell.theme-light > main > *:not(.focus-hero) button {
+  color: #193b3e !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) .text-muted-foreground,
+.game-shell.theme-light > main > *:not(.focus-hero) [data-slot="card-description"] {
+  color: #385d60 !important;
+}
+
+.game-shell.theme-light > main p,
+.game-shell.theme-light > main h1,
+.game-shell.theme-light > main h2,
+.game-shell.theme-light > main h3,
+.game-shell.theme-light > main h4,
+.game-shell.theme-light > main label,
+.game-shell.theme-light > main span,
+.game-shell.theme-light > main button {
+  color: #193b3e !important;
+}
+
+.game-shell.theme-light > main .focus-hero p,
+.game-shell.theme-light > main .focus-hero h1,
+.game-shell.theme-light > main .focus-hero h2,
+.game-shell.theme-light > main .focus-hero h3,
+.game-shell.theme-light > main .focus-hero span,
+.game-shell.theme-light > main .focus-hero button {
+  color: #ffffff !important;
+}
+
 .game-shell.theme-light > main .text-white,
 .game-shell.theme-light > main [class*="text-white"],
 .game-shell.theme-light > main [style*="color: white"],
