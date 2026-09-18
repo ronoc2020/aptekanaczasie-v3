@@ -206,7 +206,12 @@
 
   .game-shell > header {
     position: relative;
-    z-index: 40;
+    z-index: 1000 !important;
+    isolation: isolate;
+  }
+
+  .game-shell > header:has(.accessibility-menu[open]) {
+    z-index: 10000 !important;
   }
 
   .game-shell header details {
@@ -222,9 +227,10 @@
     isolation: isolate;
   }
 
-  .game-shell .accessibility-dropdown {
-    position: fixed;
-    top: 4.5rem;
+  .game-shell details[open] .accessibility-dropdown {
+    display: block !important;
+    position: fixed !important;
+    top: 5.25rem;
     right: max(1rem, calc((100vw - 1440px) / 2 + 1rem));
     z-index: 9999 !important;
     max-height: min(24rem, calc(100vh - 6rem));
