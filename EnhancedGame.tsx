@@ -513,6 +513,8 @@ export default function EnhancedGame() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [feedbackForm, setFeedbackForm] = useState({ rating: '5', improvement: '' })
   const [formStatus, setFormStatus] = useState<{ type: 'idle' | 'sending' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' })
+  const [toastMessage, setToastMessage] = useState('')
+  const showToast = (message: string) => { setToastMessage(message); window.setTimeout(() => setToastMessage(''), 2600) }
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -589,6 +591,7 @@ export default function EnhancedGame() {
       const newProgress = progress + Math.floor(100 / scenarios.length)
       setProgress(Math.min(newProgress, 100))
       setCompletedScenarios((items) => items.includes(currentScenario.id) ? items : [...items, currentScenario.id])
+      showToast(language === 'pl' ? 'Postęp został zapisany.' : 'Progress saved.')
       setCurrentScenario(null)
       setShowExplanation(false)
       setIsCorrect(null)
@@ -624,7 +627,7 @@ export default function EnhancedGame() {
 
   const handleSaveRecipe = () => {
     if (labRecipe.name && labRecipe.ingredients.length > 0 && labRecipe.instructions) {
-      console.log('Zapisano receptę:', labRecipe)
+      showToast(language === 'pl' ? 'Receptura została zapisana.' : 'Recipe saved.')
       setLabRecipe({ name: '', ingredients: [], instructions: '' })
     }
   }
@@ -686,6 +689,7 @@ export default function EnhancedGame() {
     <TooltipProvider>
 <div className={`game-shell section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
   <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
+  <AnimatePresence>{toastMessage && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} role="status" className="fixed bottom-5 right-5 z-50 rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm font-semibold text-teal-900 shadow-xl">{toastMessage}</motion.div>}</AnimatePresence>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /><span className="ambient-orb orb-one" /><span className="ambient-orb orb-two" /><span className="ambient-orb orb-three" /></div>
   <motion.header
           className="glass-panel mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-3 sm:mb-8 sm:rounded-3xl sm:px-6"
@@ -853,7 +857,7 @@ export default function EnhancedGame() {
                           {localizeQuestion(currentScenario, currentQuestionIndex).options.map((option, index) => (
                             <motion.div 
                               key={index} 
-                              className="flex items-center space-x-2 mb-2"
+                              className={`answer-option flex items-center space-x-2 mb-2 rounded-xl border px-3 py-2 transition-all duration-200 ${selectedAnswer === index ? (showExplanation ? (index === currentScenario.questions[currentQuestionIndex].correctAnswer ? 'border-emerald-400 bg-emerald-50/70' : 'border-rose-400 bg-rose-50/70') : 'border-teal-400 bg-teal-50/70') : 'border-transparent'}`}
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                             >

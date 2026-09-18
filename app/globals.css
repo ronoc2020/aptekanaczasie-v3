@@ -234,8 +234,15 @@
   }
 
   .soft-fade-in { animation: fade-up 420ms ease-out both; }
+  .soft-fade-in > * { animation: fade-up 420ms ease-out both; }
   .slide-fade-panel { animation: slide-fade-in 280ms ease-out both; }
   .progress-animated { transform-origin: left center; animation: progress-glow 1.2s ease-out both; }
+
+  .pharmacy-workbench .workspace-sticky-panel {
+    position: sticky;
+    top: 4.5rem;
+    align-self: start;
+  }
 
   .pharmacy-workbench [role="tablist"] {
     position: sticky;
