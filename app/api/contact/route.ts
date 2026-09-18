@@ -1,0 +1,36 @@
+import { Resend } from 'resend'
+import { NextResponse } from 'next/server'
+
+const recipient = 'rocybersolutions@gmail.com'
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character] ?? character)
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const kind = body.kind === 'contact' ? 'Kontakt' : 'Opinia użytkownika'
+    const name = String(body.name ?? '').trim()
+    const email = String(body.email ?? '').trim()
+    const subject = String(body.subject ?? '').trim()
+    const message = kind === 'Kontakt' ? String(body.message ?? '').trim() : String(body.improvement ?? '').trim()
+    const rating = Number(body.rating ?? 0)
+
+    if (!name || !message || name.length > 120 || message.length < 10 || message.length > 5000) {
+      return NextResponse.json({ error: 'Uzupełnij wymagane pola.' }, { status: 400 })
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: 'Podaj poprawny adres email.' }, { status: 400 })
+    if (kind !== 'Kontakt' && (!Number.isInteger(rating) || rating < 1 || rating > 5)) return NextResponse.json({ error: 'Wybierz ocenę od 1 do 5.' }, { status: 400 })
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const configuredDomain = process.env.RESEND_EMAIL_DOMAIN?.trim()
+    const from = configuredDomain && configuredDomain !== 'rocybersolutions.com' ? `Apteka na Czasie <noreply@${configuredDomain}>` : 'Apteka na Czasie <onboarding@resend.dev>'
+    const html = `<h2>${escapeHtml(kind)}</h2><p><strong>Imię:</strong> ${escapeHtml(name)}</p>${email ? `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` : ''}${subject ? `<p><strong>Temat:</strong> ${escapeHtml(subject)}</p>` : ''}${kind !== 'Kontakt' ? `<p><strong>Ocena:</strong> ${rating}/5</p>` : ''}<p><strong>Treść:</strong></p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`
+    const { data, error } = await resend.emails.send({ from, to: [recipient], replyTo: email || undefined, subject: `${kind}: ${subject || name}`, html }, { idempotencyKey: `app-${kind.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}` })
+    if (error) return NextResponse.json({ error: error.message }, { status: 502 })
+    return NextResponse.json({ ok: true, id: data?.id })
+  } catch {
+    return NextResponse.json({ error: 'Nie udało się wysłać wiadomości.' }, { status: 500 })
+  }
+}
