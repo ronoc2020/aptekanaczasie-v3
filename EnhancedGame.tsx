@@ -691,12 +691,12 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-<div className={`game-shell section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
+<div className={`game-shell section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-visible px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
   <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
   <AnimatePresence>{toastMessage && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} role="status" className="fixed bottom-5 right-5 z-50 rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm font-semibold text-teal-900 shadow-xl">{toastMessage}</motion.div>}</AnimatePresence>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /><span className="ambient-orb orb-one" /><span className="ambient-orb orb-two" /><span className="ambient-orb orb-three" /></div>
   <motion.header
-          className="glass-panel mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-3 sm:mb-8 sm:rounded-3xl sm:px-6"
+          className="glass-panel relative z-40 mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-3 py-3 sm:mb-8 sm:rounded-3xl sm:px-6"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}

@@ -182,6 +182,24 @@
     backdrop-filter: blur(18px);
   }
 
+  .game-shell.game-card-shine {
+    overflow: visible;
+  }
+
+  .game-shell > header {
+    position: relative;
+    z-index: 40;
+  }
+
+  .game-shell header details {
+    position: relative;
+    z-index: 60;
+  }
+
+  .game-shell header details > div {
+    z-index: 80;
+  }
+
   .game-shell button,
   .game-shell [role="tab"],
   .game-shell [data-state="open"] > button,
