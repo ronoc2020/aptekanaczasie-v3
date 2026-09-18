@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
@@ -368,6 +368,27 @@ const scenarios: Scenario[] = [
         simulation: () => <ComicSimulation situation="Farmaceuta prosi pacjenta o powtórzenie zaleceń" />
       }
     ]
+  },
+  {
+    id: 'compounding',
+    name: 'Receptura i kontrola jakości',
+    icon: <FlaskConical className="w-6 h-6" />,
+    questions: [
+      {
+        text: 'Przed rozpoczęciem wykonania preparatu recepturowego zauważasz niezgodność jednostek. Co robisz?',
+        options: ['Kontynuujesz i poprawiasz wynik później', 'Zatrzymujesz proces, ujednolicasz jednostki i dokumentujesz weryfikację', 'Zaokrąglasz wartość według uznania', 'Pytasz pacjenta o właściwą dawkę'],
+        correctAnswer: 1,
+        explanation: 'Niezgodne jednostki mogą zmienić dawkę wielokrotnie. Proces trzeba zatrzymać, sprawdzić źródło, obliczenia i procedurę, a następnie wykonać niezależną kontrolę.',
+        simulation: () => <ComicSimulation situation="Farmaceuta zatrzymuje wykonanie receptury i sprawdza jednostki" />
+      },
+      {
+        text: 'Który zestaw informacji powinien znaleźć się w dokumentacji serii?',
+        options: ['Tylko nazwa preparatu', 'Numer serii, wersja receptury, źródło, operator i kontroler', 'Wyłącznie cena surowców', 'Sama data wydania'],
+        correctAnswer: 1,
+        explanation: 'Ślad audytowy pozwala odtworzyć decyzje i niezależną kontrolę. Kalkulator jest pomocą, a zwolnienie wymaga uprawnionej osoby i SOP.',
+        simulation: () => <ComicSimulation situation="Druga osoba weryfikuje kartę serii przed zwolnieniem" />
+      }
+    ]
   }
 ]
 
@@ -574,6 +595,8 @@ export default function EnhancedGame() {
           </div>
         </motion.header>
 
+        {activeTab !== 'menu' && <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200/70 bg-gradient-to-r from-teal-50 via-white to-cyan-50 px-4 py-3 text-sm shadow-sm"><div className="flex items-center gap-3"><div className="rounded-xl bg-teal-600 p-2 text-white"><ShieldCheck className="h-4 w-4" /></div><div><p className="font-semibold text-teal-900">Przestrzeń nauki i bezpiecznej praktyki</p><p className="text-xs text-slate-600">Każdy wynik wymaga aktualnego źródła, SOP i oceny farmaceuty.</p></div></div><a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900 transition hover:-translate-y-0.5 hover:bg-amber-200"><Heart className="h-4 w-4" /> Wesprzyj rozwój</a></motion.div>}
+
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -594,6 +617,7 @@ export default function EnhancedGame() {
                     {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description]) => <div key={title} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></div>)}
                   </div>
                   <Alert className="mb-5 border-amber-300 bg-amber-50 text-amber-950"><ShieldCheck className="size-4" /><AlertTitle>Transparentne ograniczenia</AlertTitle><AlertDescription>Aplikacja nie diagnozuje, nie dobiera samodzielnie terapii i nie zatwierdza preparatów do wydania. Każdy wynik wymaga oceny profesjonalisty i aktualnego źródła.</AlertDescription></Alert>
+                  <a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="group mb-5 flex items-center justify-between rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition hover:-translate-y-0.5 hover:shadow-md"><span><strong className="text-amber-950">Wesprzyj rozwój Apteki na Czasie</strong><span className="mt-1 block text-xs text-amber-800">Twoje wsparcie pomaga dodawać scenariusze, źródła i narzędzia dla farmaceutów.</span></span><Heart className="h-5 w-5 text-orange-600 transition group-hover:scale-110" /></a>
                   <div className="grid grid-cols-2 gap-4">
                     <Button onClick={() => setActiveTab('game')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Building2 className="mr-2 h-6 w-6" />
@@ -948,11 +972,12 @@ export default function EnhancedGame() {
               </Card>
             ) : activeTab === 'admin' ? (
               <Card className="bg-white shadow-lg">
-                <CardHeader><CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Panel treści</CardTitle></CardHeader>
-                <CardContent className="space-y-5">
-                  <Alert className="border-teal-200 bg-teal-50"><ShieldCheck className="h-4 w-4" /><AlertTitle>Tryb demonstracyjny</AlertTitle><AlertDescription>Panel przygotowany do zarządzania treścią. W wersji produkcyjnej dodaj logowanie administratora i bazę danych.</AlertDescription></Alert>
-                  <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-lg border p-4"><Book className="mb-2 h-5 w-5 text-teal-600" /><strong>{herbsMedicines.length}</strong><p className="text-sm text-gray-500">wpisów w bibliotece</p></div><div className="rounded-lg border p-4"><Beaker className="mb-2 h-5 w-5 text-teal-600" /><strong>{experiments.length}</strong><p className="text-sm text-gray-500">eksperymentów</p></div><div className="rounded-lg border p-4"><Award className="mb-2 h-5 w-5 text-teal-600" /><strong>{scenarios.reduce((sum, scenario) => sum + scenario.questions.length, 0)}</strong><p className="text-sm text-gray-500">pytań quizowych</p></div></div>
-                  <div className="flex flex-wrap gap-3"><Button onClick={() => setActiveTab('library')}><Book className="mr-2 h-4 w-4" />Przeglądaj bibliotekę</Button><Button variant="outline" onClick={() => setActiveTab('lab')}><Beaker className="mr-2 h-4 w-4" />Zarządzaj laboratorium</Button></div>
+                <CardHeader className="border-b border-teal-100 bg-gradient-to-br from-teal-50 via-white to-cyan-50"><div className="mb-3 flex items-center gap-3"><div className="rounded-2xl bg-teal-700 p-3 text-white shadow-lg shadow-teal-700/20"><Settings className="h-6 w-6" /></div><div><CardTitle className={`text-2xl text-teal-800 ${roboto.className}`}>Panel treści</CardTitle><CardDescription>Centrum rozwoju scenariuszy, wiki, biblioteki i materiałów jakościowych.</CardDescription></div></div></CardHeader>
+                <CardContent className="space-y-5 pt-6">
+                  <Alert className="border-teal-200 bg-teal-50"><ShieldCheck className="h-4 w-4" /><AlertTitle>Tryb demonstracyjny — gotowy do redakcji</AlertTitle><AlertDescription>Panel pokazuje zakres treści i prowadzi do modułów. Wersja produkcyjna powinna dodać role redaktora, recenzenta, publikację wersji i historię zmian.</AlertDescription></Alert>
+                  <div className="grid gap-3 sm:grid-cols-4">{[{ Icon: Book, value: herbsMedicines.length, label: 'wpisów biblioteki' }, { Icon: Beaker, value: experiments.length, label: 'protokółów laboratorium' }, { Icon: Trophy, value: scenarios.length, label: 'scenariuszy' }, { Icon: FileText, value: scenarios.reduce((sum, scenario) => sum + scenario.questions.length, 0), label: 'pytań quizowych' }].map(({ Icon: MetricIcon, value, label }) => <motion.div key={label} whileHover={{ y: -3 }} className="rounded-2xl border border-teal-100 bg-white p-4 shadow-sm"><MetricIcon className="mb-3 h-5 w-5 text-teal-600" /><strong className="text-2xl text-slate-900">{value}</strong><p className="text-xs text-slate-500">{label}</p></motion.div>)}</div>
+                  <div className="grid gap-3 md:grid-cols-3"><div className="rounded-2xl border p-4"><p className="font-semibold text-slate-800">Scenariusze</p><p className="mt-1 text-xs leading-relaxed text-slate-500">Triage, recepty, bezpieczeństwo, komunikacja oraz receptura i kontrola jakości.</p><Button size="sm" className="mt-4" onClick={() => setActiveTab('game')}>Otwórz ćwiczenia</Button></div><div className="rounded-2xl border p-4"><p className="font-semibold text-slate-800">Biblioteka</p><p className="mt-1 text-xs leading-relaxed text-slate-500">Substancje, zioła, interakcje i ostrzeżenia do dalszej weryfikacji ze źródłem.</p><Button size="sm" variant="outline" className="mt-4" onClick={() => setActiveTab('library')}>Otwórz bibliotekę</Button></div><div className="rounded-2xl border p-4"><p className="font-semibold text-slate-800">Pracownia</p><p className="mt-1 text-xs leading-relaxed text-slate-500">Kalkulacje, receptury, BUD, audyt i kontrola drugiej osoby.</p><Button size="sm" variant="outline" className="mt-4" onClick={() => setActiveTab('pharmacy')}>Otwórz pracownię</Button></div></div>
+                  <a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="group flex items-center justify-between rounded-2xl bg-gradient-to-r from-amber-100 to-orange-100 p-4 transition hover:shadow-md"><span><strong className="text-amber-950">Pomóż rozwijać bezpieczną edukację farmaceutyczną</strong><span className="mt-1 block text-xs text-amber-800">Każde wsparcie pomaga tworzyć kolejne scenariusze i materiały.</span></span><Heart className="h-5 w-5 text-orange-600 transition group-hover:scale-110" /></a>
                 </CardContent>
               </Card>
             ) : (
