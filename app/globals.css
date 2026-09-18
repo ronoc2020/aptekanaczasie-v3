@@ -4,12 +4,21 @@
 
 @layer utilities {
   .game-shell {
+    --neon-a: 174 72% 42%;
+    --neon-b: 190 85% 52%;
+    --neon-c: 265 80% 62%;
     background:
-      radial-gradient(circle at 12% 8%, hsl(var(--primary) / 0.12), transparent 28%),
-      radial-gradient(circle at 88% 18%, hsl(var(--chart-2) / 0.12), transparent 26%),
+      radial-gradient(circle at 12% 8%, hsl(var(--neon-a) / 0.2), transparent 32%),
+      radial-gradient(circle at 88% 18%, hsl(var(--neon-b) / 0.18), transparent 30%),
       linear-gradient(135deg, hsl(var(--background)), hsl(var(--muted) / 0.72));
     isolation: isolate;
+    transition: background 1200ms ease, --neon-a 1200ms ease, --neon-b 1200ms ease, --neon-c 1200ms ease;
   }
+
+  .game-shell.time-dawn { --neon-a: 334 82% 68%; --neon-b: 28 96% 62%; --neon-c: 265 82% 70%; }
+  .game-shell.time-day { --neon-a: 174 80% 44%; --neon-b: 190 90% 56%; --neon-c: 205 88% 64%; }
+  .game-shell.time-dusk { --neon-a: 268 78% 62%; --neon-b: 25 95% 61%; --neon-c: 340 78% 66%; }
+  .game-shell.time-night { --neon-a: 220 86% 58%; --neon-b: 275 82% 64%; --neon-c: 185 88% 48%; }
 
   .game-shell::after {
     content: '';
@@ -19,9 +28,9 @@
     pointer-events: none;
     opacity: 0.28;
     background:
-      radial-gradient(circle at 18% 30%, hsl(var(--chart-2) / 0.26), transparent 22%),
-      radial-gradient(circle at 78% 22%, hsl(var(--chart-1) / 0.2), transparent 20%),
-      radial-gradient(circle at 62% 78%, hsl(var(--chart-4) / 0.14), transparent 25%);
+      radial-gradient(circle at 18% 30%, hsl(var(--neon-a) / 0.34), transparent 22%),
+      radial-gradient(circle at 78% 22%, hsl(var(--neon-b) / 0.28), transparent 20%),
+      radial-gradient(circle at 62% 78%, hsl(var(--neon-c) / 0.22), transparent 25%);
     filter: blur(24px);
     animation: ambient-drift 18s ease-in-out infinite alternate;
   }
@@ -86,12 +95,12 @@
     opacity: 0.38;
     mix-blend-mode: multiply;
     animation: orb-drift 18s ease-in-out infinite alternate;
-    background: hsl(var(--primary) / 0.35);
+    background: hsl(var(--neon-a) / 0.38);
   }
 
   .orb-one { left: -5rem; top: 18%; }
-  .orb-two { right: -6rem; top: 42%; animation-delay: -6s; background: hsl(var(--chart-2) / 0.28); }
-  .orb-three { left: 38%; bottom: -8rem; animation-delay: -11s; background: hsl(var(--chart-4) / 0.22); }
+  .orb-two { right: -6rem; top: 42%; animation-delay: -6s; background: hsl(var(--neon-b) / 0.32); }
+  .orb-three { left: 38%; bottom: -8rem; animation-delay: -11s; background: hsl(var(--neon-c) / 0.28); }
 
   .section-menu { --section-accent: 174 72% 42%; }
   .section-pharmacy { --section-accent: 162 64% 45%; }
@@ -124,6 +133,10 @@
 
   @keyframes typing { from { max-width: 0; } to { max-width: 100%; } }
 
+  @media (prefers-reduced-motion: reduce) {
+    .game-shell, .game-shell::after, .ambient-orb { animation: none !important; transition: none !important; }
+  }
+
   @media (max-width: 640px) {
     .typewriter { white-space: normal; border-right: 0; animation: fade-up 0.7s ease-out both; }
     .font-scale-large { font-size: 106.25%; }
@@ -146,6 +159,10 @@
   @keyframes orbit-library { from { transform: translate(1rem, 2rem) scale(.88); } to { transform: translate(-3rem, -3rem) scale(1.12); } }
   @keyframes orbit-results { from { transform: translate(-1rem, 3rem) scale(.9); } to { transform: translate(4rem, -2rem) scale(1.1); } }
   @keyframes orbit-admin { from { transform: translate(3rem, -2rem) scale(.88); } to { transform: translate(-3rem, 2rem) scale(1.12); } }
+
+  @property --neon-a { syntax: '<color>'; inherits: true; initial-value: hsl(174 72% 42%); }
+  @property --neon-b { syntax: '<color>'; inherits: true; initial-value: hsl(190 85% 52%); }
+  @property --neon-c { syntax: '<color>'; inherits: true; initial-value: hsl(265 80% 62%); }
 
   @keyframes ambient-drift {
     0% { transform: translate3d(-2%, -1%, 0) scale(1); }

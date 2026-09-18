@@ -310,7 +310,7 @@ const scenarios: Scenario[] = [
           "Odsyłasz klienta do lekarza po recept����"
         ],
         correctAnswer: 2,
-        explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczegó��y mogą być kluczowe.",
+        explanation: "Najlepszym podejściem jest zebranie dodatkowych informacji, które pomogą zidentyfikować lek. Kształt tabletki, dawka czy inne szczeg����y mogą być kluczowe.",
         simulation: () => <ComicSimulation situation="Farmaceuta pokazuje klientowi różne opakowania leków" />
       },
       {
@@ -469,6 +469,7 @@ export default function EnhancedGame() {
   const [language, setLanguage] = useState<'pl' | 'en'>('pl')
   const [fontScale, setFontScale] = useState<'normal' | 'large' | 'xlarge'>('normal')
   const [focusMode, setFocusMode] = useState(false)
+  const [timePeriod, setTimePeriod] = useState<'dawn' | 'day' | 'dusk' | 'night'>('day')
   const [isHydrated, setIsHydrated] = useState(false)
   const t = uiText[language]
   const trackModule = (module: string, action = 'open') => { void fetch('/api/activity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ module, action }) }) }
@@ -642,7 +643,14 @@ export default function EnhancedGame() {
   }
 
   useEffect(() => {
-    setIsHydrated(true)
+  setIsHydrated(true)
+  const updateTimePeriod = () => {
+    const hour = new Date().getHours()
+    setTimePeriod(hour >= 5 && hour < 8 ? 'dawn' : hour >= 8 && hour < 17 ? 'day' : hour >= 17 && hour < 21 ? 'dusk' : 'night')
+  }
+  updateTimePeriod()
+  const timer = window.setInterval(updateTimePeriod, 60 * 60 * 1000)
+  return () => window.clearInterval(timer)
   }, [])
 
   useEffect(() => {
@@ -691,7 +699,7 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-<div className={`game-shell section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-visible px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
+<div className={`game-shell time-${timePeriod} section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-visible px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
   <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
   <AnimatePresence>{toastMessage && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} role="status" className="fixed bottom-5 right-5 z-50 rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm font-semibold text-teal-900 shadow-xl">{toastMessage}</motion.div>}</AnimatePresence>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /><span className="ambient-orb orb-one" /><span className="ambient-orb orb-two" /><span className="ambient-orb orb-three" /></div>
@@ -705,7 +713,7 @@ export default function EnhancedGame() {
           <h1 className="sr-only">{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
           <div className="flex max-w-full flex-wrap items-center justify-end gap-2">
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Główna nawigacja"><Button variant="ghost" size="sm" onClick={() => setActiveTab('menu')}>Nauka</Button><Button variant="ghost" size="sm" onClick={() => setActiveTab('game')}>Scenariusze</Button><Button variant="ghost" size="sm" onClick={() => setActiveTab('pharmacy')}>Pracownia</Button><Button variant="ghost" size="sm" onClick={() => setActiveTab('library')}>Biblioteka</Button><Button variant="ghost" size="sm" onClick={() => setActiveTab('business')}>Dla firm</Button></nav>
-            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><details className="relative"><summary className="flex h-9 cursor-pointer list-none items-center rounded-full border border-teal-200 bg-white/70 px-3 text-sm font-semibold">Aa</summary><div className="absolute right-0 top-11 z-30 w-52 rounded-2xl border bg-background p-2 shadow-xl"><p className="px-2 py-1 text-xs font-semibold text-muted-foreground">Dostępność</p><div className="grid grid-cols-3 gap-1"><Button type="button" variant={fontScale === 'normal' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('normal')}>A</Button><Button type="button" variant={fontScale === 'large' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('large')}>A+</Button><Button type="button" variant={fontScale === 'xlarge' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('xlarge')}>A++</Button></div><Button type="button" variant="ghost" size="sm" className="mt-1 w-full" onClick={() => { setFontScale('normal'); setTheme('light') }}>Reset</Button></div></details><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
+            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><details className="relative"><summary className="flex h-9 cursor-pointer list-none items-center rounded-full border border-teal-200 bg-white/70 px-3 text-sm font-semibold">Aa</summary><div className="absolute right-0 top-11 z-30 w-52 rounded-2xl border bg-background p-2 shadow-xl"><p className="px-2 py-1 text-xs font-semibold text-muted-foreground">Dost��pność</p><div className="grid grid-cols-3 gap-1"><Button type="button" variant={fontScale === 'normal' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('normal')}>A</Button><Button type="button" variant={fontScale === 'large' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('large')}>A+</Button><Button type="button" variant={fontScale === 'xlarge' ? 'default' : 'ghost'} size="sm" onClick={() => setFontScale('xlarge')}>A++</Button></div><Button type="button" variant="ghost" size="sm" className="mt-1 w-full" onClick={() => { setFontScale('normal'); setTheme('light') }}>Reset</Button></div></details><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
   <Button variant={focusMode ? 'default' : 'outline'} size="sm" onClick={() => setFocusMode((value) => !value)} aria-pressed={focusMode} aria-label={focusMode ? 'Wyłącz tryb focus' : 'Włącz tryb focus'} className="rounded-full">{focusMode ? 'Focus: on' : 'Focus'}</Button>
   <Button
   variant="outline"
