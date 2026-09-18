@@ -392,6 +392,13 @@ const scenarios: Scenario[] = [
   }
 ]
 
+const scenarioNamesEn: Record<string, string> = { 'Obsługa klienta': 'Customer service', 'Bezpieczeństwo pacjenta': 'Patient safety', 'Interakcje lekowe': 'Drug interactions', 'Komunikacja z pacjentem': 'Patient communication', 'Receptura i kontrola jakości': 'Compounding and quality control' }
+
+const uiText = {
+  pl: { home: 'Menu Główne', game: 'Gra', library: 'Biblioteka', lab: 'Laboratorium', pharmacy: 'Pracownia farmaceuty', wiki: 'WikiHow', results: 'Wyniki i odznaki', favorites: 'Ulubione', admin: 'Panel treści', chooseScenario: 'Wybierz scenariusz', gameMode: 'Tryb gry', chooseRhythm: 'Wybierz swój rytm nauki', modeHint: 'Każdy tryb zmienia sposób naliczania punktów.', classic: 'Klasyczny', speed: 'Turbo', streak: 'Seria', points: 'Punkty', progress: 'Postęp', streakLabel: 'Seria', previous: 'Poprzednie pytanie', submit: 'Zatwierdź odpowiedź', completed: 'Ukończony', notCompleted: 'Nieukończony', learn: 'Rozpocznij naukę', workbench: 'Otwórz pracownię', practice: 'Praktyka', compounding: 'Receptura', quality: 'Jakość' },
+  en: { home: 'Home', game: 'Game', library: 'Library', lab: 'Laboratory', pharmacy: 'Pharmacy workbench', wiki: 'WikiHow', results: 'Results & badges', favorites: 'Favorites', admin: 'Content studio', chooseScenario: 'Choose a scenario', gameMode: 'Game mode', chooseRhythm: 'Choose your learning rhythm', modeHint: 'Each mode changes how points are awarded.', classic: 'Classic', speed: 'Turbo', streak: 'Streak', points: 'Points', progress: 'Progress', streakLabel: 'Streak', previous: 'Previous question', submit: 'Submit answer', completed: 'Completed', notCompleted: 'Not completed', learn: 'Start learning', workbench: 'Open workbench', practice: 'Practice', compounding: 'Compounding', quality: 'Quality' },
+} as const
+
 const Logo: React.FC<{ language?: 'pl' | 'en' }> = ({ language = 'pl' }) => (
   <div className="group flex items-center gap-3" aria-label={language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}>
     <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-lg shadow-teal-700/20 transition duration-300 group-hover:-rotate-3 group-hover:scale-105">
@@ -405,6 +412,7 @@ const Logo: React.FC<{ language?: 'pl' | 'en' }> = ({ language = 'pl' }) => (
 export default function EnhancedGame() {
   const [activeTab, setActiveTab] = useState('menu')
   const [language, setLanguage] = useState<'pl' | 'en'>('pl')
+  const t = uiText[language]
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -620,7 +628,7 @@ export default function EnhancedGame() {
               <Card className="overflow-hidden border-0 bg-transparent shadow-none">
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-950 via-teal-800 to-cyan-700 px-6 py-10 text-white shadow-2xl shadow-teal-950/20 sm:px-10 sm:py-14">
                   <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" /><div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
-                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => setActiveTab('game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />Rozpocznij naukę</Button><Button variant="outline" onClick={() => setActiveTab('pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">Otwórz pracownię</Button></div></div>
+                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => setActiveTab('game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => setActiveTab('pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
                 </motion.div>
                 <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">Twój pulpit nauki</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.</CardDescription></CardHeader>
                 <CardContent className="px-0">
@@ -649,7 +657,7 @@ export default function EnhancedGame() {
                     </Button>
                     <Button onClick={() => setActiveTab('howto')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <BookOpen className="mr-2 h-6 w-6" />
-                      WikiHow
+                      {t.wiki}
                     </Button>
                     <Button onClick={() => setActiveTab('results')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Award className="mr-2 h-6 w-6" />
@@ -670,7 +678,7 @@ export default function EnhancedGame() {
               <Card className="bg-white shadow-lg">
                 <CardHeader>
                   <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>
-                    {currentScenario ? currentScenario.name : 'Wybierz scenariusz'}
+                    {currentScenario ? currentScenario.name : t.chooseScenario}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -685,9 +693,9 @@ export default function EnhancedGame() {
                       >
                         <div className="mb-6 rounded-2xl bg-gradient-to-r from-teal-900 via-teal-700 to-cyan-700 p-5 text-white shadow-xl">
                           <div className="flex flex-wrap items-center justify-between gap-4">
-                            <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-100">Tryb gry</p><h3 className="mt-1 text-xl font-bold">Wybierz swój rytm nauki</h3><p className="mt-1 text-sm text-teal-100">Każdy tryb zmienia sposób naliczania punktów.</p></div>
+                            <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-100">{t.gameMode}</p><h3 className="mt-1 text-xl font-bold">{t.chooseRhythm}</h3><p className="mt-1 text-sm text-teal-100">{t.modeHint}</p></div>
                             <div className="grid grid-cols-3 gap-2">
-                              {[{id:'classic', label:'Klasyczny', icon:<BookOpen className="h-4 w-4" />}, {id:'speed', label:'Turbo', icon:<Zap className="h-4 w-4" />}, {id:'streak', label:'Seria', icon:<Flame className="h-4 w-4" />}].map((mode) => <button key={mode.id} type="button" onClick={() => setGameMode(mode.id as typeof gameMode)} className={`flex min-w-20 flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${gameMode === mode.id ? 'bg-white text-teal-800 shadow-lg' : 'bg-teal-950/30 text-teal-50 hover:bg-white/20'}`}>{mode.icon}<span>{mode.label}</span></button>)}
+                              {[{id:'classic', label:t.classic, icon:<BookOpen className="h-4 w-4" />}, {id:'speed', label:t.speed, icon:<Zap className="h-4 w-4" />}, {id:'streak', label:t.streak, icon:<Flame className="h-4 w-4" />}].map((mode) => <button key={mode.id} type="button" onClick={() => setGameMode(mode.id as typeof gameMode)} className={`flex min-w-20 flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${gameMode === mode.id ? 'bg-white text-teal-800 shadow-lg' : 'bg-teal-950/30 text-teal-50 hover:bg-white/20'}`}>{mode.icon}<span>{mode.label}</span></button>)}
                             </div>
                           </div>
                         </div>
@@ -710,7 +718,7 @@ export default function EnhancedGame() {
                                     } hover:bg-teal-600 text-white transition-colors duration-200 flex flex-col items-center justify-center`}
                                   >
                                     {scenario.icon}
-                                    <span className="mt-2 text-xs text-center">{scenario.name}</span>
+                                    <span className="mt-2 text-xs text-center">{language === 'en' ? (scenarioNamesEn[scenario.name] ?? scenario.name) : scenario.name}</span>
                                     {completedScenarios.includes(scenario.id) && (
                                       <CheckCircle className="absolute top-1 right-1 w-4 h-4" />
                                     )}
@@ -733,9 +741,9 @@ export default function EnhancedGame() {
                         transition={{ duration: 0.3 }}
                       >
                         <div className="mb-5 grid grid-cols-3 gap-2 rounded-2xl bg-slate-900 p-3 text-white shadow-lg">
-                          <div className="flex items-center gap-2"><Trophy className="h-4 w-4 text-yellow-300" /><span className="text-xs text-slate-300">Punkty</span><strong>{score}</strong></div>
-                          <div className="flex items-center gap-2"><Flame className="h-4 w-4 text-orange-300" /><span className="text-xs text-slate-300">Seria</span><strong>x{streak}</strong></div>
-                          <div className="flex items-center gap-2"><Timer className="h-4 w-4 text-cyan-300" /><span className="text-xs text-slate-300">Postęp</span><strong>{currentQuestionIndex + 1}/{currentScenario.questions.length}</strong></div>
+                          <div className="flex items-center gap-2"><Trophy className="h-4 w-4 text-yellow-300" /><span className="text-xs text-slate-300">{t.points}</span><strong>{score}</strong></div>
+                          <div className="flex items-center gap-2"><Flame className="h-4 w-4 text-orange-300" /><span className="text-xs text-slate-300">{t.streakLabel}</span><strong>x{streak}</strong></div>
+                          <div className="flex items-center gap-2"><Timer className="h-4 w-4 text-cyan-300" /><span className="text-xs text-slate-300">{t.progress}</span><strong>{currentQuestionIndex + 1}/{currentScenario.questions.length}</strong></div>
                         </div>
                         <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><motion.div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / currentScenario.questions.length) * 100}%` }} transition={{ duration: 0.5 }} /></div>
                         <p className="text-lg font-semibold mb-4">{currentScenario.questions[currentQuestionIndex].text}</p>
@@ -759,14 +767,14 @@ export default function EnhancedGame() {
                             disabled={currentQuestionIndex === 0}
                           >
                             <ChevronLeft className="mr-2 w-4 h-4" />
-                            Poprzednie pytanie
+                            {t.previous}
                           </Button>
                           <Button 
                             onClick={handleAnswerSubmit} 
                             className="bg-teal-700 hover:bg-teal-800 text-white transition-colors duration-200"
                             disabled={selectedAnswer === null}
                           >
-                            Zatwierdź odpowiedź
+                            {t.submit}
                           </Button>
                           <Button 
                             onClick={handleNextQuestion} 
@@ -955,7 +963,7 @@ export default function EnhancedGame() {
                 </CardContent>
               </Card>
             ) : activeTab === 'pharmacy' ? (
-              <PharmacyWorkbench />
+              <PharmacyWorkbench language={language} />
             ) : activeTab === 'howto' ? (
               <HowToLibrary />
             ) : activeTab === 'library' ? (

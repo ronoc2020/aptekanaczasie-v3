@@ -75,7 +75,8 @@ const qualityChecks = [
   ['release', 'Niezależna kontrola i zwolnienie przez uprawnioną osobę'],
 ] as const
 
-export function PharmacyWorkbench() {
+export function PharmacyWorkbench({ language = 'pl' }: { language?: 'pl' | 'en' }) {
+  const workbenchText = language === 'en' ? { title: 'Pharmacy workbench', subtitle: 'Triage, calculations, compounding and quality controls in one workspace.', symptoms: 'Symptoms and triage', recipes: 'Compounding recipes', quality: 'Quality and audit' } : { title: 'Pracownia farmaceuty', subtitle: 'Triage, kalkulacje, receptura i kontrola jakości w jednym miejscu.', symptoms: 'Objawy i triage', recipes: 'Receptury', quality: 'Jakość i audyt' }
   const [symptomQuery, setSymptomQuery] = useState('')
   const [selectedSymptom, setSelectedSymptom] = useState(symptoms[0])
   const [selectedRecipe, setSelectedRecipe] = useState(recipes[0])
@@ -206,7 +207,7 @@ export function PharmacyWorkbench() {
     <Card className="glass-panel overflow-hidden border-0 shadow-xl">
       <CardHeader className="border-b border-border/60 bg-primary/[0.04]">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div><CardTitle className="flex items-center gap-2 text-2xl"><ClipboardCheck className="text-primary" /> Pracownia farmaceutyczna</CardTitle><CardDescription className="mt-2 max-w-3xl">Workbench do dokumentowania receptury, obliczeń i kontroli jakości. Nie generuje indywidualnego zlecenia terapeutycznego ani nie zastępuje ChPL, Farmakopei Polskiej i procedur apteki.</CardDescription></div>
+          <div><CardTitle className="flex items-center gap-2 text-2xl"><ClipboardCheck className="text-primary" /> {workbenchText.title}</CardTitle><CardDescription className="mt-2 max-w-3xl">{workbenchText.subtitle} {language === 'pl' ? 'Nie generuje indywidualnego zlecenia terapeutycznego ani nie zastępuje ChPL, Farmakopei Polskiej i procedur apteki.' : 'It does not generate an individual treatment order or replace SmPCs, pharmacopoeias or pharmacy procedures.'}</CardDescription></div>
           <Badge variant="outline" className="gap-2"><ShieldAlert /> Kontrola dwuosobowa</Badge>
         </div>
       </CardHeader>
@@ -214,7 +215,7 @@ export function PharmacyWorkbench() {
         <Alert className="mb-6 border-amber-500/40 bg-amber-500/10"><ShieldAlert className="size-4" /><AlertTitle>Bezpieczeństwo i odpowiedzialność zawodowa</AlertTitle><AlertDescription>Wyniki są pomocnicze. Przed wykonaniem lub wydaniem potwierdź tożsamość, wskazanie, postać, drogę podania, maksymalną dawkę, alergie, interakcje, jakość surowców i aktualność źródeł. Nie wpisuj danych osobowych pacjenta.</AlertDescription></Alert>
 
         <Tabs defaultValue="symptoms">
-          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 lg:grid-cols-6"><TabsTrigger value="symptoms">Objawy i triage</TabsTrigger><TabsTrigger value="recipes">Receptariusz</TabsTrigger><TabsTrigger value="dose">Dawkowanie i obliczenia</TabsTrigger><TabsTrigger value="lab">Laboratorium</TabsTrigger><TabsTrigger value="safety">Bezpieczeństwo</TabsTrigger><TabsTrigger value="audit">Audyt i dokumentacja</TabsTrigger></TabsList>
+          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 lg:grid-cols-6"><TabsTrigger value="symptoms">{workbenchText.symptoms}</TabsTrigger><TabsTrigger value="recipes">{workbenchText.recipes}</TabsTrigger><TabsTrigger value="dose">{language === 'en' ? 'Dosing & calculations' : 'Dawkowanie i obliczenia'}</TabsTrigger><TabsTrigger value="lab">{language === 'en' ? 'Laboratory' : 'Laboratorium'}</TabsTrigger><TabsTrigger value="safety">{language === 'en' ? 'Safety' : 'Bezpieczeństwo'}</TabsTrigger><TabsTrigger value="audit">{language === 'en' ? 'Audit & documentation' : 'Audyt i dokumentacja'}</TabsTrigger></TabsList>
 
           <TabsContent value="symptoms" className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
             <Card><CardHeader><CardTitle className="text-base">Biblioteka objawów</CardTitle><CardDescription>Wybierz temat, aby zobaczyć pytania kontrolne i rekomendacje.</CardDescription></CardHeader><CardContent className="space-y-3"><div className="relative"><Search className="absolute left-3 top-3 size-4 text-muted-foreground" /><Input aria-label="Wyszukaj objaw" className="pl-9" placeholder="Szukaj np. kaszel" value={symptomQuery} onChange={(event) => setSymptomQuery(event.target.value)} /></div>{filteredSymptoms.map((item) => <Button key={item.name} variant={selectedSymptom.name === item.name ? 'default' : 'outline'} className="w-full justify-start" onClick={() => setSelectedSymptom(item)}>{item.name}</Button>)}{filteredSymptoms.length === 0 && <p className="text-sm text-muted-foreground">Brak wyników. Sprawdź pisownię lub użyj szerszego hasła.</p>}</CardContent></Card>
