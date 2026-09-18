@@ -14,7 +14,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical, Sparkles, Play, Target } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
@@ -392,10 +392,10 @@ const scenarios: Scenario[] = [
   }
 ]
 
-const Logo: React.FC = () => (
-  <div className="flex items-center space-x-2">
-    <Clock className="w-8  h-8 text-teal-500" />
-    <span className="text-2xl font-bold text-teal-500">Apteka on time</span>
+const Logo: React.FC<{ language?: 'pl' | 'en' }> = ({ language = 'pl' }) => (
+  <div className="flex items-center gap-3">
+    <div className="rounded-2xl bg-teal-100 p-2.5 text-teal-700 shadow-sm"><Clock className="h-6 w-6" /></div>
+    <span className="text-lg font-bold tracking-tight text-teal-800 sm:text-xl">{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</span>
   </div>
 )
 
@@ -568,20 +568,20 @@ export default function EnhancedGame() {
     },
     out: {
       opacity: 0,
-      y: "-100%"
+      y: 12
     }
   }
 
   return (
     <TooltipProvider>
-      <div className={`game-shell game-card-shine ambient-orbit relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+      <div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
         <motion.header 
           className="glass-panel mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl px-4 py-3 sm:px-6"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Logo />
+          <Logo language={language} />
           <h1 className={`motion-safe-float text-4xl font-bold text-teal-700 ${roboto.className}`}>{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button>
@@ -613,12 +613,14 @@ export default function EnhancedGame() {
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'menu' ? (
-              <Card className="bg-white shadow-lg">
-                <CardHeader>
-                  <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Menu Główne</CardTitle>
-                  <CardDescription className="max-w-3xl text-base leading-relaxed text-slate-600">Apteka na Czasie to interaktywna aplikacja edukacyjna i pracownia wspierająca naukę bezpiecznej pracy w aptece. Łączy scenariusze triage, bibliotekę substancji i ziół, receptariusz, kalkulatory, laboratorium oraz dokumentację kontroli. Wyniki mają charakter pomocniczy i nie zastępują ChPL, Farmakopei Polskiej, procedur apteki ani decyzji uprawnionego farmaceuty.</CardDescription>
-                </CardHeader>
-                <CardContent>
+              <Card className="overflow-hidden border-0 bg-transparent shadow-none">
+                <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-950 via-teal-800 to-cyan-700 px-6 py-10 text-white shadow-2xl shadow-teal-950/20 sm:px-10 sm:py-14">
+                  <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" /><div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
+                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => setActiveTab('game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />Rozpocznij naukę</Button><Button variant="outline" onClick={() => setActiveTab('pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">Otwórz pracownię</Button></div></div>
+                </motion.div>
+                <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">Twój pulpit nauki</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.</CardDescription></CardHeader>
+                <CardContent className="px-0">
+                  <div className="mb-6 grid gap-3 sm:grid-cols-4">{[{label:'Punkty', value:score, Icon:Trophy, tone:'text-amber-600'}, {label:'Scenariusze', value:completedScenarios.length, Icon:Target, tone:'text-teal-600'}, {label:'Odznaki', value:completedScenarios.length, Icon:Award, tone:'text-violet-600'}, {label:'Rekord quizu', value:score, Icon:Flame, tone:'text-orange-600'}].map(({label,value,Icon,tone}, index) => <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }} whileHover={{ y: -4 }} className="group rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-shadow hover:shadow-lg"><div className="flex items-center justify-between"><Icon className={`h-5 w-5 ${tone} transition-transform group-hover:scale-110`} /><span className="text-xs font-medium text-slate-500">{label}</span></div><motion.p key={value} initial={{ scale: 0.8, color: '#0f766e' }} animate={{ scale: 1, color: '#0f172a' }} className="mt-3 text-2xl font-bold">{value}</motion.p></motion.div>)}</div>
                   <div className="mb-5 grid gap-3 sm:grid-cols-3">
                     {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description]) => <div key={title} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></div>)}
                   </div>
