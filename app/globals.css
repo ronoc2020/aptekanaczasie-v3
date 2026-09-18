@@ -11,7 +11,7 @@ body {
 
 @layer utilities {
   .game-shell {
-    min-height: 100vh;
+  min-height: 100vh;
     --neon-a: 174 72% 42%;
     --neon-b: 190 85% 52%;
     --neon-c: 265 80% 62%;
@@ -27,6 +27,21 @@ body {
   .game-shell.time-day { --neon-a: 174 80% 44%; --neon-b: 190 90% 56%; --neon-c: 205 88% 64%; }
   .game-shell.time-dusk { --neon-a: 268 78% 62%; --neon-b: 25 95% 61%; --neon-c: 340 78% 66%; }
   .game-shell.time-night { --neon-a: 220 86% 58%; --neon-b: 275 82% 64%; --neon-c: 185 88% 48%; }
+
+  .game-shell.theme-light {
+    background: linear-gradient(135deg, #f8fffe 0%, #e7f8f5 48%, #eef4ff 100%) !important;
+    color: #123235;
+  }
+
+  .game-shell.theme-dark {
+    background: linear-gradient(135deg, #061f23 0%, #0a3437 48%, #111a38 100%) !important;
+    color: #efffff;
+  }
+
+  .game-shell.theme-light::after { opacity: 0.42; }
+  .game-shell.theme-dark::after { opacity: 0.82; }
+  .game-shell.theme-light .ambient-orb { opacity: 0.2; mix-blend-mode: multiply; }
+  .game-shell.theme-dark .ambient-orb { opacity: 0.56; mix-blend-mode: screen; }
 
   .game-shell::after {
     content: '';
@@ -321,7 +336,7 @@ body {
   .focus-mode .focus-header > div { position: absolute; right: 1rem; }
   .focus-mode .focus-control { display: inline-flex !important; }
 
-  .game-shell nav [aria-current="page"] {
+  .game-shell.theme-light nav [aria-current="page"] {
     position: relative;
     color: hsl(var(--foreground)) !important;
     background: hsl(var(--primary) / 0.14) !important;
@@ -402,17 +417,6 @@ body {
 
   .game-shell > main .text-muted-foreground,
   .game-shell > main [data-slot="card-description"] {
-    color: hsl(180 18% 78%) !important;
-  }
-
-  .game-shell > main > section > [data-slot="card"].bg-transparent,
-  .game-shell > main > section > [data-slot="card"].bg-transparent p,
-  .game-shell > main > section > [data-slot="card"].bg-transparent h2,
-  .game-shell > main > section > [data-slot="card"].bg-transparent h3 {
-    color: hsl(180 25% 94%) !important;
-  }
-
-  .game-shell > main > section > [data-slot="card"].bg-transparent .text-muted-foreground {
     color: hsl(180 18% 78%) !important;
   }
 
