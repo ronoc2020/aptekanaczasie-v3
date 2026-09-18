@@ -786,6 +786,135 @@ body {
   border-color: rgba(153, 246, 228, 0.35) !important;
 }
 
+/* Responsive safety net for every page surface and content module. */
+.game-shell > main {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  background: transparent !important;
+}
+
+.game-shell > main > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.game-shell img,
+.game-shell video,
+.game-shell canvas,
+.game-shell svg {
+  max-width: 100%;
+}
+
+.game-shell input,
+.game-shell textarea,
+.game-shell select,
+.game-shell button {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .game-shell {
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem !important;
+  }
+
+  .game-shell > header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .game-shell > header > div {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .game-shell > header > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .game-shell > main .container,
+  .game-shell > main [class*="max-w-"] {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .game-shell > main [class*="grid-cols-"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .game-shell > main [class*="grid-cols-2"],
+  .game-shell > main [class*="grid-cols-3"],
+  .game-shell > main [class*="grid-cols-4"],
+  .game-shell > main [class*="grid-cols-6"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .game-shell > main [class*="lg:grid-cols-"],
+  .game-shell > main [class*="xl:grid-cols-"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .game-shell > main [class*="overflow-x-auto"] {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .game-shell [role="tablist"] {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .game-shell [role="tab"] {
+    flex: 0 0 auto;
+    white-space: normal;
+  }
+
+  .game-shell .focus-hero {
+    padding: 1.25rem !important;
+    border-radius: 1.25rem;
+  }
+
+  .game-shell .focus-hero h2 {
+    font-size: clamp(1.8rem, 9vw, 2.75rem);
+    overflow-wrap: anywhere;
+  }
+
+  .game-shell .context-banner,
+  .game-shell .glass-panel,
+  .game-shell [data-slot="card"] {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .game-shell .accessibility-dropdown {
+    position: fixed !important;
+    top: 4.5rem !important;
+    right: 0.75rem !important;
+    left: auto !important;
+    width: min(18rem, calc(100vw - 1.5rem)) !important;
+    max-height: calc(100dvh - 6rem);
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .game-shell > main > .mx-auto {
+    width: min(100%, 72rem);
+  }
+}
+
 @layer base {
   :root {
     --font-sans: var(--font-geist-sans);
@@ -858,6 +987,83 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+/* Highest-priority theme text tokens, applied after utility layers. */
+.game-shell.theme-light > header,
+.game-shell.theme-light > header h1,
+.game-shell.theme-light > header p,
+.game-shell.theme-light > main,
+.game-shell.theme-light > main h1,
+.game-shell.theme-light > main h2,
+.game-shell.theme-light > main h3,
+.game-shell.theme-light > main p:not(.text-white),
+.game-shell.theme-light > main label {
+  color: #123235 !important;
+}
+
+.game-shell.theme-light > main .text-muted-foreground,
+.game-shell.theme-light > main [data-slot="card-description"] {
+  color: #3f6265 !important;
+}
+
+.game-shell.theme-dark > header,
+.game-shell.theme-dark > header h1,
+.game-shell.theme-dark > header p,
+.game-shell.theme-dark > main,
+.game-shell.theme-dark > main h1,
+.game-shell.theme-dark > main h2,
+.game-shell.theme-dark > main h3,
+.game-shell.theme-dark > main p:not(.text-white),
+.game-shell.theme-dark > main label {
+  color: #efffff !important;
+}
+
+.game-shell.theme-dark > main .text-muted-foreground,
+.game-shell.theme-dark > main [data-slot="card-description"] {
+  color: #c4e4e4 !important;
+}
+
+.game-shell.theme-dark > header .text-teal-900,
+.game-shell.theme-dark > header .text-teal-950 {
+  color: #efffff !important;
+}
+
+.game-shell .focus-hero,
+.game-shell .focus-hero h2,
+.game-shell .focus-hero p,
+.game-shell .focus-hero button {
+  color: #ffffff !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) p,
+.game-shell.theme-light > main > *:not(.focus-hero) h1,
+.game-shell.theme-light > main > *:not(.focus-hero) h2,
+.game-shell.theme-light > main > *:not(.focus-hero) h3,
+.game-shell.theme-light > main > *:not(.focus-hero) label {
+  color: #183b3e !important;
+  opacity: 1 !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) .text-muted-foreground,
+.game-shell.theme-light > main > *:not(.focus-hero) [data-slot="card-description"] {
+  color: #42676a !important;
+  opacity: 1 !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) p,
+.game-shell.theme-dark > main > *:not(.focus-hero) h1,
+.game-shell.theme-dark > main > *:not(.focus-hero) h2,
+.game-shell.theme-dark > main > *:not(.focus-hero) h3,
+.game-shell.theme-dark > main > *:not(.focus-hero) label {
+  color: #f0ffff !important;
+  opacity: 1 !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) .text-muted-foreground,
+.game-shell.theme-dark > main > *:not(.focus-hero) [data-slot="card-description"] {
+  color: #c7e6e6 !important;
+  opacity: 1 !important;
 }
 
 @layer base {
