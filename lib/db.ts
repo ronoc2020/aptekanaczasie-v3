@@ -55,4 +55,5 @@ const globalForDb = globalThis as unknown as { howToPool?: Pool }
 const pool = globalForDb.howToPool ?? new Pool({ connectionString: process.env.DATABASE_URL })
 if (process.env.NODE_ENV !== 'production') globalForDb.howToPool = pool
 
+export { pool }
 export const db = drizzle(pool)

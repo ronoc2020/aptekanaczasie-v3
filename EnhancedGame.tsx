@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AuthPanel } from '@/components/auth-panel'
+import { authClient } from '@/lib/auth-client'
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -429,6 +431,8 @@ export default function EnhancedGame() {
   const [answeredQuestions, setAnsweredQuestions] = useState(0)
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [legalSection, setLegalSection] = useState<'privacy' | 'cookies' | null>(null)
+  const [authOpen, setAuthOpen] = useState(false)
+  const [sessionUser, setSessionUser] = useState<{ name?: string; email?: string } | null>(null)
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient>({ name: '', weight: 0 })
@@ -559,6 +563,10 @@ export default function EnhancedGame() {
   }, [language])
 
   useEffect(() => {
+    authClient.getSession().then(({ data }) => setSessionUser(data?.user ?? null))
+  }, [])
+
+  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && selectedAnswer !== null) {
         handleAnswerSubmit()
@@ -596,7 +604,7 @@ export default function EnhancedGame() {
           <Logo language={language} />
           <h1 className={`motion-safe-float text-4xl font-bold text-teal-700 ${roboto.className}`}>{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button>
+            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
             <Button
               variant="outline"
               size="icon"
@@ -612,6 +620,8 @@ export default function EnhancedGame() {
             </Button>
           </div>
         </motion.header>
+
+        <Dialog open={authOpen} onOpenChange={setAuthOpen}><DialogContent className="sm:max-w-md"><DialogHeader><DialogTitle>{language === 'pl' ? 'Twoje konto' : 'Your account'}</DialogTitle><DialogDescription>{language === 'pl' ? 'Zapisuj postęp, ulubione i personalizowane rekomendacje.' : 'Save progress, favorites and personalized recommendations.'}</DialogDescription></DialogHeader>{sessionUser ? <div className="space-y-4"><p className="text-sm text-muted-foreground">{sessionUser.email}</p><Button variant="outline" onClick={async () => { await authClient.signOut(); setSessionUser(null); setAuthOpen(false) }} className="w-full">{language === 'pl' ? 'Wyloguj się' : 'Sign out'}</Button></div> : <AuthPanel onSuccess={async () => { const { data } = await authClient.getSession(); setSessionUser(data?.user ?? null); setAuthOpen(false) }} />}</DialogContent></Dialog>
 
         {activeTab !== 'menu' && <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200/70 bg-gradient-to-r from-teal-50 via-white to-cyan-50 px-4 py-3 text-sm shadow-sm"><div className="flex items-center gap-3"><div className="rounded-xl bg-teal-600 p-2 text-white"><ShieldCheck className="h-4 w-4" /></div><div><p className="font-semibold text-teal-900">{language === 'pl' ? 'Przestrzeń nauki i bezpiecznej praktyki' : 'Learning and safe-practice space'}</p><p className="text-xs text-slate-600">{language === 'pl' ? 'Każdy wynik wymaga aktualnego źródła, SOP i oceny farmaceuty.' : 'Every result requires a current source, SOP and pharmacist review.'}</p></div></div><a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-900 transition hover:-translate-y-0.5 hover:bg-amber-200"><Heart className="h-4 w-4" /> Wesprzyj rozwój</a></motion.div>}
 
