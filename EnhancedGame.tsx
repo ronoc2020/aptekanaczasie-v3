@@ -468,6 +468,8 @@ const Logo: React.FC<{ language?: 'pl' | 'en' }> = ({ language = 'pl' }) => (
 export default function EnhancedGame() {
   const [activeTab, setActiveTab] = useState('menu')
   const [language, setLanguage] = useState<'pl' | 'en'>('pl')
+  const [fontScale, setFontScale] = useState<'normal' | 'large' | 'xlarge'>('normal')
+  const [isHydrated, setIsHydrated] = useState(false)
   const t = uiText[language]
   const trackModule = (module: string, action = 'open') => { void fetch('/api/activity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ module, action }) }) }
   const openModule = (module: string, tab: string) => { trackModule(module); setActiveTab(tab) }
@@ -569,7 +571,7 @@ export default function EnhancedGame() {
     } else {
       const newProgress = progress + Math.floor(100 / scenarios.length)
       setProgress(Math.min(newProgress, 100))
-      setCompletedScenarios([...completedScenarios, currentScenario.id])
+      setCompletedScenarios((items) => items.includes(currentScenario.id) ? items : [...items, currentScenario.id])
       setCurrentScenario(null)
       setShowExplanation(false)
       setIsCorrect(null)
@@ -616,6 +618,10 @@ export default function EnhancedGame() {
   }
 
   useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
   }, [theme])
 
@@ -632,7 +638,7 @@ export default function EnhancedGame() {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && selectedAnswer !== null) {
+      if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229 && selectedAnswer !== null) {
         handleAnswerSubmit()
       }
     }
@@ -655,9 +661,14 @@ export default function EnhancedGame() {
     }
   }
 
+  if (!isHydrated) {
+    return <main className="grid min-h-screen place-items-center bg-background px-6 text-center" aria-busy="true"><div><FlaskConical className="mx-auto mb-3 h-8 w-8 animate-pulse text-teal-600" aria-hidden="true" /><p className="font-semibold text-teal-800">Ładowanie przestrzeni nauki…</p></div></main>
+  }
+
   return (
     <TooltipProvider>
-<div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+<div className={`game-shell game-card-shine font-scale-${fontScale} relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+  <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /></div>
   <motion.header
           className="glass-panel mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl px-4 py-3 sm:px-6"
@@ -667,8 +678,8 @@ export default function EnhancedGame() {
         >
           <Logo language={language} />
           <h1 className={`motion-safe-float text-4xl font-bold text-teal-700 ${roboto.className}`}>{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
+          <div className="flex max-w-full flex-wrap items-center justify-end gap-2">
+            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><div className="flex items-center gap-1 rounded-full border border-teal-200 bg-white/70 p-1" role="group" aria-label={language === 'pl' ? 'Rozmiar tekstu' : 'Text size'}><Button type="button" variant={fontScale === 'normal' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-xs" onClick={() => setFontScale('normal')} aria-label={language === 'pl' ? 'Standardowa czcionka' : 'Standard text'}>A</Button><Button type="button" variant={fontScale === 'large' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-sm" onClick={() => setFontScale('large')} aria-label={language === 'pl' ? 'Duża czcionka' : 'Large text'}>A</Button><Button type="button" variant={fontScale === 'xlarge' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-base" onClick={() => setFontScale('xlarge')} aria-label={language === 'pl' ? 'Bardzo duża czcionka' : 'Extra large text'}>A</Button></div><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
             <Button
               variant="outline"
               size="icon"
@@ -712,8 +723,8 @@ export default function EnhancedGame() {
                     {[['Praktyka', 'Ćwicz wywiad, czerwone flagi i bezpieczne rekomendacje.'], ['Receptura', 'Rozwijaj receptury i kalkulacje z kontrolą jednostek.'], ['Jakość', 'Dokumentuj źródła, SOP, BUD i drugą kontrolę.']].map(([title, description], index) => <motion.div key={title} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + index * 0.1 }} whileHover={{ y: -5, scale: 1.02 }} className="rounded-2xl border border-teal-100 bg-teal-50/70 p-4 shadow-sm transition-shadow hover:shadow-lg"><p className="font-semibold text-teal-800">{title}</p><p className="mt-1 text-xs leading-relaxed text-slate-600">{description}</p></motion.div>)}
                   </div>
                   <Alert className="mb-5 border-amber-300 bg-amber-50 text-amber-950"><ShieldCheck className="size-4" /><AlertTitle>Transparentne ograniczenia</AlertTitle><AlertDescription>Aplikacja nie diagnozuje, nie dobiera samodzielnie terapii i nie zatwierdza preparatów do wydania. Każdy wynik wymaga oceny profesjonalisty i aktualnego źródła.</AlertDescription></Alert>
-                  <a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="group mb-5 flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"><span className="flex-1"><strong className="text-amber-950">Wesprzyj rozwój Apteki na Czasie</strong><span className="mt-1 block text-xs leading-relaxed text-amber-800">Twoje wsparcie pomaga dodawać scenariusze, źródła i narzędzia dla farmaceutów.</span><span className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-orange-700">buymeacoffee.com/r0cs <Heart className="h-4 w-4 transition group-hover:scale-110" /></span></span><img src="/qr-code.png" alt="Kod QR do strony wsparcia Apteki na Czasie" className="h-24 w-24 rounded-xl border-4 border-white bg-white p-1 shadow-md transition duration-300 group-hover:rotate-2 group-hover:scale-105" /></a>
-                  <div className="grid grid-cols-2 gap-4">
+                  <a href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer" className="group mb-5 flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"><span className="flex-1"><strong className="text-amber-950">Wesprzyj rozwój Apteki na Czasie</strong><span className="mt-1 block text-xs leading-relaxed text-amber-800">Twoje wsparcie pomaga dodawać scenariusze, źródła i narzędzia dla farmaceutów.</span><span className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-orange-700">buymeacoffee.com/r0cs <Heart className="h-4 w-4 transition group-hover:scale-110" /></span></span><img src="/qr-code.png" alt="Kod QR do strony wsparcia Apteki na Czasie" className="hidden h-24 w-24 rounded-xl border-4 sm:block border-white bg-white p-1 shadow-md transition duration-300 group-hover:rotate-2 group-hover:scale-105" /></a>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <Button onClick={() => setActiveTab('game')} className="h-24 bg-teal-500 hover:bg-teal-600 text-white">
                       <Building2 className="mr-2 h-6 w-6" />
                       Rozpocznij Grę
