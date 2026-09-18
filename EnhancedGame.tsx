@@ -483,8 +483,9 @@ export default function EnhancedGame() {
       setFormStatus({ type: 'success', message: language === 'pl' ? 'Wiadomość została wysłana.' : 'Message sent successfully.' })
       if (kind === 'contact') setContactForm({ name: '', email: '', subject: '', message: '' })
       else setFeedbackForm({ rating: '5', improvement: '' })
-    } catch {
-      setFormStatus({ type: 'error', message: language === 'pl' ? 'Nie udało się wysłać. Spróbuj ponownie.' : 'Could not send. Please try again.' })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ''
+      setFormStatus({ type: 'error', message: message || (language === 'pl' ? 'Nie udało się wysłać. Spróbuj ponownie.' : 'Could not send. Please try again.') })
     }
   }
   const localizeQuestion = (scenario: Scenario, index: number) => language === 'en' ? (scenarioTranslationsEn[scenario.id]?.[index] ?? scenario.questions[index]) : scenario.questions[index]
