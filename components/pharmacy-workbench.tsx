@@ -100,6 +100,8 @@ export function PharmacyWorkbench() {
   const [operatorId, setOperatorId] = useState('')
   const [reviewerId, setReviewerId] = useState('')
   const [sopNumber, setSopNumber] = useState('')
+  const [sourceVersion, setSourceVersion] = useState('')
+  const [auditTrail, setAuditTrail] = useState<string[]>([])
 
   const filteredSymptoms = useMemo(() => symptoms.filter((item) => item.name.toLowerCase().includes(symptomQuery.toLowerCase())), [symptomQuery])
   const numeric = (...values: string[]) => values.every((value) => Number.isFinite(Number(value)) && Number(value) > 0)
@@ -116,7 +118,7 @@ export function PharmacyWorkbench() {
   const molarAmount = Number.isFinite(Number(molarMass)) && Number(molarMass) > 0 && Number.isFinite(Number(moles)) && Number(moles) > 0 ? (Number(molarMass) * Number(moles)).toFixed(3) : '—'
   const dilutionVolume = Number(c1) > 0 && Number(v1) > 0 && Number(c2) > 0 ? (Number(c1) * Number(v1) / Number(c2)).toFixed(2) : '—'
   const seriesTotal = Number.isFinite(Number(seriesSize)) && Number(seriesSize) > 0 && ingredientTotal > 0 ? (ingredientTotal * Number(seriesSize)).toFixed(3) : '—'
-  const invalidPatient = !Number.isFinite(Number(patientAge)) || Number(patientAge) <= 0 || Number(patientAge) > 120 || !Number.isFinite(Number(egfr)) || Number(egfr) <= 0 || !Number.isFinite(Number(crcl)) || Number(crcl) <= 0 || renalStatus !== 'prawidłowa' || hepaticStatus !== 'prawidłowa' || pregnancy === 'tak' || lactation === 'tak'
+  const invalidPatient = !Number.isFinite(Number(patientAge)) || Number(patientAge) <= 0 || Number(patientAge) > 120 || !Number.isFinite(Number(egfr)) || Number(egfr) <= 0 || !Number.isFinite(Number(crcl)) || Number(crcl) <= 0 || renalStatus !== 'prawidłowa' || hepaticStatus !== 'prawidłowa' || pregnancy === 'tak' || lactation !== 'nie'
   const invalidCalculation = !numeric(dose, concentration, patientWeight, dosePerKg, maxDose, dosesPerDay) || Number(dose) > Number(maxDose) || Number(percent) > 100 || Number(c1) <= Number(c2) || Number(ph) < 0 || Number(ph) > 14
   const invalidTolerance = !Number.isFinite(Number(weighingTolerance)) || Number(weighingTolerance) <= 0 || Number(weighingTolerance) > 20
   const auditReady = Boolean(batchNumber.trim() && operatorId.trim() && reviewerId.trim() && sopNumber.trim())
@@ -125,6 +127,34 @@ export function PharmacyWorkbench() {
   const allChecks = completedChecks === qualityChecks.length
 
   const updateIngredient = (index: number, field: string, value: string) => setIngredients((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item))
+
+  const addAuditEvent = (event: string) => setAuditTrail((items) => [`${new Date().toLocaleString('pl-PL')} — ${event}`, ...items])
+
+  const downloadAuditReport = () => {
+    const report = [
+      'KARTA KONTROLI — PRACOWNIA FARMACEUTYCZNA',
+      `Wygenerowano: ${new Date().toLocaleString('pl-PL')}`,
+      `Tryb: ${workMode === 'professional' ? 'profesjonalny' : 'edukacyjny'}`,
+      `Receptura: ${selectedRecipe.name} v${recipeVersion}`,
+      `Źródło: ${sourceVersion || 'nie podano'}`,
+      `SOP: ${sopNumber || 'nie podano'} | Seria: ${batchNumber || 'nie podano'}`,
+      `Operator: ${operatorId || 'nie podano'} | Kontroler: ${reviewerId || 'nie podano'}`,
+      `Składników: ${ingredients.length} | Suma ilości: ${ingredientTotal.toFixed(3)}`,
+      `Kontrola jakości: ${completedChecks}/${qualityChecks.length}`,
+      `Gotowość receptury: ${recipeReady ? 'tak — do niezależnego zwolnienia' : 'nie — zablokowana'}`,
+      '',
+      'UWAGA: Raport pomocniczy. Nie zastępuje ChPL, Farmakopei Polskiej, SOP ani decyzji farmaceuty.',
+      '',
+      'ŚLAD AUDYTOWY:',
+      ...(auditTrail.length ? auditTrail : ['Brak zapisanych zdarzeń']),
+    ].join('\\n')
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(new Blob([report], { type: 'text/plain;charset=utf-8' }))
+    link.download = `karta-kontroli-${batchNumber || 'robocza'}.txt`
+    link.click()
+    URL.revokeObjectURL(link.href)
+    addAuditEvent('Wygenerowano raport kontroli')
+  }
 
   return (
     <Card className="glass-panel overflow-hidden border-0 shadow-xl">
@@ -201,7 +231,7 @@ export function PharmacyWorkbench() {
               <CardHeader><CardTitle className="flex items-center gap-2"><History className="size-5 text-primary" /> Karta kontroli i ślad decyzji</CardTitle><CardDescription>Przed wydaniem zapisz źródło, wersję procedury i osobę wykonującą niezależną kontrolę.</CardDescription></CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div><Label htmlFor="source-version">Źródło / wersja ChPL</Label><Input id="source-version" placeholder="np. ChPL, wydanie, data" /></div>
+                  <div><Label htmlFor="source-version">Źródło / wersja ChPL</Label><Input id="source-version" placeholder="np. ChPL, wydanie, data" value={sourceVersion} onChange={(event) => setSourceVersion(event.target.value)} /></div>
                   <div><Label htmlFor="sop-number">Numer SOP / procedury</Label><Input id="sop-number" placeholder="np. SOP-AP-014" value={sopNumber} onChange={(event) => setSopNumber(event.target.value)} /></div>
                   <div><Label htmlFor="batch-number">Numer serii</Label><Input id="batch-number" placeholder="np. 2026-001" value={batchNumber} onChange={(event) => setBatchNumber(event.target.value)} /></div>
                   <div><Label htmlFor="operator">Osoba wykonująca</Label><Input id="operator" placeholder="Inicjały lub identyfikator" value={operatorId} onChange={(event) => setOperatorId(event.target.value)} /></div>
@@ -210,7 +240,7 @@ export function PharmacyWorkbench() {
                 </div>
                 <Alert><Info className="size-4" /><AlertTitle>Reguła niezależnej kontroli</AlertTitle><AlertDescription>Nie zatwierdzaj obliczeń własnym podpisem bez drugiej weryfikacji, jeśli wymaga tego procedura apteki lub charakter preparatu.</AlertDescription></Alert>
                 <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Składników</p><p className="text-2xl font-bold">{ingredients.length}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Suma ilości</p><p className="text-2xl font-bold">{ingredientTotal.toFixed(2)}</p></div><div className="rounded-xl border bg-muted/30 p-4"><p className="text-xs text-muted-foreground">Kontrola</p><p className="text-2xl font-bold">{completedChecks}/{qualityChecks.length}</p></div></div>
-                <div className="flex flex-wrap gap-2"><Button type="button" variant="outline" onClick={() => window.print()}><Download data-icon="inline-start" /> Drukuj kartę kontroli</Button><Button type="button" variant="ghost" onClick={() => { setChecks({}); setIngredients([{ name: 'Substancja czynna', amount: '0', unit: 'mg' }]) }}><RefreshCw data-icon="inline-start" /> Wyczyść sesję</Button></div>
+                <div className="flex flex-wrap gap-2"><Button type="button" variant="outline" onClick={() => { addAuditEvent('Otwarto wydruk karty kontroli'); window.print() }}><Download data-icon="inline-start" /> Drukuj / PDF</Button><Button type="button" variant="secondary" onClick={downloadAuditReport}><FileText data-icon="inline-start" /> Pobierz raport</Button><Button type="button" variant="ghost" onClick={() => { setChecks({}); setIngredients([{ name: 'Substancja czynna', amount: '0', unit: 'mg' }]); addAuditEvent('Wyczyszczono składniki i checklistę') }}><RefreshCw data-icon="inline-start" /> Wyczyść sesję</Button></div><div className="rounded-xl border bg-muted/20 p-4"><div className="mb-2 flex items-center justify-between gap-3"><p className="text-sm font-medium">Ślad audytowy sesji</p><Badge variant="outline">{auditTrail.length} zdarzeń</Badge></div>{auditTrail.length ? <ol className="max-h-32 space-y-1 overflow-auto text-xs text-muted-foreground">{auditTrail.map((event) => <li key={event}>{event}</li>)}</ol> : <p className="text-xs text-muted-foreground">Zdarzenia pojawią się po zapisaniu raportu lub wyczyszczeniu sesji.</p>}</div>
               </CardContent>
             </Card>
             <Card>
