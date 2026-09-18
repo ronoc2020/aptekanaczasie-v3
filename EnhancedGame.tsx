@@ -16,7 +16,7 @@ import { Slider } from "@/components/ui/slider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical, Sparkles, Play, Target, Mail, MessageSquare } from 'lucide-react'
+import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, ChevronUp, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical, Sparkles, Play, Target, Mail, MessageSquare } from 'lucide-react'
 import confetti from 'canvas-confetti'
 import { HowToLibrary } from '@/components/how-to-library'
 import { HerbsMedicinesDatabase } from '@/components/herbs-medicines-database'
@@ -519,6 +519,7 @@ export default function EnhancedGame() {
   const [feedbackForm, setFeedbackForm] = useState({ rating: '5', improvement: '' })
   const [formStatus, setFormStatus] = useState<{ type: 'idle' | 'sending' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' })
   const [toastMessage, setToastMessage] = useState('')
+  const [showBackToTop, setShowBackToTop] = useState(false)
   const showToast = (message: string) => { setToastMessage(message); window.setTimeout(() => setToastMessage(''), 2600) }
   
   const [labRecipe, setLabRecipe] = useState<Recipe>({ name: '', ingredients: [], instructions: '' })
@@ -669,6 +670,13 @@ export default function EnhancedGame() {
   }, [])
 
   useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 520)
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && !event.isComposing && event.keyCode !== 229 && selectedAnswer !== null) {
         handleAnswerSubmit()
@@ -699,7 +707,7 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-<div className={`game-shell time-${timePeriod} section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-visible px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1, backgroundImage: 'radial-gradient(ellipse 60% 45% at 8% 8%, hsl(var(--neon-a) / 0.48), transparent 70%), radial-gradient(ellipse 55% 42% at 92% 20%, hsl(var(--neon-b) / 0.42), transparent 68%), radial-gradient(ellipse 50% 55% at 60% 92%, hsl(var(--neon-c) / 0.32), transparent 72%), linear-gradient(135deg, hsl(var(--background)), hsl(var(--neon-a) / 0.12))' }}>
+<div className={`game-shell time-${timePeriod} section-${activeTab} game-card-shine relative min-h-screen container mx-auto overflow-visible px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className} ${focusMode ? 'focus-mode' : ''}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
   <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
   <AnimatePresence>{toastMessage && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} role="status" className="fixed bottom-5 right-5 z-50 rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm font-semibold text-teal-900 shadow-xl">{toastMessage}</motion.div>}</AnimatePresence>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /><span className="ambient-orb orb-one" /><span className="ambient-orb orb-two" /><span className="ambient-orb orb-three" /></div>
@@ -1168,7 +1176,9 @@ export default function EnhancedGame() {
           {formStatus.message && <p role="status" className={`lg:col-span-2 rounded-lg p-3 text-sm ${formStatus.type === 'error' ? 'bg-red-50 text-red-700' : 'bg-teal-50 text-teal-800'}`}>{formStatus.message}</p>}
         </section>}
 
-        <footer className="focus-footer mt-8 flex flex-col items-center gap-3 border-t border-teal-100 pt-6 text-center text-sm text-slate-600">
+        {showBackToTop && <Button type="button" variant="outline" size="icon" aria-label={language === 'pl' ? 'Wróć na górę' : 'Back to top'} title={language === 'pl' ? 'Wróć na górę' : 'Back to top'} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="back-to-top fixed bottom-6 right-6 z-40 rounded-full border-teal-300 bg-white/90 text-teal-800 shadow-lg backdrop-blur transition hover:-translate-y-1 hover:bg-teal-50"><ChevronUp className="h-4 w-4" /></Button>}
+
+  <footer className="focus-footer mt-8 flex flex-col items-center gap-3 border-t border-teal-100 pt-6 text-center text-sm text-slate-600">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('privacy')}>Polityka prywatności</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('cookies')}>Polityka cookies</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setActiveTab('pharmacy')}>Pracownia farmaceuty</button><a className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-900 no-underline transition hover:-translate-y-0.5 hover:bg-amber-200" href="https://buymeacoffee.com/r0cs" target="_blank" rel="noreferrer">Wesprzyj projekt — Buy Me a Coffee</a></div>
           <p>Aplikację stworzył <strong>Roman Orłowski</strong> · <a className="text-teal-700 underline" href="mailto:contact@rocybersolutions.com">contact@rocybersolutions.com</a></p>
           <p className="max-w-2xl text-xs leading-relaxed text-slate-500">Aplikacja korzysta z niezbędnych mechanizmów technicznych do działania interfejsu. Nie sprzedajemy danych użytkowników ani nie wykorzystujemy formularzy do identyfikacji pacjentów.</p>

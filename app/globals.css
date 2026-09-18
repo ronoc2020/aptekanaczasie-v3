@@ -15,14 +15,8 @@ body {
     --neon-a: 174 72% 42%;
     --neon-b: 190 85% 52%;
     --neon-c: 265 80% 62%;
-    background-color: hsl(var(--background));
-    background-image:
-      radial-gradient(ellipse 60% 45% at 8% 8%, hsl(var(--neon-a) / 0.48), transparent 70%),
-      radial-gradient(ellipse 55% 42% at 92% 20%, hsl(var(--neon-b) / 0.42), transparent 68%),
-      radial-gradient(ellipse 50% 55% at 60% 92%, hsl(var(--neon-c) / 0.32), transparent 72%),
-      linear-gradient(135deg, hsl(var(--background)), hsl(var(--neon-a) / 0.12));
+    background: transparent !important;
     background-attachment: fixed !important;
-    background-color: hsl(var(--background)) !important;
     isolation: isolate;
     position: relative;
     transition: background 1200ms ease, --neon-a 1200ms ease, --neon-b 1200ms ease, --neon-c 1200ms ease;
@@ -60,6 +54,15 @@ body {
 
   .hero-cta {
     animation: cta-pulse 2.8s ease-in-out infinite;
+  }
+
+  .back-to-top {
+    animation: back-to-top-in 220ms ease-out both;
+  }
+
+  @keyframes back-to-top-in {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   /* Scale the complete reading surface, including Tailwind rem-based text utilities. */
