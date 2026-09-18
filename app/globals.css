@@ -1029,10 +1029,24 @@ body {
   color: #efffff !important;
 }
 
-.game-shell .focus-hero,
-.game-shell .focus-hero h2,
-.game-shell .focus-hero p,
-.game-shell .focus-hero button {
+.game-shell.theme-dark .focus-hero,
+.game-shell.theme-dark .focus-hero h2,
+.game-shell.theme-dark .focus-hero p,
+.game-shell.theme-dark .focus-hero button {
+  color: #ffffff !important;
+}
+
+.game-shell.theme-light .focus-hero {
+  background: linear-gradient(135deg, #075e5b 0%, #087f7b 52%, #087c91 100%) !important;
+  color: #ffffff !important;
+}
+
+.game-shell.theme-light .focus-hero,
+.game-shell.theme-light .focus-hero h2,
+.game-shell.theme-light .focus-hero p,
+.game-shell.theme-light .focus-hero button,
+.game-shell.theme-light .focus-hero .text-white,
+.game-shell.theme-light .focus-hero [class*="text-white"] {
   color: #ffffff !important;
 }
 
@@ -1099,6 +1113,7 @@ body {
   color: #193b3e !important;
 }
 
+.game-shell.theme-light > main .focus-hero,
 .game-shell.theme-light > main .focus-hero p,
 .game-shell.theme-light > main .focus-hero h1,
 .game-shell.theme-light > main .focus-hero h2,
