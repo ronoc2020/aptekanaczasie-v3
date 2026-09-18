@@ -271,10 +271,19 @@
   .focus-mode .pharmacy-atmosphere,
   .focus-mode .ambient-orb,
   .focus-mode .molecule,
-  .focus-mode header nav,
-  .focus-mode header .primary-button,
-  .focus-mode .game-card-shine::before { display: none; }
+  .focus-mode .focus-header nav,
+  .focus-mode .focus-header > div > *:not(.focus-control),
+  .focus-mode .context-banner,
+  .focus-mode .focus-footer,
+  .focus-mode .focus-hero,
+  .focus-mode .focus-dashboard,
+  .focus-mode .game-card-shine::before,
+  .focus-mode [aria-label="Kontakt i opinie"],
+  .focus-mode [data-focus-hide="true"] { display: none !important; }
 
+  .focus-mode .focus-header { min-height: 3rem; justify-content: center; }
+  .focus-mode .focus-header > div { position: absolute; right: 1rem; }
+  .focus-mode .focus-control { display: inline-flex !important; }
   .focus-mode { max-width: 960px; }
   .focus-mode > header { opacity: 0.92; }
   .focus-mode main { max-width: 880px; margin-inline: auto; }
