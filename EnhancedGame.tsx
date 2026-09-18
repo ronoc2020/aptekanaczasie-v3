@@ -1080,14 +1080,14 @@ export default function EnhancedGame() {
             ) : activeTab === 'pharmacy' ? (
               <PharmacyWorkbench language={language} />
             ) : activeTab === 'howto' ? (
-              <HowToLibrary />
+              <HowToLibrary language={language} />
             ) : activeTab === 'library' ? (
               <Card className="bg-white shadow-lg">
                 <CardHeader>
                   <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>{language === 'en' ? 'Knowledge library' : 'Biblioteka'}</CardTitle>
                 </CardHeader>
   <CardContent>
-  <HerbsMedicinesDatabase />
+  <HerbsMedicinesDatabase language={language} />
   <div className="mb-5 mt-6 grid gap-3 md:grid-cols-[1fr_auto]">
                     <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder={language === 'en' ? 'Search by name or use...' : 'Szukaj po nazwie lub zastosowaniu...'} className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
                     <div className="flex flex-wrap gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>{language === 'en' ? 'All' : 'Wszystko'}</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>{language === 'en' ? 'Herbs' : 'Zioła'}</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>{language === 'en' ? 'Medicines' : 'Leki'}</Button><Button variant={favoritesOnly ? 'default' : 'outline'} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart className="mr-1 h-4 w-4" />{language === 'en' ? 'Favorites' : 'Ulubione'}</Button></div>
