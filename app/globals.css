@@ -40,6 +40,10 @@ body {
 
   .game-shell.theme-light::after { opacity: 0.42; }
   .game-shell.theme-dark::after { opacity: 0.82; }
+  .game-shell.theme-light > main { color: #123235; }
+  .game-shell.theme-dark > main { color: #efffff; }
+  .game-shell.theme-light .glass-panel { background: rgba(255,255,255,0.9); }
+  .game-shell.theme-dark .glass-panel { background: rgba(8, 35, 39, 0.88); border-color: rgba(153, 246, 228, 0.3); }
   .game-shell.theme-light .ambient-orb { opacity: 0.2; mix-blend-mode: multiply; }
   .game-shell.theme-dark .ambient-orb { opacity: 0.56; mix-blend-mode: screen; }
 
@@ -173,6 +177,96 @@ body {
     .typewriter { white-space: normal; border-right: 0; animation: fade-up 0.7s ease-out both; }
     .font-scale-large { font-size: 106.25%; }
     .font-scale-xlarge { font-size: 112.5%; }
+
+    .game-shell {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: clip;
+      padding: 0.75rem !important;
+    }
+
+    .game-shell > header {
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem !important;
+      border-radius: 1.25rem;
+    }
+
+    .game-shell > header > div:last-child {
+      width: 100%;
+      justify-content: flex-start;
+      gap: 0.4rem;
+    }
+
+    .game-shell > header > div:last-child > button,
+    .game-shell > header > div:last-child > details {
+      flex: 0 0 auto;
+    }
+
+    .game-shell > header > div:last-child .focus-control {
+      max-width: none;
+      min-width: 0;
+      padding-inline: 0.65rem;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .game-shell .accessibility-dropdown {
+      top: 4.25rem;
+      right: 0;
+      width: min(18rem, calc(100vw - 2rem));
+    }
+
+    .game-shell > main {
+      min-width: 0;
+    }
+
+    .game-shell > main [class*="grid-cols-"] {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .game-shell > main [class*="overflow-x"] {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .game-shell .focus-hero {
+      border-radius: 1.5rem;
+      padding: 1.5rem !important;
+    }
+
+    .game-shell .focus-hero h2 {
+      font-size: clamp(2rem, 10vw, 3rem);
+      line-height: 1.08;
+    }
+
+    .game-shell .focus-hero .mt-8 {
+      margin-top: 1.5rem;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .game-shell .focus-hero .mt-8 > button {
+      width: 100%;
+    }
+
+    .game-shell [role="tablist"] {
+      display: flex;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-bottom: 0.35rem;
+    }
+
+    .game-shell [role="tab"] {
+      flex: 0 0 auto;
+      min-height: 2.75rem;
+    }
+
+    .game-shell .back-to-top {
+      right: 1rem;
+      bottom: 1rem;
+    }
   }
   @keyframes caret-blink { 50% { border-color: transparent; } }
   @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
