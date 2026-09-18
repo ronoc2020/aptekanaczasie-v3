@@ -1066,6 +1066,33 @@ body {
   opacity: 1 !important;
 }
 
+/* Light theme never uses white text on light content surfaces. */
+.game-shell.theme-light > main .text-white,
+.game-shell.theme-light > main [class*="text-white"],
+.game-shell.theme-light > main [style*="color: white"],
+.game-shell.theme-light > main [style*="color: #fff"] {
+  color: #123235 !important;
+}
+
+.game-shell.theme-light > main [data-slot="card"] *,
+.game-shell.theme-light > main .bg-white *,
+.game-shell.theme-light > main .bg-slate-50 * {
+  color: inherit;
+}
+
+.game-shell.theme-light > main [data-slot="card"] .text-muted-foreground,
+.game-shell.theme-light > main .bg-white .text-muted-foreground,
+.game-shell.theme-light > main .bg-slate-50 .text-muted-foreground {
+  color: #466568 !important;
+}
+
+.game-shell.theme-light > main input,
+.game-shell.theme-light > main textarea,
+.game-shell.theme-light > main select {
+  color: #123235 !important;
+  background-color: #ffffff !important;
+}
+
 @layer base {
   * {
     @apply border-border;
