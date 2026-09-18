@@ -110,7 +110,7 @@ export function PharmacyWorkbench() {
   const scale = numeric(baseMass, targetMass) ? (Number(targetMass) / Number(baseMass)).toFixed(3) : '—'
   const dailyDose = numeric(weightDose, dosesPerDay) ? (Number(weightDose) * Number(dosesPerDay)).toFixed(2) : '—'
   const cappedDose = numeric(weightDose, maxDose) ? Math.min(Number(weightDose), Number(maxDose)).toFixed(2) : '—'
-  const roundedDose = numeric(weightDose, rounding) ? (Math.round(Number(weightDose) / Number(rounding) * Number(rounding))).toFixed(2) : '—'
+  const roundedDose = numeric(weightDose, rounding) ? (Math.round(Number(weightDose) / Number(rounding)) * Number(rounding)).toFixed(2) : '—'
   const doseWarning = dailyDose !== '—' && Number(dailyDose) > Number(maxDose)
   const ingredientTotal = ingredients.reduce((total, ingredient) => total + (Number(ingredient.amount) || 0), 0)
   const invalidIngredients = ingredients.some((ingredient) => !ingredient.name.trim() || !Number.isFinite(Number(ingredient.amount)) || Number(ingredient.amount) <= 0 || !['mg', 'g', 'ml', 'µg'].includes(ingredient.unit))
