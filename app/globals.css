@@ -55,9 +55,58 @@
     animation: typing 3.2s steps(70, end) both, caret-blink 850ms step-end infinite;
   }
 
+  .pharmacy-atmosphere {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
   .pharmacy-atmosphere .molecule {
+    position: absolute;
+    width: 7rem;
+    height: 7rem;
+    border: 1px solid hsl(var(--primary) / 0.14);
+    border-radius: 999px;
     animation: molecule-drift 12s ease-in-out infinite alternate;
   }
+
+  .ambient-orb {
+    position: absolute;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 999px;
+    filter: blur(42px);
+    opacity: 0.22;
+    animation: orb-drift 18s ease-in-out infinite alternate;
+    background: hsl(var(--primary) / 0.35);
+  }
+
+  .orb-one { left: -5rem; top: 18%; }
+  .orb-two { right: -6rem; top: 42%; animation-delay: -6s; background: hsl(var(--chart-2) / 0.28); }
+  .orb-three { left: 38%; bottom: -8rem; animation-delay: -11s; background: hsl(var(--chart-4) / 0.22); }
+
+  .section-menu { --section-accent: 174 72% 42%; }
+  .section-pharmacy { --section-accent: 162 64% 45%; }
+  .section-lab { --section-accent: 265 80% 62%; }
+  .section-game { --section-accent: 42 96% 64%; }
+  .section-library, .section-howto { --section-accent: 205 80% 58%; }
+  .section-results { --section-accent: 280 80% 65%; }
+  .section-admin { --section-accent: 12 78% 60%; }
+  .section-pharmacy::after, .section-lab::after, .section-game::after, .section-library::after, .section-howto::after, .section-results::after, .section-admin::after {
+    background:
+      radial-gradient(circle at 16% 18%, hsl(var(--section-accent) / 0.16), transparent 30%),
+      radial-gradient(circle at 84% 72%, hsl(var(--section-accent) / 0.12), transparent 28%);
+    animation-duration: 13s;
+  }
+
+  .section-pharmacy .orb-one { animation-name: orbit-pharmacy; }
+  .section-lab .orb-one { animation-name: orbit-lab; }
+  .section-game .orb-one { animation-name: orbit-game; }
+  .section-library .orb-one, .section-howto .orb-one { animation-name: orbit-library; }
+  .section-results .orb-one { animation-name: orbit-results; }
+  .section-admin .orb-one { animation-name: orbit-admin; }
 
   .pharmacy-atmosphere .molecule:nth-child(even) { animation-duration: 16s; animation-delay: -3s; }
   .pharmacy-atmosphere .molecule:nth-child(3n) { animation-duration: 20s; animation-delay: -7s; }
@@ -77,6 +126,18 @@
   @keyframes caret-blink { 50% { border-color: transparent; } }
   @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes molecule-drift { from { transform: translate3d(-10px, 8px, 0) rotate(-4deg); } to { transform: translate3d(14px, -16px, 0) rotate(5deg); } }
+
+  @keyframes orb-drift {
+    from { transform: translate3d(-2rem, 1rem, 0) scale(0.92); }
+    to { transform: translate3d(3rem, -2rem, 0) scale(1.08); }
+  }
+
+  @keyframes orbit-pharmacy { from { transform: translate(-2rem, 1rem) scale(.9); } to { transform: translate(5rem, -3rem) scale(1.12); } }
+  @keyframes orbit-lab { from { transform: translate(2rem, 3rem) scale(.85); } to { transform: translate(-4rem, -2rem) scale(1.15); } }
+  @keyframes orbit-game { from { transform: translate(-3rem, -1rem) scale(.9); } to { transform: translate(4rem, 3rem) scale(1.08); } }
+  @keyframes orbit-library { from { transform: translate(1rem, 2rem) scale(.88); } to { transform: translate(-3rem, -3rem) scale(1.12); } }
+  @keyframes orbit-results { from { transform: translate(-1rem, 3rem) scale(.9); } to { transform: translate(4rem, -2rem) scale(1.1); } }
+  @keyframes orbit-admin { from { transform: translate(3rem, -2rem) scale(.88); } to { transform: translate(-3rem, 2rem) scale(1.12); } }
 
   @keyframes ambient-drift {
     0% { transform: translate3d(-2%, -1%, 0) scale(1); }
@@ -178,7 +239,10 @@
   @media (max-width: 640px) {
     .game-card-shine::after { animation-duration: 8s; }
     .ambient-orbit { animation-duration: 22s; }
-    .glass-panel { backdrop-filter: blur(12px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .game-shell::after, .game-card-shine::after, .pharmacy-atmosphere *, .hero-cta { animation: none !important; }
   }
 
   @media (prefers-reduced-motion: reduce) {
