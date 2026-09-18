@@ -394,7 +394,29 @@ const scenarios: Scenario[] = [
   }
 ]
 
-const scenarioNamesEn: Record<string, string> = { 'Obsługa klienta': 'Customer service', 'Bezpieczeństwo pacjenta': 'Patient safety', 'Interakcje lekowe': 'Drug interactions', 'Komunikacja z pacjentem': 'Patient communication', 'Receptura i kontrola jakości': 'Compounding and quality control' }
+const scenarioNamesEn: Record<string, string> = { 'Obsługa klienta': 'Customer service', 'Recepty': 'Prescriptions', 'Bezpieczeństwo w aptece': 'Pharmacy safety', 'Komunikacja z pacjentem': 'Patient communication', 'Receptura i kontrola jakości': 'Compounding and quality control' }
+const scenarioTranslationsEn: Record<string, Array<{ text: string; options: string[]; explanation: string; situation: string }>> = {
+  customer: [
+    { text: 'A customer reports a persistent cough. What should you do first?', options: ['Offer an over-the-counter cough syrup', 'Ask about the cough and accompanying symptoms', 'Refer the customer to a doctor', 'Suggest saline inhalations'], explanation: 'First gather more information about the symptoms before recommending a solution or a medical consultation.', situation: 'A pharmacist discusses cough symptoms with a customer' },
+    { text: 'A customer asks for a headache medicine but cannot remember the name. They say it is a white tablet in a blue package. What do you do?', options: ['Give the most popular painkiller', 'Show different packages and ask the customer to identify it', 'Ask for more details such as tablet shape or strength', 'Send the customer to a doctor for a prescription'], explanation: 'Additional details such as tablet shape, strength and packaging may help identify the medicine safely.', situation: 'A pharmacist shows different medicine packages to a customer' },
+    { text: 'A customer takes several medicines and asks about a new product. How do you proceed?', options: ['Sell it without questions', 'Check medicines, allergies and refer to a pharmacist', 'Recommend a double dose', 'Ignore the question'], explanation: 'Reviewing medicines, allergies and contraindications helps reduce interaction risks.', situation: 'A pharmacist conducts a short customer interview' },
+  ],
+  prescription: [
+    { text: 'You receive an e-prescription for a medicine that is out of stock. What do you do?', options: ['Tell the patient it is unavailable and send them away', 'Offer a substitute without consultation', 'Check availability at other pharmacies and inform the patient', 'Order it and ask the patient to return tomorrow'], explanation: 'Checking availability elsewhere can give the patient the fastest access to the prescribed medicine.', situation: 'A pharmacist checks medicine availability in the system' },
+    { text: 'A patient asks about a substitute for a prescription medicine. What do you check?', options: ['Only the package colour', 'Active substance, strength and pharmaceutical form', 'The most expensive equivalent', 'Online opinions'], explanation: 'Substitution is assessed using the active substance, strength and pharmaceutical form.', situation: 'A pharmacist compares active substances and strengths' },
+    { text: 'A patient reports an allergy after taking a new medicine. What is the appropriate response?', options: ['Ignore the symptoms', 'Recommend another dose', 'Assess severity and call for help for severe symptoms', 'Recommend any supplement'], explanation: 'Breathing difficulty, facial swelling or fainting require immediate medical help.', situation: 'A pharmacist recognizes symptoms requiring urgent help' },
+  ],
+  safety: [
+    { text: 'A fire breaks out in the pharmacy. What should be your first response?', options: ['Leave the building immediately', 'Call the fire service', 'Evacuate customers and staff, then alert emergency services', 'Try to extinguish it yourself'], explanation: 'People come first: evacuate everyone and then alert emergency services.', situation: 'A pharmacist directs an evacuation' },
+    { text: 'What do you do after an unknown substance spills in the pharmacy?', options: ['Clean it with bare hands', 'Secure the area and inform a supervisor', 'Pour it down the sink', 'Ignore the incident'], explanation: 'Secure the area, limit contact and follow the safety procedure.', situation: 'A staff member secures an incident area' },
+    { text: 'Where do you store a medicine requiring protection from light?', options: ['On a windowsill', 'In its original packaging according to the leaflet', 'In an open container', 'Next to a heat source'], explanation: 'Original packaging and leaflet conditions protect medicine quality.', situation: 'A pharmacist checks storage conditions' },
+  ],
+  communication: [{ text: 'What is the best way to check whether a patient understood the instruction?', options: ['Ask them to repeat it in their own words', 'Speak faster', 'Hand over a leaflet without explanation', 'Assume everything is clear'], explanation: 'Teach-back confirms that the patient understands dosing and key warnings.', situation: 'A pharmacist asks a patient to repeat the instructions' }],
+  compounding: [
+    { text: 'Before compounding, you notice inconsistent units. What do you do?', options: ['Continue and correct the result later', 'Stop, standardize the units and document verification', 'Round the value as you see fit', 'Ask the patient for the correct dose'], explanation: 'Inconsistent units can change a dose substantially. Stop, verify the source and calculations, then perform an independent check.', situation: 'A pharmacist stops compounding to verify units' },
+    { text: 'Which information should be included in batch documentation?', options: ['Only the preparation name', 'Batch number, formula version, source, operator and checker', 'Only raw-material prices', 'Only the release date'], explanation: 'An audit trail makes decisions and independent checks traceable.', situation: 'A second person verifies the batch record' },
+  ],
+}
 
 const uiText = {
   pl: { home: 'Menu Główne', game: 'Gra', library: 'Biblioteka', lab: 'Laboratorium', pharmacy: 'Pracownia farmaceuty', wiki: 'WikiHow', results: 'Wyniki i odznaki', favorites: 'Ulubione', admin: 'Panel treści', chooseScenario: 'Wybierz scenariusz', gameMode: 'Tryb gry', chooseRhythm: 'Wybierz swój rytm nauki', modeHint: 'Każdy tryb zmienia sposób naliczania punktów.', classic: 'Klasyczny', speed: 'Turbo', streak: 'Seria', points: 'Punkty', progress: 'Postęp', streakLabel: 'Seria', previous: 'Poprzednie pytanie', submit: 'Zatwierdź odpowiedź', completed: 'Ukończony', notCompleted: 'Nieukończony', learn: 'Rozpocznij naukę', workbench: 'Otwórz pracownię', practice: 'Praktyka', compounding: 'Receptura', quality: 'Jakość' },
@@ -417,6 +439,7 @@ export default function EnhancedGame() {
   const t = uiText[language]
   const trackModule = (module: string, action = 'open') => { void fetch('/api/activity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ module, action }) }) }
   const openModule = (module: string, tab: string) => { trackModule(module); setActiveTab(tab) }
+  const localizeQuestion = (scenario: Scenario, index: number) => language === 'en' ? (scenarioTranslationsEn[scenario.id]?.[index] ?? scenario.questions[index]) : scenario.questions[index]
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -644,9 +667,9 @@ export default function EnhancedGame() {
               <Card className="overflow-hidden border-0 bg-transparent shadow-none">
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-teal-950 via-teal-800 to-cyan-700 px-6 py-10 text-white shadow-2xl shadow-teal-950/20 sm:px-10 sm:py-14">
                   <div className="absolute -right-24 -top-28 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" /><div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full bg-emerald-300/10 blur-3xl" />
-                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> Nauka, praktyka, odpowiedzialność</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>Apteka na Czasie</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => openModule('Gra', 'game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => openModule('Pracownia farmaceuty', 'pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
+                  <div className="relative max-w-3xl"><div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide text-teal-50"><Sparkles className="h-3.5 w-3.5 text-amber-300" /> {language === 'en' ? 'Learning, practice, responsibility' : 'Nauka, praktyka, odpowiedzialność'}</div><h2 className={`text-balance text-4xl font-bold tracking-tight sm:text-6xl ${roboto.className}`}>{language === 'en' ? 'Pharmacy in Time' : 'Apteka na Czasie'}</h2><p className="mt-4 max-w-2xl text-base leading-relaxed text-teal-50 sm:text-lg">{language === 'en' ? 'An interactive space for developing pharmacy reasoning — from triage and communication to compounding, laboratory work and quality documentation.' : 'Interaktywna przestrzeń do rozwijania myślenia farmaceutycznego — od triage i komunikacji po recepturę, laboratorium i dokumentację jakości.'}</p><div className="mt-8 flex flex-wrap items-center gap-3"><Button onClick={() => openModule('Gra', 'game')} className="group h-12 rounded-full bg-amber-300 px-6 font-bold text-amber-950 shadow-lg shadow-amber-950/20 transition hover:-translate-y-1 hover:bg-amber-200"><Play className="mr-2 h-5 w-5 transition group-hover:scale-110" />{t.learn}</Button><Button variant="outline" onClick={() => openModule('Pracownia farmaceuty', 'pharmacy')} className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-white hover:bg-white/20">{t.workbench}</Button></div></div>
                 </motion.div>
-                <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">Twój pulpit nauki</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.</CardDescription></CardHeader>
+                <CardHeader className="px-0 pb-3 pt-7"><CardTitle className="text-2xl text-teal-800">{language === 'en' ? 'Your learning dashboard' : 'Twój pulpit nauki'}</CardTitle><CardDescription className="max-w-3xl text-base leading-relaxed">{language === 'en' ? 'Choose a path and learn at your own pace. This app supports learning but does not replace current sources or a qualified pharmacist’s judgement.' : 'Wybierz ścieżkę i pracuj we własnym tempie. Aplikacja wspiera naukę, ale nie zastępuje aktualnych źródeł ani decyzji uprawnionego farmaceuty.'}</CardDescription></CardHeader>
                 {sessionUser && recommendations.length > 0 && <div className="mb-5 rounded-2xl border border-teal-100 bg-teal-50/80 p-4"><p className="text-sm font-semibold text-teal-900">Polecane na podstawie Twojej aktywności</p><div className="mt-3 flex flex-wrap gap-2">{recommendations.map((module) => <span key={module} className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-teal-800 shadow-sm">{module}</span>)}</div></div>}
                 <CardContent className="px-0">
                   <div className="mb-6 grid gap-3 sm:grid-cols-4">{[{label:'Punkty', value:score, Icon:Trophy, tone:'text-amber-600'}, {label:'Scenariusze', value:completedScenarios.length, Icon:Target, tone:'text-teal-600'}, {label:'Odznaki', value:completedScenarios.length, Icon:Award, tone:'text-violet-600'}, {label:'Rekord quizu', value:score, Icon:Flame, tone:'text-orange-600'}].map(({label,value,Icon,tone}, index) => <motion.div key={label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }} whileHover={{ y: -4 }} className="group rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-shadow hover:shadow-lg"><div className="flex items-center justify-between"><Icon className={`h-5 w-5 ${tone} transition-transform group-hover:scale-110`} /><span className="text-xs font-medium text-slate-500">{label}</span></div><motion.p key={value} initial={{ scale: 0.8, color: '#0f766e' }} animate={{ scale: 1, color: '#0f172a' }} className="mt-3 text-2xl font-bold">{value}</motion.p></motion.div>)}</div>
@@ -716,7 +739,7 @@ export default function EnhancedGame() {
                             </div>
                           </div>
                         </div>
-                        <p className="text-gray-700 mb-4">Wybierz scenariusz, aby rozpocząć grę. Każdy scenariusz pomoże Ci rozwinąć umiejętności w różnych aspektach pracy w aptece.</p>
+                        <p className="text-gray-700 mb-4">{language === 'en' ? 'Choose a scenario to start. Each scenario develops skills for a different part of pharmacy practice.' : 'Wybierz scenariusz, aby rozpocząć grę. Każdy scenariusz pomoże Ci rozwinąć umiejętności w różnych aspektach pracy w aptece.'}</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                           {scenarios.map((scenario) => (
                             <motion.div
@@ -763,9 +786,9 @@ export default function EnhancedGame() {
                           <div className="flex items-center gap-2"><Timer className="h-4 w-4 text-cyan-300" /><span className="text-xs text-slate-300">{t.progress}</span><strong>{currentQuestionIndex + 1}/{currentScenario.questions.length}</strong></div>
                         </div>
                         <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><motion.div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / currentScenario.questions.length) * 100}%` }} transition={{ duration: 0.5 }} /></div>
-                        <p className="text-lg font-semibold mb-4">{currentScenario.questions[currentQuestionIndex].text}</p>
+                        <p className="text-lg font-semibold mb-4">{localizeQuestion(currentScenario, currentQuestionIndex).text}</p>
                         <RadioGroup onValueChange={(value) => setSelectedAnswer(parseInt(value))}>
-                          {currentScenario.questions[currentQuestionIndex].options.map((option, index) => (
+                          {localizeQuestion(currentScenario, currentQuestionIndex).options.map((option, index) => (
                             <motion.div 
                               key={index} 
                               className="flex items-center space-x-2 mb-2"
@@ -829,7 +852,7 @@ export default function EnhancedGame() {
                           >
                             <Alert className="mt-4 bg-blue-100 border-blue-400">
                               <AlertTitle>Wyjaśnienie</AlertTitle>
-                              <AlertDescription>{currentScenario.questions[currentQuestionIndex].explanation}</AlertDescription>
+                              <AlertDescription>{localizeQuestion(currentScenario, currentQuestionIndex).explanation}</AlertDescription>
                             </Alert>
                             {showSimulation && (
                               <Dialog>
@@ -840,7 +863,7 @@ export default function EnhancedGame() {
                                 </DialogTrigger>
                                 <DialogContent className="sm:max-w-[425px]">
                                   <DialogHeader>
-                                    <DialogTitle>Symulacja</DialogTitle>
+                                    <DialogTitle>{language === 'en' ? 'Simulation' : 'Symulacja'}</DialogTitle>
                                     <DialogDescription>
                                       Wizualizacja związana z tym pytaniem
                                     </DialogDescription>
@@ -986,20 +1009,20 @@ export default function EnhancedGame() {
             ) : activeTab === 'library' ? (
               <Card className="bg-white shadow-lg">
                 <CardHeader>
-                  <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>Biblioteka</CardTitle>
+                  <CardTitle className={`text-2xl text-teal-700 ${roboto.className}`}>{language === 'en' ? 'Knowledge library' : 'Biblioteka'}</CardTitle>
                 </CardHeader>
   <CardContent>
   <HerbsMedicinesDatabase />
   <div className="mb-5 mt-6 grid gap-3 md:grid-cols-[1fr_auto]">
-                    <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder="Szukaj po nazwie lub zastosowaniu..." className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
-                    <div className="flex flex-wrap gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>Wszystko</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>Zioła</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>Leki</Button><Button variant={favoritesOnly ? 'default' : 'outline'} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart className="mr-1 h-4 w-4" />Ulubione</Button></div>
+                    <div className="relative"><Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" /><Input aria-label="Szukaj w bibliotece" placeholder={language === 'en' ? 'Search by name or use...' : 'Szukaj po nazwie lub zastosowaniu...'} className="pl-9" value={libraryQuery} onChange={(event) => setLibraryQuery(event.target.value)} /></div>
+                    <div className="flex flex-wrap gap-2"><Button variant={libraryType === 'all' ? 'default' : 'outline'} onClick={() => setLibraryType('all')}>{language === 'en' ? 'All' : 'Wszystko'}</Button><Button variant={libraryType === 'herb' ? 'default' : 'outline'} onClick={() => setLibraryType('herb')}>{language === 'en' ? 'Herbs' : 'Zioła'}</Button><Button variant={libraryType === 'medicine' ? 'default' : 'outline'} onClick={() => setLibraryType('medicine')}>{language === 'en' ? 'Medicines' : 'Leki'}</Button><Button variant={favoritesOnly ? 'default' : 'outline'} onClick={() => setFavoritesOnly(!favoritesOnly)}><Heart className="mr-1 h-4 w-4" />{language === 'en' ? 'Favorites' : 'Ulubione'}</Button></div>
                   </div>
                   <div className="mb-4 flex items-center justify-between text-sm text-gray-500"><span><SlidersHorizontal className="mr-1 inline h-4 w-4" />{filteredLibrary.length} wyników z {herbsMedicines.length}</span><span><Heart className="mr-1 inline h-4 w-4" />{favorites.length} ulubionych</span></div>
                   <Accordion type="single" collapsible className="w-full">
                     {filteredLibrary.map((item, index) => (
                       <AccordionItem value={`item-${index}`} key={item.name}>
                         <div className="flex items-center"><AccordionTrigger className="flex-1 text-left" onClick={() => setSelectedLibraryItem(item)}>{item.name}<span className="ml-2 text-xs text-gray-500">{item.type === 'herb' ? 'zioło' : 'lek'}</span></AccordionTrigger><Button aria-label={`Dodaj ${item.name} do ulubionych`} variant="ghost" size="icon" onClick={() => toggleFavorite(item.name)}><Heart className={`h-4 w-4 ${favorites.includes(item.name) ? 'fill-red-500 text-red-500' : ''}`} /></Button></div>
-                        <AccordionContent><div className="space-y-2 text-sm leading-6"><p><strong>Skład:</strong> {item.composition}</p><p><strong>Zastosowanie:</strong> {item.usage}</p>{item.occurrence && <p><strong>Występowanie:</strong> {item.occurrence}</p>}<p><strong>Działania niepożądane:</strong> {item.sideEffects}</p><p><strong>Interakcje:</strong> {item.interactions}</p><p className="mt-3 rounded-md bg-amber-50 p-3 text-amber-900"><ShieldCheck className="mr-1 inline h-4 w-4" />Informacje edukacyjne. Przed użyciem sprawdź ulotkę i skonsultuj się z farmaceutą.</p><p className="text-xs text-gray-500"><CalendarDays className="mr-1 inline h-3 w-3" />Zaktualizowano: sierpień 2026 · Źródła: ulotki leków, EMA, WHO</p></div></AccordionContent>
+                        <AccordionContent><div className="space-y-2 text-sm leading-6"><p><strong>{language === 'en' ? 'Composition:' : 'Skład:'}</strong> {item.composition}</p><p><strong>{language === 'en' ? 'Uses:' : 'Zastosowanie:'}</strong> {item.usage}</p>{item.occurrence && <p><strong>{language === 'en' ? 'Occurrence:' : 'Występowanie:'}</strong> {item.occurrence}</p>}<p><strong>{language === 'en' ? 'Adverse effects:' : 'Działania niepożądane:'}</strong> {item.sideEffects}</p><p><strong>{language === 'en' ? 'Interactions:' : 'Interakcje:'}</strong> {item.interactions}</p><p className="mt-3 rounded-md bg-amber-50 p-3 text-amber-900"><ShieldCheck className="mr-1 inline h-4 w-4" />Informacje edukacyjne. Przed użyciem sprawdź ulotkę i skonsultuj się z farmaceutą.</p><p className="text-xs text-gray-500"><CalendarDays className="mr-1 inline h-3 w-3" />Zaktualizowano: sierpień 2026 · Źródła: ulotki leków, EMA, WHO</p></div></AccordionContent>
                       </AccordionItem>
                     ))}
                   </Accordion>
