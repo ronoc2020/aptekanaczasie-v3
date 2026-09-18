@@ -131,6 +131,8 @@
   }
   @keyframes caret-blink { 50% { border-color: transparent; } }
   @keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slide-fade-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes progress-glow { from { transform: scaleX(0.05); opacity: 0.5; } to { transform: scaleX(1); opacity: 1; } }
   @keyframes molecule-drift { from { transform: translate3d(-10px, 8px, 0) rotate(-4deg); } to { transform: translate3d(14px, -16px, 0) rotate(5deg); } }
 
   @keyframes orb-drift {
@@ -178,6 +180,69 @@
     background: hsl(var(--card) / 0.72);
     box-shadow: 0 18px 60px hsl(var(--foreground) / 0.08);
     backdrop-filter: blur(18px);
+  }
+
+  .game-shell button,
+  .game-shell [role="tab"],
+  .game-shell [data-state="open"] > button,
+  .game-shell input,
+  .game-shell textarea,
+  .game-shell select {
+    transition-duration: 180ms;
+    transition-timing-function: ease-out;
+  }
+
+  .game-shell [data-slot="card"],
+  .game-shell .rounded-2xl.border,
+  .game-shell .rounded-xl.border {
+    transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
+  }
+
+  .game-shell [data-slot="card"]:hover,
+  .game-shell .rounded-2xl.border:hover,
+  .game-shell .rounded-xl.border:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px hsl(var(--foreground) / 0.08);
+  }
+
+  .game-shell [role="tab"] {
+    border: 1px solid transparent;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .game-shell [data-radix-accordion-content] {
+    overflow: hidden;
+    transition: height 220ms ease-out, opacity 180ms ease-out;
+  }
+
+  .game-shell [data-radix-accordion-content][data-state="closed"] { opacity: 0; }
+  .game-shell [data-radix-accordion-content][data-state="open"] { opacity: 1; }
+
+  .game-shell [role="tab"][data-state="active"] {
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+    border-color: hsl(var(--primary) / 0.18);
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.08);
+  }
+
+  .game-shell input:focus-visible,
+  .game-shell textarea:focus-visible,
+  .game-shell select:focus-visible {
+    outline: none;
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+
+  .soft-fade-in { animation: fade-up 420ms ease-out both; }
+  .slide-fade-panel { animation: slide-fade-in 280ms ease-out both; }
+  .progress-animated { transform-origin: left center; animation: progress-glow 1.2s ease-out both; }
+
+  .pharmacy-workbench [role="tablist"] {
+    position: sticky;
+    top: 0.75rem;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    background: hsl(var(--background) / 0.82);
   }
 
   .primary-button {

@@ -679,7 +679,7 @@ export default function EnhancedGame() {
   }
 
   if (!isHydrated) {
-    return <main className="grid min-h-screen place-items-center bg-background px-6 text-center" aria-busy="true"><div><FlaskConical className="mx-auto mb-3 h-8 w-8 animate-pulse text-teal-600" aria-hidden="true" /><p className="font-semibold text-teal-800">{language === 'en' ? 'Loading learning workspace…' : 'Ładowanie przestrzeni nauki…'}</p></div></main>
+    return <main className="min-h-screen bg-background px-6 py-8" aria-busy="true"><div className="mx-auto max-w-6xl space-y-5"><div className="h-16 w-full animate-pulse rounded-2xl bg-muted" /><div className="h-64 w-full animate-pulse rounded-[2rem] bg-muted" /><div className="grid gap-4 sm:grid-cols-4">{[1,2,3,4].map((item) => <div key={item} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div><p className="text-center text-sm text-muted-foreground">{language === 'en' ? 'Loading learning workspace…' : 'Ładowanie przestrzeni nauki…'}</p></div></main>
   }
 
   return (
@@ -847,7 +847,7 @@ export default function EnhancedGame() {
                           <div className="flex items-center gap-2"><Flame className="h-4 w-4 text-orange-300" /><span className="text-xs text-slate-300">{t.streakLabel}</span><strong>x{streak}</strong></div>
                           <div className="flex items-center gap-2"><Timer className="h-4 w-4 text-cyan-300" /><span className="text-xs text-slate-300">{t.progress}</span><strong>{currentQuestionIndex + 1}/{currentScenario.questions.length}</strong></div>
                         </div>
-                        <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><motion.div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / currentScenario.questions.length) * 100}%` }} transition={{ duration: 0.5 }} /></div>
+                        <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-200"><motion.div className="progress-animated h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / currentScenario.questions.length) * 100}%` }} transition={{ duration: 0.5 }} /></div>
                         <p className="text-lg font-semibold mb-4">{localizeQuestion(currentScenario, currentQuestionIndex).text}</p>
                         <RadioGroup onValueChange={(value) => setSelectedAnswer(parseInt(value))}>
                           {localizeQuestion(currentScenario, currentQuestionIndex).options.map((option, index) => (
