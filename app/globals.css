@@ -1149,6 +1149,32 @@ body {
   background-color: #ffffff !important;
 }
 
+/* Readable light-theme dashboard content inside the dark hero. */
+.game-shell.theme-light .focus-dashboard,
+.game-shell.theme-light .focus-dashboard p,
+.game-shell.theme-light .focus-dashboard h3,
+.game-shell.theme-light .focus-dashboard span,
+.game-shell.theme-light .focus-dashboard label,
+.game-shell.theme-light .focus-dashboard button {
+  color: #16383b !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light .focus-dashboard .text-teal-600,
+.game-shell.theme-light .focus-dashboard .text-blue-600,
+.game-shell.theme-light .focus-dashboard .text-violet-600,
+.game-shell.theme-light .focus-dashboard .text-amber-600,
+.game-shell.theme-light .focus-dashboard .text-muted-foreground {
+  color: #245b5d !important;
+}
+
+.game-shell.theme-light .focus-dashboard .bg-white,
+.game-shell.theme-light .focus-dashboard [class*="bg-white"] {
+  color: #16383b !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
