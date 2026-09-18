@@ -18,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Clock, Home, Building2, FileText, Flame, Activity, Stethoscope, CheckCircle, XCircle, ChevronRight, ChevronLeft, Award, Beaker, Pill, Thermometer, Scale, Book, Leaf, Search, Heart, ShieldCheck, SlidersHorizontal, Star, Settings, CalendarDays, BookOpen, Timer, Zap, Trophy, Swords, Moon, Sun, ClipboardCheck, FlaskConical, Sparkles, Play, Target, Mail, MessageSquare } from 'lucide-react'
 import confetti from 'canvas-confetti'
-import Script from 'next/script'
 import { HowToLibrary } from '@/components/how-to-library'
 import { HerbsMedicinesDatabase } from '@/components/herbs-medicines-database'
 import { PharmacyWorkbench } from '@/components/pharmacy-workbench'
@@ -473,16 +472,16 @@ export default function EnhancedGame() {
   const t = uiText[language]
   const trackModule = (module: string, action = 'open') => { void fetch('/api/activity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ module, action }) }) }
   const openModule = (module: string, tab: string) => { trackModule(module); setActiveTab(tab) }
-  const submitMessage = async (kind: 'contact' | 'feedback') => {
+  const submitMessage = async (kind: 'contact' | 'feedback' | 'test') => {
     setFormStatus({ type: 'sending', message: language === 'pl' ? 'Wysyłanie…' : 'Sending…' })
-    const payload = kind === 'contact' ? { kind, ...contactForm } : { kind, ...feedbackForm }
+    const payload = kind === 'contact' ? { kind, ...contactForm } : kind === 'test' ? { kind, name: contactForm.name, email: contactForm.email } : { kind, ...feedbackForm }
     try {
       const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'send_failed')
-      setFormStatus({ type: 'success', message: language === 'pl' ? 'Wiadomość została wysłana.' : 'Message sent successfully.' })
+      setFormStatus({ type: 'success', message: kind === 'test' ? (language === 'pl' ? 'Email testowy został wysłany. Sprawdź skrzynkę odbiorczą i spam.' : 'Test email sent. Check your inbox and spam.') : (language === 'pl' ? 'Wiadomość została wysłana.' : 'Message sent successfully.') })
       if (kind === 'contact') setContactForm({ name: '', email: '', subject: '', message: '' })
-      else setFeedbackForm({ rating: '5', improvement: '' })
+      else if (kind === 'feedback') setFeedbackForm({ rating: '5', improvement: '' })
     } catch (error) {
       const message = error instanceof Error ? error.message : ''
       setFormStatus({ type: 'error', message: message || (language === 'pl' ? 'Nie udało się wysłać. Spróbuj ponownie.' : 'Could not send. Please try again.') })
@@ -685,7 +684,7 @@ export default function EnhancedGame() {
 
   return (
     <TooltipProvider>
-<div className={`game-shell game-card-shine font-scale-${fontScale} relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`}>
+<div className={`game-shell game-card-shine relative min-h-screen container mx-auto overflow-hidden px-4 py-5 text-foreground sm:px-6 lg:px-8 ${openSans.className}`} style={{ zoom: fontScale === 'xlarge' ? 1.2 : fontScale === 'large' ? 1.1 : 1 }}>
   <div className="sr-only" aria-live="polite">{language === 'pl' ? `Rozmiar tekstu: ${fontScale === 'normal' ? 'standardowy' : fontScale === 'large' ? 'duży' : 'bardzo duży'}` : `Text size: ${fontScale}`}</div>
   <div className="pharmacy-atmosphere" aria-hidden="true"><span className="molecule molecule-one" /><span className="molecule molecule-two" /><span className="molecule molecule-three" /><span className="molecule molecule-four" /><span className="molecule molecule-five" /><span className="molecule molecule-six" /></div>
   <motion.header
@@ -697,7 +696,7 @@ export default function EnhancedGame() {
           <Logo language={language} />
           <h1 className="sr-only">{language === 'pl' ? 'Apteka na Czasie' : 'Pharmacy in Time'}</h1>
           <div className="flex max-w-full flex-wrap items-center justify-end gap-2">
-            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><div className="flex items-center gap-1 rounded-full border border-teal-200 bg-white/70 p-1" role="group" aria-label={language === 'pl' ? 'Rozmiar tekstu' : 'Text size'}><Button type="button" variant={fontScale === 'normal' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-xs" onClick={() => setFontScale('normal')} aria-label={language === 'pl' ? 'Standardowa czcionka' : 'Standard text'}>A</Button><Button type="button" variant={fontScale === 'large' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-sm" onClick={() => setFontScale('large')} aria-label={language === 'pl' ? 'Duża czcionka' : 'Large text'}>A</Button><Button type="button" variant={fontScale === 'xlarge' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-base" onClick={() => setFontScale('xlarge')} aria-label={language === 'pl' ? 'Bardzo duża czcionka' : 'Extra large text'}>A</Button></div><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
+            <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')} aria-label="Change language" className="rounded-full font-semibold">{language === 'pl' ? 'EN' : 'PL'}</Button><div className="flex items-center gap-1 rounded-full border border-teal-200 bg-white/70 p-1" role="group" aria-label={language === 'pl' ? 'Rozmiar tekstu' : 'Text size'}><Button type="button" variant={fontScale === 'normal' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-xs" onClick={() => setFontScale('normal')} aria-pressed={fontScale === 'normal'} aria-label={language === 'pl' ? 'Standardowa czcionka' : 'Standard text'}>A</Button><Button type="button" variant={fontScale === 'large' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-sm" onClick={() => setFontScale('large')} aria-pressed={fontScale === 'large'} aria-label={language === 'pl' ? 'Duża czcionka' : 'Large text'}>A</Button><Button type="button" variant={fontScale === 'xlarge' ? 'default' : 'ghost'} size="sm" className="h-8 min-w-8 rounded-full px-2 text-base" onClick={() => setFontScale('xlarge')} aria-pressed={fontScale === 'xlarge'} aria-label={language === 'pl' ? 'Bardzo duża czcionka' : 'Extra large text'}>A</Button></div><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)} className="rounded-full font-semibold">{sessionUser?.name ?? (language === 'pl' ? 'Konto' : 'Account')}</Button>
             <Button
               variant="outline"
               size="icon"
@@ -1142,7 +1141,7 @@ export default function EnhancedGame() {
               <div className="grid gap-3 sm:grid-cols-2"><div><Label htmlFor="contact-name">Imię</Label><Input id="contact-name" required value={contactForm.name} onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })} /></div><div><Label htmlFor="contact-email">Email</Label><Input id="contact-email" type="email" required value={contactForm.email} onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })} /></div></div>
               <div><Label htmlFor="contact-subject">Temat</Label><Input id="contact-subject" required value={contactForm.subject} onChange={(event) => setContactForm({ ...contactForm, subject: event.target.value })} /></div>
               <div><Label htmlFor="contact-message">Wiadomość</Label><textarea id="contact-message" required minLength={10} rows={4} className="flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring" value={contactForm.message} onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })} /></div>
-              <Button type="submit" disabled={formStatus.type === 'sending'} className="w-full sm:w-auto">{formStatus.type === 'sending' ? 'Wysyłanie…' : 'Wyślij wiadomość'}</Button>
+              <div className="flex flex-wrap gap-2"><Button type="submit" disabled={formStatus.type === 'sending'}>{formStatus.type === 'sending' ? 'Wysyłanie…' : 'Wyślij wiadomość'}</Button><Button type="button" variant="outline" disabled={formStatus.type === 'sending' || !contactForm.email} onClick={() => void submitMessage('test')}>Wyślij email testowy</Button></div>
             </form></CardContent>
           </Card>
           <Card className="border-amber-100 bg-amber-50/50 shadow-sm">
@@ -1156,7 +1155,6 @@ export default function EnhancedGame() {
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('privacy')}>Polityka prywatności</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setLegalSection('cookies')}>Polityka cookies</button><button type="button" className="text-teal-700 underline underline-offset-2" onClick={() => setActiveTab('pharmacy')}>Pracownia farmaceuty</button></div>
           <p>Aplikację stworzył <strong>Roman Orłowski</strong> · <a className="text-teal-700 underline" href="mailto:rocybersolutions@gmail.com">rocybersolutions@gmail.com</a></p>
           <p className="max-w-2xl text-xs leading-relaxed text-slate-500">Aplikacja korzysta z niezbędnych mechanizmów technicznych do działania interfejsu. Nie sprzedajemy danych użytkowników ani nie wykorzystujemy formularzy do identyfikacji pacjentów.</p>
-          <Script src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" strategy="lazyOnload" data-name="bmc-button" data-slug="r0cs" data-color="#40DCA5" data-emoji="📖" data-font="Lato" data-text="Buy me a book" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" />
         </footer>
 
         <Dialog open={legalSection !== null} onOpenChange={(open) => !open && setLegalSection(null)}>
