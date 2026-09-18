@@ -39,9 +39,14 @@
     animation: cta-pulse 2.8s ease-in-out infinite;
   }
 
-  .font-scale-large { font-size: 112.5%; }
-  .font-scale-xlarge { font-size: 125%; }
+  /* Scale the complete reading surface, including Tailwind rem-based text utilities. */
+  .font-scale-large { zoom: 1.1; }
+  .font-scale-xlarge { zoom: 1.2; }
   .font-scale-large button, .font-scale-xlarge button { min-height: 2.75rem; }
+  @supports not (zoom: 1) {
+    .font-scale-large { font-size: 112.5%; }
+    .font-scale-xlarge { font-size: 125%; }
+  }
 
   .typewriter {
     overflow: hidden;
