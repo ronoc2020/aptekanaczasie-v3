@@ -19,6 +19,19 @@ export const howToArticles = pgTable('how_to_articles', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 })
 
+export const pharmacyAuditEvents = pgTable('pharmacy_audit_events', {
+  id: uuid('id').primaryKey(),
+  eventType: text('event_type').notNull(),
+  mode: text('mode').notNull(),
+  recipeName: text('recipe_name'),
+  recipeVersion: integer('recipe_version'),
+  batchNumber: text('batch_number'),
+  operatorId: text('operator_id'),
+  reviewerId: text('reviewer_id'),
+  payload: jsonb('payload').$type<Record<string, unknown>>().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+})
+
 export const herbsMedicines = pgTable('herbs_medicines', {
   id: uuid('id').primaryKey(),
   slug: text('slug').notNull(),

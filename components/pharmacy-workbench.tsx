@@ -128,7 +128,31 @@ export function PharmacyWorkbench() {
 
   const updateIngredient = (index: number, field: string, value: string) => setIngredients((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item))
 
-  const addAuditEvent = (event: string) => setAuditTrail((items) => [`${new Date().toLocaleString('pl-PL')} — ${event}`, ...items])
+  const addAuditEvent = (event: string) => {
+    const entry = `${new Date().toLocaleString('pl-PL')} — ${event}`
+    setAuditTrail((items) => [entry, ...items])
+    void fetch('/api/pharmacy-audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: event,
+        mode: workMode,
+        recipeName: selectedRecipe.name,
+        recipeVersion,
+        batchNumber,
+        operatorId,
+        reviewerId,
+        payload: {
+          checks,
+          ingredientCount: ingredients.length,
+          ingredientTotal,
+          sourceVersion,
+          sopNumber,
+          recipeReady,
+        },
+      }),
+    }).catch(() => undefined)
+  }
 
   const downloadAuditReport = () => {
     const report = [
