@@ -210,7 +210,7 @@ export function PharmacyWorkbench({ language = 'pl' }: { language?: 'pl' | 'en' 
   return (
     <>
     {toastMessage && <div role="status" className="fixed bottom-5 right-5 z-50 slide-fade-panel rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm font-medium text-teal-900 shadow-xl">{toastMessage}</div>}
-    <Card className="glass-panel pharmacy-workbench overflow-hidden border-0 shadow-xl soft-fade-in">
+    <Card className="glass-panel pharmacy-workbench lab-neon overflow-hidden border shadow-xl soft-fade-in">
       <CardHeader className="border-b border-border/60 bg-primary/[0.04]">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><CardTitle className="flex items-center gap-2 text-2xl"><ClipboardCheck className="text-primary" /> {workbenchText.title}</CardTitle><CardDescription className="mt-2 max-w-3xl">{language === 'pl' ? 'Receptura → składniki → obliczenia → kontrola → instrukcja → źródła.' : 'Formula → ingredients → calculations → control → instructions → sources.'} {workbenchText.subtitle} {language === 'pl' ? 'Nie generuje indywidualnego zlecenia terapeutycznego ani nie zastępuje ChPL, Farmakopei Polskiej i procedur apteki.' : 'It does not generate an individual treatment order or replace SmPCs, pharmacopoeias or pharmacy procedures.'}</CardDescription></div>

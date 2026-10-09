@@ -58,6 +58,36 @@ body {
   .game-shell.theme-dark > main { color: #efffff; }
   .game-shell.theme-light .glass-panel { background: rgba(255,255,255,0.9); }
   .game-shell.theme-dark .glass-panel { background: rgba(8, 35, 39, 0.88); border-color: rgba(153, 246, 228, 0.3); }
+
+  .game-shell.theme-light {
+    --content-ink: #123235;
+    --content-muted: #315b5e;
+    --neon-border: rgba(8, 145, 178, 0.42);
+    --neon-glow: rgba(20, 184, 166, 0.22);
+  }
+
+  .game-shell.theme-dark {
+    --content-ink: #efffff;
+    --content-muted: #c7e6e6;
+    --neon-border: rgba(103, 232, 249, 0.44);
+    --neon-glow: rgba(34, 211, 238, 0.24);
+  }
+
+  .game-shell > main [data-slot="card"] {
+    border-color: var(--neon-border) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--neon-border) 35%, transparent), 0 12px 32px var(--neon-glow);
+  }
+
+  .game-shell > main [data-slot="card-title"],
+  .game-shell > main [data-slot="card"] label {
+    color: var(--content-ink) !important;
+  }
+
+  .game-shell > main [data-slot="card-description"],
+  .game-shell > main [data-slot="card"] .text-muted-foreground {
+    color: var(--content-muted) !important;
+    opacity: 1 !important;
+  }
   .game-shell.theme-light .ambient-orb { opacity: 0.2; mix-blend-mode: multiply; }
   .game-shell.theme-dark .ambient-orb { opacity: 0.56; mix-blend-mode: screen; }
 
@@ -544,7 +574,38 @@ body {
   }
 
   .pharmacy-workbench > [data-slot="card-header"] {
-    background: linear-gradient(120deg, hsl(var(--primary) / 0.1), hsl(var(--background) / 0.92));
+    background: linear-gradient(120deg, hsl(var(--primary) / 0.14), hsl(var(--background) / 0.94));
+    border-bottom-color: var(--neon-border, rgba(20, 184, 166, 0.35));
+  }
+
+  .lab-neon [data-slot="tabs-list"] {
+    border: 1px solid var(--neon-border, rgba(20, 184, 166, 0.35));
+    box-shadow: 0 0 22px var(--neon-glow, rgba(20, 184, 166, 0.16));
+  }
+
+  .lab-neon [data-slot="tabs-trigger"] {
+    min-height: 2.75rem;
+    color: var(--content-muted, #315b5e);
+    font-weight: 700;
+  }
+
+  .lab-neon [data-slot="tabs-trigger"][data-state="active"] {
+    color: #ffffff;
+    background: linear-gradient(135deg, #087f7b, #087c91);
+    box-shadow: 0 0 18px var(--neon-glow, rgba(20, 184, 166, 0.22));
+  }
+
+  .lab-neon input,
+  .lab-neon textarea,
+  .lab-neon select {
+    border-color: var(--neon-border, rgba(20, 184, 166, 0.35));
+    color: var(--content-ink, #123235);
+    background: color-mix(in srgb, var(--background) 88%, white);
+  }
+
+  .lab-neon .text-primary,
+  .lab-neon [data-slot="card-title"] svg {
+    color: #087f7b !important;
   }
 
   /* Keep text separated from the animated background in both themes. */
