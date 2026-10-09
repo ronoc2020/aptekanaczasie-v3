@@ -1325,6 +1325,62 @@ body {
   opacity: 1 !important;
 }
 
+/* Final light-theme content contrast override. Keep hero isolated, darken every light surface. */
+.game-shell.theme-light > main > *:not(.focus-hero) p,
+.game-shell.theme-light > main > *:not(.focus-hero) h1,
+.game-shell.theme-light > main > *:not(.focus-hero) h2,
+.game-shell.theme-light > main > *:not(.focus-hero) h3,
+.game-shell.theme-light > main > *:not(.focus-hero) h4,
+.game-shell.theme-light > main > *:not(.focus-hero) label,
+.game-shell.theme-light > main > *:not(.focus-hero) span,
+.game-shell.theme-light > main > *:not(.focus-hero) li {
+  color: #123235 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) .text-muted-foreground,
+.game-shell.theme-light > main > *:not(.focus-hero) [data-slot="card-description"],
+.game-shell.theme-light > main > *:not(.focus-hero) .text-slate-600,
+.game-shell.theme-light > main > *:not(.focus-hero) .text-slate-500 {
+  color: #355b5e !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) [data-slot="card"],
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-white"],
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-slate"],
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-teal"] {
+  color: #123235 !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) [data-slot="card"] *,
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-white"] *,
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-slate"] *,
+.game-shell.theme-light > main > *:not(.focus-hero) [class*="bg-teal"] * {
+  color: #123235 !important;
+}
+
+/* Dashboard cards can be nested inside the hero card; target their actual light surfaces. */
+.game-shell.theme-light [class*="bg-teal-50"],
+.game-shell.theme-light [class*="bg-teal-50"] p,
+.game-shell.theme-light [class*="bg-teal-50"] span,
+.game-shell.theme-light [class*="bg-teal-50"] h3,
+.game-shell.theme-light [class*="bg-teal-50"] h4,
+.game-shell.theme-light [class*="bg-teal-50"] label {
+  color: #123235 !important;
+  opacity: 1 !important;
+}
+
+.game-shell.theme-light [class*="bg-teal-50"] .text-slate-600,
+.game-shell.theme-light [class*="bg-teal-50"] .text-muted-foreground {
+  color: #355b5e !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) button[class*="bg-teal"],
+.game-shell.theme-light > main > *:not(.focus-hero) button[class*="bg-primary"] {
+  color: #ffffff !important;
+}
+
 @layer base {
   * {
     @apply border-border;
