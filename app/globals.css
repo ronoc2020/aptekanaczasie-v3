@@ -814,8 +814,39 @@ body {
 }
 
 @media (max-width: 767px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+
   .game-shell {
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip !important;
+  }
+
+  .game-shell .pharmacy-atmosphere,
+  .game-shell .ambient-orb,
+  .game-shell .molecule {
+    max-width: 100vw;
+  }
+
+  .game-shell .mobile-navigation {
+    position: relative;
+    z-index: 60;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 1rem;
+  }
+
+  .game-shell .mobile-navigation button {
+    color: #16383b !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell .mobile-navigation button[aria-current="page"] {
+    color: #ffffff !important;
+    background: #087f7b !important;
   }
 
   .game-shell .mobile-navigation {
@@ -962,6 +993,43 @@ body {
   .game-shell [data-slot="card"] {
     max-width: 100%;
     overflow-wrap: anywhere;
+  }
+
+  .game-shell.theme-light > main p,
+  .game-shell.theme-light > main h1,
+  .game-shell.theme-light > main h2,
+  .game-shell.theme-light > main h3,
+  .game-shell.theme-light > main label,
+  .game-shell.theme-light > main span {
+    color: #193b3e !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-light > main .context-banner,
+  .game-shell.theme-light > main .context-banner p,
+  .game-shell.theme-light > main .context-banner span,
+  .game-shell.theme-light > main .context-banner h2,
+  .game-shell.theme-light > main .context-banner h3 {
+    background-color: #e9f8f5 !important;
+    color: #193b3e !important;
+  }
+
+  .game-shell.theme-light > main .text-muted-foreground {
+    color: #42676a !important;
+  }
+
+  .game-shell.theme-dark > main p,
+  .game-shell.theme-dark > main h1,
+  .game-shell.theme-dark > main h2,
+  .game-shell.theme-dark > main h3,
+  .game-shell.theme-dark > main label,
+  .game-shell.theme-dark > main span {
+    color: #efffff !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-dark > main .text-muted-foreground {
+    color: #c7e6e6 !important;
   }
 
   .game-shell .accessibility-dropdown {
