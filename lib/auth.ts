@@ -18,8 +18,15 @@ const originCandidates = [
   asOrigin(process.env.V0_SANDBOX_URL),
 ].filter((origin): origin is string => Boolean(origin))
 
+const authSecret = process.env.BETTER_AUTH_SECRET
+
+if (!authSecret) {
+  throw new Error('BETTER_AUTH_SECRET must be configured before starting the application')
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg' }),
+  secret: authSecret,
   baseURL: process.env.BETTER_AUTH_URL || originCandidates[0],
   trustedOrigins: ['http://localhost:3000', ...originCandidates],
   emailAndPassword: { enabled: true },
