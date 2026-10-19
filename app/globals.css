@@ -1530,6 +1530,54 @@ body {
   color: #ffffff !important;
 }
 
+/* Last-pass contrast contract: content surfaces always use readable theme tokens. */
+.game-shell.theme-light > main > *:not(.focus-hero) {
+  --surface-ink: #102f32;
+  --surface-muted: #315b5e;
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, button, a, span) {
+  color: var(--surface-ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: var(--surface-muted) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is([data-slot="card"], .glass-panel, .bg-white, .bg-slate-50, .bg-teal-50) {
+  color: var(--surface-ink) !important;
+  background-color: rgba(248, 255, 253, 0.96);
+  border-color: rgba(8, 145, 178, 0.38) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is([data-slot="card"], .glass-panel, .bg-white, .bg-slate-50, .bg-teal-50) :is(p, h1, h2, h3, h4, h5, h6, label, span, strong, small) {
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(button.bg-primary, button.bg-teal-600, button.bg-teal-700, button[class*="bg-primary"]) {
+  color: #ffffff !important;
+  background-color: #087f7b !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) {
+  --surface-ink: #efffff;
+  --surface-muted: #c7e6e6;
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, button, a, span) {
+  color: var(--surface-ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: var(--surface-muted) !important;
+}
+
 @layer base {
   * {
     @apply border-border;
