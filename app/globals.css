@@ -268,9 +268,29 @@ body {
       min-width: 0;
     }
 
-    .game-shell > main [class*="grid-cols-"] {
-      grid-template-columns: minmax(0, 1fr) !important;
-    }
+  .game-shell > main [class*="grid-cols-"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .lab-neon [class*="grid-cols-[1fr_90px_72px_auto]"] {
+    grid-template-columns: minmax(0, 1fr) minmax(5rem, 0.7fr) auto !important;
+  }
+
+  .lab-neon [class*="grid-cols-2"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .lab-neon [data-slot="tabs-list"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  .lab-neon [data-slot="tabs-trigger"] {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
 
     .game-shell > main [class*="overflow-x"] {
       max-width: 100%;
@@ -942,8 +962,9 @@ body {
   .game-shell > main h3,
   .game-shell > main li,
   .game-shell > main label {
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     word-break: normal;
+    hyphens: none;
   }
 
   .game-shell > main button,
@@ -955,7 +976,7 @@ body {
   .game-shell .focus-footer {
     width: 100%;
     min-width: 0;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell.theme-light .focus-footer,
@@ -1046,14 +1067,14 @@ body {
 
   .game-shell .focus-hero h2 {
     font-size: clamp(1.8rem, 9vw, 2.75rem);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell .context-banner,
   .game-shell .glass-panel,
   .game-shell [data-slot="card"] {
     max-width: 100%;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell.theme-light > main p,
