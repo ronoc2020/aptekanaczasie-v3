@@ -288,8 +288,35 @@ body {
 
   .lab-neon [data-slot="tabs-trigger"] {
     min-width: 0;
+    min-height: 2.75rem;
     white-space: normal;
-    overflow-wrap: break-word;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    line-height: 1.25;
+  }
+
+  .lab-neon p,
+  .lab-neon span,
+  .lab-neon label,
+  .lab-neon button,
+  .lab-neon [data-slot="card-title"],
+  .lab-neon [data-slot="card-description"] {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .lab-neon [data-slot="card"] {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .lab-neon input,
+  .lab-neon textarea,
+  .lab-neon select,
+  .lab-neon button {
+    min-width: 0;
   }
 
     .game-shell > main [class*="overflow-x"] {
@@ -626,6 +653,46 @@ body {
   .lab-neon .text-primary,
   .lab-neon [data-slot="card-title"] svg {
     color: #087f7b !important;
+  }
+
+  .game-shell.theme-light .lab-neon,
+  .game-shell.theme-light .lab-neon [data-slot="card"],
+  .game-shell.theme-light .lab-neon [data-slot="alert"],
+  .game-shell.theme-light .lab-neon [data-slot="tabs-content"] {
+    color: #123235 !important;
+  }
+
+  .game-shell.theme-light .lab-neon [data-slot="card-description"],
+  .game-shell.theme-light .lab-neon .text-muted-foreground,
+  .game-shell.theme-light .lab-neon .text-xs {
+    color: #315b5e !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-dark .lab-neon,
+  .game-shell.theme-dark .lab-neon [data-slot="card"],
+  .game-shell.theme-dark .lab-neon [data-slot="alert"],
+  .game-shell.theme-dark .lab-neon [data-slot="tabs-content"] {
+    color: #efffff !important;
+  }
+
+  .game-shell.theme-dark .lab-neon [data-slot="card-description"],
+  .game-shell.theme-dark .lab-neon .text-muted-foreground,
+  .game-shell.theme-dark .lab-neon .text-xs {
+    color: #c7e6e6 !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-light .lab-toast {
+    color: #123235 !important;
+    background: #f3fffd !important;
+    border-color: #14b8a6 !important;
+  }
+
+  .game-shell.theme-dark .lab-toast {
+    color: #efffff !important;
+    background: #092b35 !important;
+    border-color: #67e8f9 !important;
   }
 
   /* Keep text separated from the animated background in both themes. */
