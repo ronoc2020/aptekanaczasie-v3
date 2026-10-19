@@ -646,6 +646,7 @@ export default function EnhancedGame() {
   }
 
   useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- mark client hydration after mount
   setIsHydrated(true)
   const updateTimePeriod = () => {
     const hour = new Date().getHours()
@@ -1209,7 +1210,7 @@ export default function EnhancedGame() {
             <div className="bg-white p-8 rounded-lg text-center">
               <Award className="w-16 h-16 text-teal-500 mx-auto mb-4" />
               <h2 className={`text-2xl font-bold mb-4 ${roboto.className}`}>Gratulacje!</h2>
-              <p>Ukończyłeś wszystkie scenariusze w grze "Apteka na Czasie"!</p>
+              <p>{'Ukończyłeś wszystkie scenariusze w grze "Apteka na Czasie"!'}</p>
               <p className="mt-2">Twój końcowy wynik: {score} punktów</p>
               <Button 
                 onClick={() => setShowCelebration(false)} 
