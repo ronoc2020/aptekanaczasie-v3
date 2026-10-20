@@ -1634,7 +1634,19 @@ body {
 }
 
 .herbal-database :is(p, li, span, a, h1, h2, h3, h4, h5, h6) {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+.herbal-gallery figure {
+  min-width: 0;
+}
+
+.herbal-gallery figcaption {
+  min-height: 3rem;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .herbal-database img {
