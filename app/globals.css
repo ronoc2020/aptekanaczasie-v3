@@ -1578,6 +1578,13 @@ body {
   color: var(--surface-muted) !important;
 }
 
+/* The dashboard intro sits on a pale surface in the light theme; keep it firmly readable. */
+.game-shell.theme-light .dashboard-description {
+  color: #031818 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
 /* Theme-wide readability contract: text follows the surface, not the component that wraps it. */
 .game-shell.theme-light :is(main, header, footer) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, span, a, button, [role="button"], [data-slot="card-title"], [data-slot="card-description"]) {
   color: #153d40 !important;
