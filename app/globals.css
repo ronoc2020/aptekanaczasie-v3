@@ -1628,6 +1628,27 @@ body {
   color: #153d40 !important;
 }
 
+.herbal-database,
+.herbal-database * {
+  min-width: 0;
+}
+
+.herbal-database :is(p, li, span, a, h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: anywhere;
+}
+
+.herbal-database img {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .herbal-database [data-slot="card-content"],
+  .herbal-database [data-slot="card-header"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
