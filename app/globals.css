@@ -1578,6 +1578,49 @@ body {
   color: var(--surface-muted) !important;
 }
 
+/* Theme-wide readability contract: text follows the surface, not the component that wraps it. */
+.game-shell.theme-light :is(main, header, footer) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, span, a, button, [role="button"], [data-slot="card-title"], [data-slot="card-description"]) {
+  color: #153d40 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: #416a6d !important;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(input, textarea, select) {
+  color: #153d40 !important;
+  caret-color: #087f7b;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(button, [role="button"]):is(.bg-primary, .bg-teal-600, .bg-teal-700, [class*="bg-primary"], [class*="bg-teal-600"], [class*="bg-teal-700"], [data-state="active"]) {
+  color: #f4fffe !important;
+}
+
+.game-shell.theme-light .focus-hero :is(p, h1, h2, h3, h4, h5, h6, label, span, a, button, strong) {
+  color: #f4fffe !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, span, a, button, [role="button"], [data-slot="card-title"], [data-slot="card-description"]) {
+  color: #e5fbfa !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: #addbdc !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(input, textarea, select) {
+  color: #e5fbfa !important;
+  caret-color: #67e8f9;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(button, [role="button"]):is(.bg-white, .bg-slate-50, [class*="bg-white"], [class*="bg-slate-50"]) {
+  color: #153d40 !important;
+}
+
 @layer base {
   * {
     @apply border-border;
