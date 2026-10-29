@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     const subject = String(body.subject ?? '').trim()
     const message = kind === 'Kontakt' ? String(body.message ?? '').trim() : String(body.improvement ?? '').trim()
     const rating = Number(body.rating ?? 0)
+    const idempotencyKey = String(body.idempotencyKey ?? '').trim()
 
     if (isTest) {
       if (!name || name.length > 120 || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: 'Podaj imię i poprawny adres email do testu.' }, { status: 400 })
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const from = process.env.RESEND_FROM_EMAIL?.trim() || 'Apteka na Czasie <contact@rocybersolutions.com>'
     const html = isTest ? `<h2>Test email — Apteka na Czasie</h2><p>Cześć ${escapeHtml(name)},</p><p>To jest wiadomość testowa potwierdzająca działanie formularza kontaktowego.</p><p>Jeśli ją otrzymujesz, wysyłka email działa poprawnie.</p>` : `<h2>${escapeHtml(kind)}</h2><p><strong>Imię:</strong> ${escapeHtml(name)}</p>${email ? `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` : ''}${subject ? `<p><strong>Temat:</strong> ${escapeHtml(subject)}</p>` : ''}${kind !== 'Kontakt' ? `<p><strong>Ocena:</strong> ${rating}/5</p>` : ''}<p><strong>Treść:</strong></p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`
-    const { data, error } = await resend.emails.send({ from, to: [isTest ? email : recipient], replyTo: email || undefined, subject: isTest ? 'Test email — Apteka na Czasie' : `${kind}: ${subject || name}`, html }, { idempotencyKey: `app-${isTest ? 'test' : kind.toLowerCase().replace(/\s+/g, '-')}-${email || name}-${Date.now()}` })
+    const { data, error } = await resend.emails.send({ from, to: [isTest ? email : recipient], replyTo: email || undefined, subject: isTest ? 'Test email — Apteka na Czasie' : `${kind}: ${subject || name}`, html }, { idempotencyKey: idempotencyKey || `app-${isTest ? 'test' : kind.toLowerCase().replace(/\s+/g, '-')}-${email || name}` })
     if (error) return NextResponse.json({ error: error.message }, { status: 502 })
     return NextResponse.json({ ok: true, id: data?.id })
   } catch {
