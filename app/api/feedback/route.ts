@@ -15,6 +15,7 @@ export async function POST(request: Request) {
     const email = String(body.email ?? '').trim()
     const message = String(body.message ?? '').trim()
     const rating = Number(body.rating ?? 0)
+    const idempotencyKey = String(body.idempotencyKey ?? '').trim()
 
     if (!name || !message || message.length > 5000 || name.length > 120) {
       return NextResponse.json({ error: 'Uzupełnij wymagane pola.' }, { status: 400 })
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     const subject = `${type}: ${name}`
     const replyTo = email || undefined
     const html = `<h2>${escapeHtml(type)}</h2><p><strong>Imię:</strong> ${escapeHtml(name)}</p>${email ? `<p><strong>Email:</strong> ${escapeHtml(email)}</p>` : ''}${type === 'Opinia użytkownika' ? `<p><strong>Ocena:</strong> ${rating}/5</p>` : ''}<p><strong>Treść:</strong></p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`
-    const { data, error } = await resend.emails.send({ from, to: [recipient], replyTo, subject, html }, { idempotencyKey: `feedback/${type.toLowerCase().replace(/\s+/g, '-')}/${Date.now()}` })
+    const { data, error } = await resend.emails.send({ from, to: [recipient], replyTo, subject, html }, { idempotencyKey: idempotencyKey || `feedback/${type.toLowerCase().replace(/\s+/g, '-')}/${name}` })
 
     if (error) return NextResponse.json({ error: error.message }, { status: 502 })
     return NextResponse.json({ ok: true, id: data?.id })

@@ -695,7 +695,7 @@ export default function EnhancedGame() {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [selectedAnswer])
+  }, [selectedAnswer, handleAnswerSubmit])
 
   const pageTransition = {
     in: {
