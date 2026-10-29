@@ -268,9 +268,56 @@ body {
       min-width: 0;
     }
 
-    .game-shell > main [class*="grid-cols-"] {
-      grid-template-columns: minmax(0, 1fr) !important;
-    }
+  .game-shell > main [class*="grid-cols-"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .lab-neon [class*="grid-cols-[1fr_90px_72px_auto]"] {
+    grid-template-columns: minmax(0, 1fr) minmax(5rem, 0.7fr) auto !important;
+  }
+
+  .lab-neon [class*="grid-cols-2"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .lab-neon [data-slot="tabs-list"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  .lab-neon [data-slot="tabs-trigger"] {
+    min-width: 0;
+    min-height: 2.75rem;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    line-height: 1.25;
+  }
+
+  .lab-neon p,
+  .lab-neon span,
+  .lab-neon label,
+  .lab-neon button,
+  .lab-neon [data-slot="card-title"],
+  .lab-neon [data-slot="card-description"] {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .lab-neon [data-slot="card"] {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .lab-neon input,
+  .lab-neon textarea,
+  .lab-neon select,
+  .lab-neon button {
+    min-width: 0;
+  }
 
     .game-shell > main [class*="overflow-x"] {
       max-width: 100%;
@@ -608,6 +655,46 @@ body {
     color: #087f7b !important;
   }
 
+  .game-shell.theme-light .lab-neon,
+  .game-shell.theme-light .lab-neon [data-slot="card"],
+  .game-shell.theme-light .lab-neon [data-slot="alert"],
+  .game-shell.theme-light .lab-neon [data-slot="tabs-content"] {
+    color: #123235 !important;
+  }
+
+  .game-shell.theme-light .lab-neon [data-slot="card-description"],
+  .game-shell.theme-light .lab-neon .text-muted-foreground,
+  .game-shell.theme-light .lab-neon .text-xs {
+    color: #315b5e !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-dark .lab-neon,
+  .game-shell.theme-dark .lab-neon [data-slot="card"],
+  .game-shell.theme-dark .lab-neon [data-slot="alert"],
+  .game-shell.theme-dark .lab-neon [data-slot="tabs-content"] {
+    color: #efffff !important;
+  }
+
+  .game-shell.theme-dark .lab-neon [data-slot="card-description"],
+  .game-shell.theme-dark .lab-neon .text-muted-foreground,
+  .game-shell.theme-dark .lab-neon .text-xs {
+    color: #c7e6e6 !important;
+    opacity: 1 !important;
+  }
+
+  .game-shell.theme-light .lab-toast {
+    color: #123235 !important;
+    background: #f3fffd !important;
+    border-color: #14b8a6 !important;
+  }
+
+  .game-shell.theme-dark .lab-toast {
+    color: #efffff !important;
+    background: #092b35 !important;
+    border-color: #67e8f9 !important;
+  }
+
   /* Keep text separated from the animated background in both themes. */
   .game-shell.theme-light > main,
   .game-shell.theme-light > main p,
@@ -942,8 +1029,9 @@ body {
   .game-shell > main h3,
   .game-shell > main li,
   .game-shell > main label {
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     word-break: normal;
+    hyphens: none;
   }
 
   .game-shell > main button,
@@ -955,7 +1043,7 @@ body {
   .game-shell .focus-footer {
     width: 100%;
     min-width: 0;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell.theme-light .focus-footer,
@@ -1046,14 +1134,14 @@ body {
 
   .game-shell .focus-hero h2 {
     font-size: clamp(1.8rem, 9vw, 2.75rem);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell .context-banner,
   .game-shell .glass-panel,
   .game-shell [data-slot="card"] {
     max-width: 100%;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .game-shell.theme-light > main p,
@@ -1440,6 +1528,137 @@ body {
 .game-shell.theme-light > main > *:not(.focus-hero) button[class*="bg-teal"],
 .game-shell.theme-light > main > *:not(.focus-hero) button[class*="bg-primary"] {
   color: #ffffff !important;
+}
+
+/* Last-pass contrast contract: content surfaces always use readable theme tokens. */
+.game-shell.theme-light > main > *:not(.focus-hero) {
+  --surface-ink: #102f32;
+  --surface-muted: #315b5e;
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, button, a, span) {
+  color: var(--surface-ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: var(--surface-muted) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is([data-slot="card"], .glass-panel, .bg-white, .bg-slate-50, .bg-teal-50) {
+  color: var(--surface-ink) !important;
+  background-color: rgba(248, 255, 253, 0.96);
+  border-color: rgba(8, 145, 178, 0.38) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is([data-slot="card"], .glass-panel, .bg-white, .bg-slate-50, .bg-teal-50) :is(p, h1, h2, h3, h4, h5, h6, label, span, strong, small) {
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-light > main > *:not(.focus-hero) :is(button.bg-primary, button.bg-teal-600, button.bg-teal-700, button[class*="bg-primary"]) {
+  color: #ffffff !important;
+  background-color: #087f7b !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) {
+  --surface-ink: #efffff;
+  --surface-muted: #c7e6e6;
+  color: var(--surface-ink) !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, button, a, span) {
+  color: var(--surface-ink) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-dark > main > *:not(.focus-hero) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: var(--surface-muted) !important;
+}
+
+/* The dashboard intro sits on a pale surface in the light theme; keep it firmly readable. */
+.game-shell.theme-light .dashboard-description {
+  color: #031818 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* Theme-wide readability contract: text follows the surface, not the component that wraps it. */
+.game-shell.theme-light :is(main, header, footer) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, span, a, button, [role="button"], [data-slot="card-title"], [data-slot="card-description"]) {
+  color: #153d40 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: #416a6d !important;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(input, textarea, select) {
+  color: #153d40 !important;
+  caret-color: #087f7b;
+}
+
+.game-shell.theme-light :is(main, header, footer) :is(button, [role="button"]):is(.bg-primary, .bg-teal-600, .bg-teal-700, [class*="bg-primary"], [class*="bg-teal-600"], [class*="bg-teal-700"], [data-state="active"]) {
+  color: #f4fffe !important;
+}
+
+.game-shell.theme-light .focus-hero :is(p, h1, h2, h3, h4, h5, h6, label, span, a, button, strong) {
+  color: #f4fffe !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(p, h1, h2, h3, h4, h5, h6, label, li, dt, dd, legend, strong, small, span, a, button, [role="button"], [data-slot="card-title"], [data-slot="card-description"]) {
+  color: #e5fbfa !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(.text-muted-foreground, [data-slot="card-description"], small) {
+  color: #addbdc !important;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(input, textarea, select) {
+  color: #e5fbfa !important;
+  caret-color: #67e8f9;
+}
+
+.game-shell.theme-dark :is(main, header, footer) :is(button, [role="button"]):is(.bg-white, .bg-slate-50, [class*="bg-white"], [class*="bg-slate-50"]) {
+  color: #153d40 !important;
+}
+
+.herbal-database,
+.herbal-database * {
+  min-width: 0;
+}
+
+.herbal-database :is(p, li, span, a, h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+.herbal-gallery figure {
+  min-width: 0;
+}
+
+.herbal-gallery figcaption {
+  min-height: 3rem;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.herbal-database img {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .herbal-database [data-slot="card-content"],
+  .herbal-database [data-slot="card-header"] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 @layer base {
